@@ -1,7 +1,11 @@
-import './index.css';
+import Router from '/src/Router.jsx';
 
 function App() {
-    return <></>;
+    return (
+        <>
+            <Router />
+        </>
+    );
 }
 
 export default App;

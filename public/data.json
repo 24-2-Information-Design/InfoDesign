@@ -117,5 +117,19 @@
         "cluster6": 0.13,
         "cluster7": 0.11,
         "cluster8": 0.21
-    }
+    },
+    "links": [
+        { "source": "chain1", "target": "chain2" },
+        { "source": "chain1", "target": "chain3" },
+        { "source": "chain2", "target": "chain4" },
+        { "source": "chain2", "target": "chain5" },
+        { "source": "chain3", "target": "chain6" },
+        { "source": "chain4", "target": "chain7" },
+        { "source": "chain5", "target": "chain8" },
+        { "source": "chain5", "target": "chain9" },
+        { "source": "chain6", "target": "chain10" },
+        { "source": "chain7", "target": "chain11" },
+        { "source": "chain8", "target": "chain12" },
+        { "source": "chain9", "target": "chain13" }
+    ]
 }
