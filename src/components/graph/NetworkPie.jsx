@@ -65,12 +65,12 @@ const NetworkPie = ({ onSelectChain }) => {
 
                     // Radius에 비례하여 불투명도와 선 굵기 조정
                     const opacity = 0.1 + (originalRadius / d3.max(points, (p) => p.radius)) * 0.3;
-                    const strokeWidth = 0.5 + (originalRadius / d3.max(points, (p) => p.radius)) * 2;
+                    const strokeWidth = 0.5 + originalRadius / d3.max(points, (p) => p.radius);
 
                     // Voronoi 셀 그리기
                     svg.append('path')
                         .attr('d', d3.line()(cell))
-                        .attr('fill', VoronoicolorScale(index))
+                        .attr('fill', '#FFFFFF')
                         .attr('fill-opacity', opacity)
                         .attr('stroke', '#888888') // 회색으로 변경
                         .attr('stroke-opacity', 0.5)
@@ -125,7 +125,7 @@ const NetworkPie = ({ onSelectChain }) => {
                     .attr('y1', sourceNode.y)
                     .attr('x2', targetNode.x)
                     .attr('y2', targetNode.y)
-                    .attr('stroke', 'rgba(136, 136, 136, 0.5)')
+                    .attr('stroke', 'rgba(49, 74, 196, 0.5)')
                     .attr('stroke-width', Math.max(lineThickness, 1))
                     .attr('opacity', 0.5)
                     .append('title')
@@ -169,8 +169,6 @@ const NetworkPie = ({ onSelectChain }) => {
                 .append('path')
                 .attr('d', arc)
                 .attr('fill', (d, i) => colorScale(i))
-                .attr('stroke', 'white')
-                .attr('stroke-width', 1)
                 .append('title')
                 .text((d) => `${node.id} - proportion ${d.data.month}: ${(d.data.value * 100).toFixed(2)}%`);
 
@@ -212,7 +210,7 @@ const NetworkPie = ({ onSelectChain }) => {
                     .attr('y1', y1)
                     .attr('x2', x2)
                     .attr('y2', y2)
-                    .attr('stroke', d3.interpolateGreys((index + 1) / 12))
+                    .attr('stroke', '#999999')
                     .attr('stroke-width', barWidth)
                     .append('title')
                     .text(`proposal ${currentKey}: ${proposalValue}`);

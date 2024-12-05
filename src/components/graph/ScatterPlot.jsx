@@ -73,8 +73,6 @@ const ScatterPlot = ({ data }) => {
             .attr('cy', (d) => yScale(d.tsne_y))
             .attr('r', (d) => sizeScale(d.votingPower))
             .attr('fill', (d) => colorScale(d.cluster_label))
-            .attr('stroke', '#000')
-            .attr('stroke-width', 0.5)
             .on('mouseover', (event, d) => {
                 tooltip
                     .style('visibility', 'visible')

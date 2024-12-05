@@ -12,17 +12,3 @@ export const PieColors = [
     '#FF8A65', // 연한 주황
     'f4d8de',
 ];
-export const grayColors = [
-    '#F2F2F2', // 가장 밝은 회색
-    '#E5E5E5',
-    '#D9D9D9',
-    '#CCCCCC',
-    '#BFBFBF',
-    '#B3B3B3',
-    '#A6A6A6',
-    '#999999',
-    '#8C8C8C',
-    '#808080',
-    '#737373',
-    '#666666', // 가장 어두운 회색
-];
