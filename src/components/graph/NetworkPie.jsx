@@ -4,7 +4,7 @@ import jsonData from '../../data/chain_data.json';
 import linkData from '../../data/chain_link_data.json';
 import { PieColors } from '../color';
 
-const NetworkPie = () => {
+const NetworkPie = ({ onSelectChain }) => {
     const svgRef = useRef(null);
     const [selectedChain, setSelectedChain] = useState(null);
 
@@ -65,12 +65,12 @@ const NetworkPie = () => {
 
                     // Radius에 비례하여 불투명도와 선 굵기 조정
                     const opacity = 0.1 + (originalRadius / d3.max(points, (p) => p.radius)) * 0.3;
-                    const strokeWidth = 0.5 + (originalRadius / d3.max(points, (p) => p.radius)) * 2;
+                    const strokeWidth = 0.5 + originalRadius / d3.max(points, (p) => p.radius);
 
                     // Voronoi 셀 그리기
                     svg.append('path')
                         .attr('d', d3.line()(cell))
-                        .attr('fill', VoronoicolorScale(index))
+                        .attr('fill', '#FFFFFF')
                         .attr('fill-opacity', opacity)
                         .attr('stroke', '#888888') // 회색으로 변경
                         .attr('stroke-opacity', 0.5)
@@ -125,7 +125,7 @@ const NetworkPie = () => {
                     .attr('y1', sourceNode.y)
                     .attr('x2', targetNode.x)
                     .attr('y2', targetNode.y)
-                    .attr('stroke', 'rgba(136, 136, 136, 0.5)')
+                    .attr('stroke', 'rgba(49, 74, 196, 0.5)')
                     .attr('stroke-width', Math.max(lineThickness, 1))
                     .attr('opacity', 0.5)
                     .append('title')
@@ -155,14 +155,10 @@ const NetworkPie = () => {
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
                 .on('click', () => {
-                    // 이전 선택 하이라이트 제거
                     svg.selectAll('.blockchain-group').attr('opacity', 1).selectAll('path').attr('stroke-width', 1);
-
-                    // 선택된 블록체인 하이라이트
                     blockchainGroup.attr('opacity', 1).selectAll('path').attr('stroke-width', 3).attr('stroke', 'red');
-
-                    // 선택된 체인 상태 업데이트
                     setSelectedChain(node.id);
+                    onSelectChain(node.id); // 선택된 체인을 상위로 전달
                 });
 
             // 파이 차트 렌더링
@@ -173,12 +169,10 @@ const NetworkPie = () => {
                 .append('path')
                 .attr('d', arc)
                 .attr('fill', (d, i) => colorScale(i))
-                .attr('stroke', 'white')
-                .attr('stroke-width', 1)
                 .append('title')
                 .text((d) => `${node.id} - proportion ${d.data.month}: ${(d.data.value * 100).toFixed(2)}%`);
 
-            const barWidth = 25;
+            const barWidth = 11;
 
             // 프로포절 데이터의 최소값과 최대값 계산
             const proposalValues = Object.values(chainData.proposal);
@@ -189,7 +183,7 @@ const NetworkPie = () => {
             const barLengthScale = d3
                 .scaleLinear()
                 .domain([minProposalValue, maxProposalValue])
-                .range([radius * 0.1, radius * 0.8]); // 최소 길이와 최대 길이 설정
+                .range([radius * 0.1, radius * 0.6]); // 최소 길이와 최대 길이 설정
 
             proportionData.forEach((d, index) => {
                 const proposalKeys = Object.keys(chainData.proposal).sort();
@@ -216,7 +210,7 @@ const NetworkPie = () => {
                     .attr('y1', y1)
                     .attr('x2', x2)
                     .attr('y2', y2)
-                    .attr('stroke', d3.interpolateGreys((index + 1) / 12))
+                    .attr('stroke', '#999999')
                     .attr('stroke-width', barWidth)
                     .append('title')
                     .text(`proposal ${currentKey}: ${proposalValue}`);
@@ -231,7 +225,7 @@ const NetworkPie = () => {
                 .attr('font-size', '14px')
                 .attr('font-weight', 'bold');
         });
-    }, []);
+    }, [onSelectChain]);
 
     return (
         <div>
