@@ -1,0 +1,861 @@
+[
+    {
+        "voter": "Chainflow",
+        "cluster_label": 2,
+        "tsne_x": -3.0498652458,
+        "tsne_y": -15.9274759293,
+        "votingPower": 0.001214
+    },
+    {
+        "voter": "Imperatorco",
+        "cluster_label": 2,
+        "tsne_x": 5.3854346275,
+        "tsne_y": -18.3281993866,
+        "votingPower": 0.009826
+    },
+    {
+        "voter": " AutoStake  Slash Protected",
+        "cluster_label": 2,
+        "tsne_x": 6.7739715576,
+        "tsne_y": -16.4618053436,
+        "votingPower": 0.017706
+    },
+    {
+        "voter": "Simply Staking",
+        "cluster_label": 2,
+        "tsne_x": -1.4439282417,
+        "tsne_y": -15.2475194931,
+        "votingPower": 0.003979
+    },
+    {
+        "voter": "StakeLabzone",
+        "cluster_label": 2,
+        "tsne_x": 7.1664404869,
+        "tsne_y": -8.9763412476,
+        "votingPower": 0.005636
+    },
+    {
+        "voter": "SpacePotato",
+        "cluster_label": 2,
+        "tsne_x": -3.769197464,
+        "tsne_y": -12.3248491287,
+        "votingPower": 0.005411
+    },
+    {
+        "voter": "Vitwit Previously Witval",
+        "cluster_label": 2,
+        "tsne_x": 9.1229696274,
+        "tsne_y": -4.2693653107,
+        "votingPower": 0.00836
+    },
+    { "voter": "SG1", "cluster_label": 2, "tsne_x": -10.6988801956, "tsne_y": -7.4464445114, "votingPower": 0.012545 },
+    {
+        "voter": "Chorus One",
+        "cluster_label": 2,
+        "tsne_x": 7.3873667717,
+        "tsne_y": -13.9869670868,
+        "votingPower": 0.015779
+    },
+    {
+        "voter": "Forbole",
+        "cluster_label": 2,
+        "tsne_x": 7.8633589745,
+        "tsne_y": -8.9335603714,
+        "votingPower": 0.050988
+    },
+    {
+        "voter": "POSTHUMAN  StakeDrop",
+        "cluster_label": 2,
+        "tsne_x": 6.8553552628,
+        "tsne_y": -11.5383396149,
+        "votingPower": 0.002687
+    },
+    { "voter": "Ping", "cluster_label": 2, "tsne_x": 4.9287734032, "tsne_y": -9.101193428, "votingPower": 0.001767 },
+    {
+        "voter": "0basevc",
+        "cluster_label": 2,
+        "tsne_x": -0.3239921033,
+        "tsne_y": -15.9252672195,
+        "votingPower": 0.000066
+    },
+    {
+        "voter": "Smart Stake ",
+        "cluster_label": 2,
+        "tsne_x": 5.5982546806,
+        "tsne_y": -18.5740604401,
+        "votingPower": 0.010541
+    },
+    {
+        "voter": " block pane ",
+        "cluster_label": 2,
+        "tsne_x": -2.5485916138,
+        "tsne_y": -11.4864778519,
+        "votingPower": 0.002272
+    },
+    {
+        "voter": "WhisperNode ",
+        "cluster_label": 2,
+        "tsne_x": 5.7758817673,
+        "tsne_y": -15.9656887054,
+        "votingPower": 0.000612
+    },
+    { "voter": "a41", "cluster_label": 2, "tsne_x": -1.9930052757, "tsne_y": -14.6383056641, "votingPower": 0.0 },
+    { "voter": "Stakyio", "cluster_label": 2, "tsne_x": 5.3463225365, "tsne_y": -8.6978464127, "votingPower": 0.0 },
+    { "voter": "Kahuna", "cluster_label": 13, "tsne_x": 3.5798063278, "tsne_y": 6.6582551003, "votingPower": 0.009047 },
+    {
+        "voter": "16psyche",
+        "cluster_label": 13,
+        "tsne_x": 3.4378666878,
+        "tsne_y": -3.2884421349,
+        "votingPower": 0.034034
+    },
+    {
+        "voter": "Nocturnal Labs",
+        "cluster_label": 5,
+        "tsne_x": 6.4598836899,
+        "tsne_y": -4.4778470993,
+        "votingPower": 0.039126
+    },
+    {
+        "voter": "decentralizehk  DHK dao",
+        "cluster_label": 2,
+        "tsne_x": -0.3709473908,
+        "tsne_y": -14.0205574036,
+        "votingPower": 0.001449
+    },
+    {
+        "voter": "Kalia Network",
+        "cluster_label": 6,
+        "tsne_x": 10.7476453781,
+        "tsne_y": -1.2024093866,
+        "votingPower": 0.002315
+    },
+    {
+        "voter": "ECO Stake ",
+        "cluster_label": 2,
+        "tsne_x": 3.1595509052,
+        "tsne_y": -14.5934228897,
+        "votingPower": 0.024827
+    },
+    {
+        "voter": "NosNode",
+        "cluster_label": 2,
+        "tsne_x": -2.2112047672,
+        "tsne_y": -14.3779382706,
+        "votingPower": 0.00004
+    },
+    {
+        "voter": "Citadelone",
+        "cluster_label": 2,
+        "tsne_x": 7.3814120293,
+        "tsne_y": -16.627538681,
+        "votingPower": 0.021662
+    },
+    {
+        "voter": "Informal Systems",
+        "cluster_label": 2,
+        "tsne_x": 2.8650152683,
+        "tsne_y": -14.7402458191,
+        "votingPower": 0.006046
+    },
+    {
+        "voter": " LavenderFive Nodes ",
+        "cluster_label": 2,
+        "tsne_x": 3.900298357,
+        "tsne_y": -13.673412323,
+        "votingPower": 0.017338
+    },
+    {
+        "voter": "Frens ",
+        "cluster_label": 2,
+        "tsne_x": 4.3921670914,
+        "tsne_y": -16.0247631073,
+        "votingPower": 0.002792
+    },
+    {
+        "voter": "Cosmostation",
+        "cluster_label": 2,
+        "tsne_x": 4.5931754112,
+        "tsne_y": -17.9371013641,
+        "votingPower": 0.047692
+    },
+    {
+        "voter": "Kleomedes",
+        "cluster_label": 11,
+        "tsne_x": -11.8948431015,
+        "tsne_y": -2.3511190414,
+        "votingPower": 0.004055
+    },
+    {
+        "voter": "OmniFlix Network",
+        "cluster_label": 2,
+        "tsne_x": -4.0981955528,
+        "tsne_y": -13.8813495636,
+        "votingPower": 0.023067
+    },
+    {
+        "voter": "GATA HUB",
+        "cluster_label": 2,
+        "tsne_x": 0.1464897692,
+        "tsne_y": -12.475725174,
+        "votingPower": 0.001741
+    },
+    {
+        "voter": "hydrogen18",
+        "cluster_label": 13,
+        "tsne_x": -7.9187288284,
+        "tsne_y": 7.8652667999,
+        "votingPower": 0.000082
+    },
+    {
+        "voter": "Coinage x DAIC",
+        "cluster_label": 2,
+        "tsne_x": 5.6893830299,
+        "tsne_y": -14.6526994705,
+        "votingPower": 0.005569
+    },
+    {
+        "voter": "Stakecito",
+        "cluster_label": 2,
+        "tsne_x": 3.8645737171,
+        "tsne_y": -16.3405818939,
+        "votingPower": 0.020399
+    },
+    { "voter": "Meria", "cluster_label": 5, "tsne_x": 6.3365011215, "tsne_y": -4.2818026543, "votingPower": 0.012333 },
+    { "voter": "BronBro", "cluster_label": 2, "tsne_x": 6.733874321, "tsne_y": -12.3892402649, "votingPower": 0.0 },
+    {
+        "voter": "Cypher Core",
+        "cluster_label": 2,
+        "tsne_x": -0.2876987457,
+        "tsne_y": -14.4843425751,
+        "votingPower": 0.001648
+    },
+    {
+        "voter": "ChainLayer",
+        "cluster_label": 2,
+        "tsne_x": 6.1554760933,
+        "tsne_y": -5.7591733932,
+        "votingPower": 0.003295
+    },
+    {
+        "voter": "Active Nodes",
+        "cluster_label": 2,
+        "tsne_x": 4.1168179512,
+        "tsne_y": -9.6018457413,
+        "votingPower": 0.015609
+    },
+    { "voter": "DACM", "cluster_label": 4, "tsne_x": -3.0665979385, "tsne_y": 3.2911746502, "votingPower": 0.014654 },
+    {
+        "voter": "strangelove",
+        "cluster_label": 6,
+        "tsne_x": 8.4978876114,
+        "tsne_y": -4.3051271439,
+        "votingPower": 0.00125
+    },
+    { "voter": "ushakov", "cluster_label": 9, "tsne_x": 2.4272837639, "tsne_y": 9.9307069778, "votingPower": 0.000117 },
+    { "voter": "c29r3", "cluster_label": 4, "tsne_x": 6.179980278, "tsne_y": 3.5820963383, "votingPower": 0.004135 },
+    {
+        "voter": "Allnodes",
+        "cluster_label": 2,
+        "tsne_x": 2.1986796856,
+        "tsne_y": -15.5714530945,
+        "votingPower": 0.034389
+    },
+    {
+        "voter": "PoS Node",
+        "cluster_label": 6,
+        "tsne_x": 10.6426010132,
+        "tsne_y": -0.4056405127,
+        "votingPower": 0.000008
+    },
+    {
+        "voter": "Tedcryptoio   TedLotto",
+        "cluster_label": 11,
+        "tsne_x": -0.1492733657,
+        "tsne_y": -10.9110021591,
+        "votingPower": 0.004072
+    },
+    {
+        "voter": "kooltek68",
+        "cluster_label": 13,
+        "tsne_x": -2.7281851768,
+        "tsne_y": 4.1024260521,
+        "votingPower": 0.000046
+    },
+    {
+        "voter": "CroutonDigital",
+        "cluster_label": 13,
+        "tsne_x": 2.5181570053,
+        "tsne_y": 6.4335660934,
+        "votingPower": 0.002011
+    },
+    {
+        "voter": "coaction",
+        "cluster_label": 4,
+        "tsne_x": 0.2192222476,
+        "tsne_y": 10.0437068939,
+        "votingPower": 0.000017
+    },
+    {
+        "voter": "EZ Staking",
+        "cluster_label": 5,
+        "tsne_x": 13.3325023651,
+        "tsne_y": -2.5098612309,
+        "votingPower": 0.006679
+    },
+    {
+        "voter": "Stakin",
+        "cluster_label": 5,
+        "tsne_x": -1.9720941782,
+        "tsne_y": -7.9624657631,
+        "votingPower": 0.001602
+    },
+    {
+        "voter": "notional",
+        "cluster_label": 11,
+        "tsne_x": -9.7292499542,
+        "tsne_y": -3.5704004765,
+        "votingPower": 0.000022
+    },
+    {
+        "voter": "WeStaking",
+        "cluster_label": 5,
+        "tsne_x": -10.4568042755,
+        "tsne_y": -5.9212956429,
+        "votingPower": 0.004203
+    },
+    {
+        "voter": "SmartNodes  Slash Protected",
+        "cluster_label": 11,
+        "tsne_x": -10.475982666,
+        "tsne_y": -4.2725820541,
+        "votingPower": 0.007301
+    },
+    { "voter": "Yurbason", "cluster_label": 11, "tsne_x": -12.125087738, "tsne_y": -4.3855910301, "votingPower": 0.0 },
+    {
+        "voter": "Neta DAO",
+        "cluster_label": 11,
+        "tsne_x": -10.7069616318,
+        "tsne_y": -3.7887384892,
+        "votingPower": 0.004316
+    },
+    {
+        "voter": "Chandra Station",
+        "cluster_label": 11,
+        "tsne_x": -10.7656669617,
+        "tsne_y": -3.96880126,
+        "votingPower": 0.039203
+    },
+    {
+        "voter": "Stake Frites  ",
+        "cluster_label": 3,
+        "tsne_x": -1.7275564671,
+        "tsne_y": -0.0696026385,
+        "votingPower": 0.003363
+    },
+    {
+        "voter": "Decloud Nodes Lab",
+        "cluster_label": 4,
+        "tsne_x": 1.9524786472,
+        "tsne_y": -2.600427866,
+        "votingPower": 0.007704
+    },
+    {
+        "voter": "HashKey Cloud",
+        "cluster_label": 5,
+        "tsne_x": -4.2567400932,
+        "tsne_y": 16.4619121552,
+        "votingPower": 0.004183
+    },
+    {
+        "voter": "chainvibes",
+        "cluster_label": 11,
+        "tsne_x": -10.542681694,
+        "tsne_y": -2.5644412041,
+        "votingPower": 0.005414
+    },
+    {
+        "voter": "Consensus One",
+        "cluster_label": 0,
+        "tsne_x": -4.9465875626,
+        "tsne_y": 6.5783782005,
+        "votingPower": 0.001557
+    },
+    {
+        "voter": "Stakewollecom  Autocompound",
+        "cluster_label": 3,
+        "tsne_x": -7.2344932556,
+        "tsne_y": 2.130923748,
+        "votingPower": 0.001515
+    },
+    { "voter": "Wetez", "cluster_label": 9, "tsne_x": -3.7253363132, "tsne_y": 6.1231999397, "votingPower": 0.003251 },
+    {
+        "voter": "Architect Nodes",
+        "cluster_label": 5,
+        "tsne_x": 9.7380819321,
+        "tsne_y": 8.9080495834,
+        "votingPower": 0.0
+    },
+    { "voter": "HEXXAGON", "cluster_label": 0, "tsne_x": 0.3609396219, "tsne_y": 7.6099948883, "votingPower": 0.0 },
+    {
+        "voter": "DECOMISSIONED AUDITone",
+        "cluster_label": 3,
+        "tsne_x": -7.4039788246,
+        "tsne_y": -6.681748867,
+        "votingPower": 0.000027
+    },
+    {
+        "voter": "Army IDs",
+        "cluster_label": 6,
+        "tsne_x": 11.4103031158,
+        "tsne_y": -3.5434064865,
+        "votingPower": 0.00393
+    },
+    {
+        "voter": "Bit Cat",
+        "cluster_label": 6,
+        "tsne_x": -7.3005819321,
+        "tsne_y": 12.2606563568,
+        "votingPower": 0.000004
+    },
+    {
+        "voter": "Easy 2 Stake",
+        "cluster_label": 7,
+        "tsne_x": 2.7158493996,
+        "tsne_y": -5.6859788895,
+        "votingPower": 0.004595
+    },
+    {
+        "voter": "Nodeasycom",
+        "cluster_label": 1,
+        "tsne_x": 10.7535114288,
+        "tsne_y": 1.0771625042,
+        "votingPower": 0.000008
+    },
+    {
+        "voter": "jetlife",
+        "cluster_label": 8,
+        "tsne_x": -10.5126399994,
+        "tsne_y": 6.5985784531,
+        "votingPower": 0.000004
+    },
+    { "voter": "Sikka", "cluster_label": 4, "tsne_x": -3.6526956558, "tsne_y": 13.5248689651, "votingPower": 0.024626 },
+    {
+        "voter": "PLEASE REDELEGATECLOSED",
+        "cluster_label": 4,
+        "tsne_x": -8.7691020966,
+        "tsne_y": 6.409693718,
+        "votingPower": 0.000074
+    },
+    { "voter": "SNZPool", "cluster_label": 13, "tsne_x": -0.5192431808, "tsne_y": 15.5297842026, "votingPower": 0.0 },
+    {
+        "voter": "Autonomy  Formerly PrithviDevs ",
+        "cluster_label": 4,
+        "tsne_x": 8.7515859604,
+        "tsne_y": 5.472779274,
+        "votingPower": 0.003584
+    },
+    { "voter": "Baset", "cluster_label": 4, "tsne_x": -2.1630320549, "tsne_y": 13.9405965805, "votingPower": 0.001275 },
+    { "voter": "Huobi", "cluster_label": 5, "tsne_x": -10.9238538742, "tsne_y": 8.2424573898, "votingPower": 0.000042 },
+    {
+        "voter": "ChainodeTech",
+        "cluster_label": 1,
+        "tsne_x": 10.9802331924,
+        "tsne_y": 2.2952885628,
+        "votingPower": 0.006905
+    },
+    { "voter": "kano", "cluster_label": 4, "tsne_x": -2.1202282906, "tsne_y": 14.0630464554, "votingPower": 0.000781 },
+    {
+        "voter": "Cosmic Validator  Auto Compound",
+        "cluster_label": 4,
+        "tsne_x": 6.8683004379,
+        "tsne_y": 5.736782074,
+        "votingPower": 0.003565
+    },
+    {
+        "voter": "ValidatorNode",
+        "cluster_label": 4,
+        "tsne_x": -1.0518497229,
+        "tsne_y": -0.6040493846,
+        "votingPower": 0.002409
+    },
+    {
+        "voter": "UNDELEGATE FROM HERE",
+        "cluster_label": 12,
+        "tsne_x": -2.2843129635,
+        "tsne_y": 10.0401315689,
+        "votingPower": 0.000076
+    },
+    {
+        "voter": "stakezone",
+        "cluster_label": 4,
+        "tsne_x": -4.338927269,
+        "tsne_y": 8.9608716965,
+        "votingPower": 0.019764
+    },
+    { "voter": "gunray", "cluster_label": 12, "tsne_x": -3.1520655155, "tsne_y": 11.0182580948, "votingPower": 0.0 },
+    { "voter": "Bi23", "cluster_label": 4, "tsne_x": -1.0621219873, "tsne_y": -2.4001553059, "votingPower": 0.0045 },
+    {
+        "voter": "Psycho Node",
+        "cluster_label": 4,
+        "tsne_x": -2.6469922066,
+        "tsne_y": -4.2806949615,
+        "votingPower": 0.000502
+    },
+    { "voter": "Bitoven", "cluster_label": 4, "tsne_x": 11.531206131, "tsne_y": 5.7630558014, "votingPower": 0.001373 },
+    {
+        "voter": "Komichaincom",
+        "cluster_label": 4,
+        "tsne_x": -0.6373454928,
+        "tsne_y": -1.9112178087,
+        "votingPower": 0.0
+    },
+    {
+        "voter": "BoxedCloudnet",
+        "cluster_label": 4,
+        "tsne_x": -3.1080582142,
+        "tsne_y": -3.9078533649,
+        "votingPower": 0.000021
+    },
+    {
+        "voter": "MANTRA",
+        "cluster_label": 4,
+        "tsne_x": -4.4236326218,
+        "tsne_y": -5.1330070496,
+        "votingPower": 0.000054
+    },
+    { "voter": "eol", "cluster_label": 4, "tsne_x": -3.4710366726, "tsne_y": -3.9149839878, "votingPower": 0.000002 },
+    {
+        "voter": "cosmosrescue",
+        "cluster_label": 4,
+        "tsne_x": -5.4501042366,
+        "tsne_y": -3.8218896389,
+        "votingPower": 0.002074
+    },
+    {
+        "voter": "SkyNet  Validators",
+        "cluster_label": 4,
+        "tsne_x": -2.4946873188,
+        "tsne_y": -5.4421005249,
+        "votingPower": 0.0007
+    },
+    { "voter": "Dwebnet", "cluster_label": 4, "tsne_x": -2.7692811489, "tsne_y": -3.181429863, "votingPower": 0.0 },
+    {
+        "voter": "DLINODESCOM",
+        "cluster_label": 4,
+        "tsne_x": -3.8024449348,
+        "tsne_y": -3.4585700035,
+        "votingPower": 0.0
+    },
+    { "voter": "GlacierLuo", "cluster_label": 4, "tsne_x": -4.0040564537, "tsne_y": -2.4685695171, "votingPower": 0.0 },
+    {
+        "voter": "Domination Finance",
+        "cluster_label": 4,
+        "tsne_x": -4.0222139359,
+        "tsne_y": -2.3300242424,
+        "votingPower": 0.000008
+    },
+    {
+        "voter": "Arcturian Tech",
+        "cluster_label": 4,
+        "tsne_x": 1.7856105566,
+        "tsne_y": 15.2683906555,
+        "votingPower": 0.001991
+    },
+    {
+        "voter": "Akash Af",
+        "cluster_label": 4,
+        "tsne_x": 1.7642149925,
+        "tsne_y": 15.2611217499,
+        "votingPower": 0.001998
+    },
+    {
+        "voter": "ALTER  pathrocknetwork",
+        "cluster_label": 4,
+        "tsne_x": -0.6646133661,
+        "tsne_y": 14.7425909042,
+        "votingPower": 0.003965
+    },
+    {
+        "voter": "decommissioned",
+        "cluster_label": 12,
+        "tsne_x": -1.20609653,
+        "tsne_y": 13.0017280579,
+        "votingPower": 0.0
+    },
+    {
+        "voter": "BridgeTower",
+        "cluster_label": 3,
+        "tsne_x": -2.5437369347,
+        "tsne_y": 15.0324735641,
+        "votingPower": 0.003241
+    },
+    {
+        "voter": "MedasDigital",
+        "cluster_label": 3,
+        "tsne_x": -6.4094953537,
+        "tsne_y": 11.6513385773,
+        "votingPower": 0.0
+    },
+    {
+        "voter": "STAKINOLD",
+        "cluster_label": 4,
+        "tsne_x": -3.7634050846,
+        "tsne_y": 8.3027410507,
+        "votingPower": 0.000001
+    },
+    { "voter": "Cloudmos", "cluster_label": 4, "tsne_x": 7.758084774, "tsne_y": 3.6861870289, "votingPower": 0.025704 },
+    {
+        "voter": "Former Moultrie Audits Inactive",
+        "cluster_label": 4,
+        "tsne_x": -16.3688964844,
+        "tsne_y": -0.7882754207,
+        "votingPower": 0.000013
+    },
+    {
+        "voter": "MOVING TO NAKANODOXYZ",
+        "cluster_label": 4,
+        "tsne_x": -3.5168299675,
+        "tsne_y": 8.1194915771,
+        "votingPower": 0.000009
+    },
+    {
+        "voter": "VaultStaking",
+        "cluster_label": 4,
+        "tsne_x": -9.5010719299,
+        "tsne_y": 7.9148321152,
+        "votingPower": 0.000242
+    },
+    {
+        "voter": "TRGC By Liquify",
+        "cluster_label": 1,
+        "tsne_x": 10.8055458069,
+        "tsne_y": 1.4532461166,
+        "votingPower": 0.001632
+    },
+    {
+        "voter": "astravoyage",
+        "cluster_label": 12,
+        "tsne_x": -2.7271680832,
+        "tsne_y": 7.0301198959,
+        "votingPower": 0.0
+    },
+    {
+        "voter": "Anonstake",
+        "cluster_label": 0,
+        "tsne_x": 5.2276620865,
+        "tsne_y": 2.6071550846,
+        "votingPower": 0.00003
+    },
+    {
+        "voter": " polkachucom",
+        "cluster_label": 5,
+        "tsne_x": 1.9447588921,
+        "tsne_y": -6.9074678421,
+        "votingPower": 0.024209
+    },
+    {
+        "voter": "kavalabs",
+        "cluster_label": 12,
+        "tsne_x": 0.2290523946,
+        "tsne_y": 4.9127511978,
+        "votingPower": 0.084063
+    },
+    {
+        "voter": "AGE Network",
+        "cluster_label": 9,
+        "tsne_x": 1.9340257645,
+        "tsne_y": 9.3908195496,
+        "votingPower": 0.016219
+    },
+    {
+        "voter": "acheron",
+        "cluster_label": 12,
+        "tsne_x": -1.609716773,
+        "tsne_y": 7.5131435394,
+        "votingPower": 0.003319
+    },
+    { "voter": "Octopos", "cluster_label": 12, "tsne_x": -1.9393881559, "tsne_y": 6.7176408768, "votingPower": 0.0 },
+    {
+        "voter": "shepaintedfireacrossthesky",
+        "cluster_label": 12,
+        "tsne_x": -0.7871032357,
+        "tsne_y": 9.2033262253,
+        "votingPower": 0.00014
+    },
+    {
+        "voter": "monolith",
+        "cluster_label": 12,
+        "tsne_x": -2.6300683022,
+        "tsne_y": 9.6061344147,
+        "votingPower": 0.000015
+    },
+    {
+        "voter": "SHEA Staking",
+        "cluster_label": 12,
+        "tsne_x": -1.9295043945,
+        "tsne_y": 7.2697315216,
+        "votingPower": 0.0
+    },
+    { "voter": "Dorminik", "cluster_label": 4, "tsne_x": 3.398501873, "tsne_y": 0.5233919621, "votingPower": 0.001285 },
+    {
+        "voter": "UNBONDING",
+        "cluster_label": 3,
+        "tsne_x": -6.5693640709,
+        "tsne_y": 11.7268810272,
+        "votingPower": 0.000205
+    },
+    {
+        "voter": "Inactive pls undelegate",
+        "cluster_label": 4,
+        "tsne_x": -9.4431667328,
+        "tsne_y": 9.438744545,
+        "votingPower": 0.000001
+    },
+    {
+        "voter": "GreenStake One",
+        "cluster_label": 12,
+        "tsne_x": -2.5371756554,
+        "tsne_y": 7.5000972748,
+        "votingPower": 0.0
+    },
+    {
+        "voter": "inactive",
+        "cluster_label": 3,
+        "tsne_x": -6.2661294937,
+        "tsne_y": 3.6108438969,
+        "votingPower": 0.000001
+    },
+    {
+        "voter": "Oni   Stake for BoostDrop ",
+        "cluster_label": 5,
+        "tsne_x": 7.9744620323,
+        "tsne_y": -4.2565350533,
+        "votingPower": 0.005511
+    },
+    {
+        "voter": "Praetor App",
+        "cluster_label": 4,
+        "tsne_x": -0.019948652,
+        "tsne_y": -1.8240824938,
+        "votingPower": 0.013774
+    },
+    { "voter": "0xDEADBEEF", "cluster_label": 7, "tsne_x": 5.917702198, "tsne_y": 0.0042713336, "votingPower": 0.0 },
+    { "voter": "w3coins", "cluster_label": 8, "tsne_x": 2.7711133957, "tsne_y": 2.5436882973, "votingPower": 0.001421 },
+    { "voter": "Vixello", "cluster_label": 7, "tsne_x": 5.4777698517, "tsne_y": 0.156940192, "votingPower": 0.004308 },
+    {
+        "voter": "Aurora Staking ",
+        "cluster_label": 4,
+        "tsne_x": 1.5524362326,
+        "tsne_y": 3.1040170193,
+        "votingPower": 0.002329
+    },
+    {
+        "voter": "50 Validator  Airdrop",
+        "cluster_label": 4,
+        "tsne_x": 0.1989407837,
+        "tsne_y": -0.6033341885,
+        "votingPower": 0.005084
+    },
+    { "voter": "Passage", "cluster_label": 4, "tsne_x": -9.3433265686, "tsne_y": 7.5528168678, "votingPower": 0.00004 },
+    {
+        "voter": "NoDumpNode",
+        "cluster_label": 4,
+        "tsne_x": 0.6525826454,
+        "tsne_y": -2.5229976177,
+        "votingPower": 0.006362
+    },
+    {
+        "voter": "Jormungand  0y",
+        "cluster_label": 4,
+        "tsne_x": 1.777263999,
+        "tsne_y": 0.1488241851,
+        "votingPower": 0.044405
+    },
+    {
+        "voter": "INACTIVE Please Redelegate  Trivium  TriviumNetwork",
+        "cluster_label": 4,
+        "tsne_x": -9.3117074966,
+        "tsne_y": 7.5234489441,
+        "votingPower": 0.0
+    },
+    {
+        "voter": "StakeSeeker by BTCS",
+        "cluster_label": 5,
+        "tsne_x": -5.9308371544,
+        "tsne_y": 17.0430183411,
+        "votingPower": 0.002471
+    },
+    {
+        "voter": "Crypto Lab Tech",
+        "cluster_label": 4,
+        "tsne_x": 3.502717495,
+        "tsne_y": 0.2176766545,
+        "votingPower": 0.001117
+    },
+    {
+        "voter": "europlots",
+        "cluster_label": 4,
+        "tsne_x": 3.8946623802,
+        "tsne_y": -1.4121960402,
+        "votingPower": 0.011352
+    },
+    {
+        "voter": " CryptoCrew Validators",
+        "cluster_label": 3,
+        "tsne_x": -6.7953386307,
+        "tsne_y": 2.9363822937,
+        "votingPower": 0.003184
+    },
+    {
+        "voter": "Quasarch",
+        "cluster_label": 4,
+        "tsne_x": 2.2569115162,
+        "tsne_y": -1.8247972727,
+        "votingPower": 0.014357
+    },
+    {
+        "voter": "Ariel Akash Insider  Powered by NextNetWorks",
+        "cluster_label": 12,
+        "tsne_x": -0.9043591022,
+        "tsne_y": 4.858168602,
+        "votingPower": 0.000017
+    },
+    {
+        "voter": "Atomstaking",
+        "cluster_label": 4,
+        "tsne_x": 3.1904921532,
+        "tsne_y": -1.0116024017,
+        "votingPower": 0.004108
+    },
+    { "voter": "black lodge", "cluster_label": 4, "tsne_x": -1.0672221184, "tsne_y": 8.0837459564, "votingPower": 0.0 },
+    {
+        "voter": "SHUTTING DOWN",
+        "cluster_label": 12,
+        "tsne_x": -0.2103172392,
+        "tsne_y": 6.5658321381,
+        "votingPower": 0.0
+    },
+    {
+        "voter": "Crypto and Coffee",
+        "cluster_label": 4,
+        "tsne_x": 0.8709414005,
+        "tsne_y": 3.2991309166,
+        "votingPower": 0.005312
+    },
+    {
+        "voter": "FoundryUSA",
+        "cluster_label": 4,
+        "tsne_x": 1.6286020279,
+        "tsne_y": 3.4841840267,
+        "votingPower": 0.002865
+    },
+    { "voter": "OGnome", "cluster_label": 12, "tsne_x": -1.8583154678, "tsne_y": 6.5237793922, "votingPower": 0.0 },
+    {
+        "voter": "Defi Dojo Validation",
+        "cluster_label": 12,
+        "tsne_x": 1.5573931932,
+        "tsne_y": 6.0421829224,
+        "votingPower": 0.002242
+    }
+]
