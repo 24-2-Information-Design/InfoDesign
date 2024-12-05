@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import jsonData from '../../data/chain_data.json';
 import linkData from '../../data/chain_link_data.json';
+import { PieColors } from '../color';
 
 const NetworkPie = () => {
     const svgRef = useRef(null);
@@ -13,9 +14,8 @@ const NetworkPie = () => {
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
 
-        const width = (window.innerWidth * 2) / 3;
-        const height = window.innerHeight + 10;
-
+        const width = 1000;
+        const height = 700;
         svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`);
 
         // 포인트 생성 및 스케일링
@@ -49,7 +49,7 @@ const NetworkPie = () => {
             (d) => d.y
         );
         const voronoi = delaunay.voronoi([0, 0, width, height]);
-        const colorScale = d3.scaleSequential().domain([0, points.length]).interpolator(d3.interpolateBlues);
+        const VoronoicolorScale = d3.scaleSequential().domain([0, points.length]).interpolator(d3.interpolateBlues);
 
         // Voronoi 셀 렌더링
         const cellCenters = scaledPoints
@@ -57,17 +57,33 @@ const NetworkPie = () => {
                 const cell = voronoi.cellPolygon(index);
 
                 if (cell) {
+                    // 해당 포인트의 원본 radius 가져오기
+                    const originalRadius = points[index].radius;
+
                     // 셀의 중심점 계산
                     const centroid = d3.polygonCentroid(cell);
+
+                    // Radius에 비례하여 불투명도와 선 굵기 조정
+                    const opacity = 0.1 + (originalRadius / d3.max(points, (p) => p.radius)) * 0.3;
+                    const strokeWidth = 0.5 + (originalRadius / d3.max(points, (p) => p.radius)) * 2;
 
                     // Voronoi 셀 그리기
                     svg.append('path')
                         .attr('d', d3.line()(cell))
-                        .attr('fill', colorScale(index))
-                        .attr('fill-opacity', 0.2)
-                        .attr('stroke', 'black')
-                        .attr('stroke-opacity', 0.2)
-                        .attr('stroke-width', 0.5);
+                        .attr('fill', VoronoicolorScale(index))
+                        .attr('fill-opacity', opacity)
+                        .attr('stroke', '#888888') // 회색으로 변경
+                        .attr('stroke-opacity', 0.5)
+                        .attr('stroke-width', strokeWidth);
+
+                    svg.append('text')
+                        .attr('x', centroid[0])
+                        .attr('y', centroid[1])
+                        .attr('text-anchor', 'middle')
+                        .attr('font-size', '12px')
+                        .attr('font-weight', 'bold')
+                        .attr('fill', '#333')
+                        .text(point.chain);
 
                     return {
                         chain: point.chain,
@@ -92,7 +108,6 @@ const NetworkPie = () => {
                 proportion: chainData.proportion,
             };
         });
-
         // 링크 렌더링
         const nodeById = {};
         nodes.forEach((node) => {
@@ -130,10 +145,7 @@ const NetworkPie = () => {
             const pie = d3.pie().value((d) => d.value);
             const arcData = pie(proportionData);
 
-            const colorScale = d3
-                .scaleSequential()
-                .domain([0, proportionData.length])
-                .interpolator(d3.interpolateBlues);
+            const colorScale = d3.scaleOrdinal(PieColors);
 
             const arc = d3.arc().innerRadius(0).outerRadius(radius);
 
@@ -168,14 +180,29 @@ const NetworkPie = () => {
 
             const barWidth = 25;
 
+            // 프로포절 데이터의 최소값과 최대값 계산
+            const proposalValues = Object.values(chainData.proposal);
+            const minProposalValue = Math.min(...proposalValues);
+            const maxProposalValue = Math.max(...proposalValues);
+
+            // 바 차트 길이를 위한 스케일 생성
+            const barLengthScale = d3
+                .scaleLinear()
+                .domain([minProposalValue, maxProposalValue])
+                .range([radius * 0.1, radius * 0.8]); // 최소 길이와 최대 길이 설정
+
             proportionData.forEach((d, index) => {
                 const proposalKeys = Object.keys(chainData.proposal).sort();
                 const currentKey = proposalKeys[index % proposalKeys.length];
                 const proposalValue = chainData.proposal[currentKey] || 0;
 
-                const barLength = (proposalValue / 100) * radius * 1;
+                const barLength = barLengthScale(proposalValue);
 
-                const angle = (index / proportionData.length) * 2 * Math.PI;
+                const halfPie = Math.PI; // 180도
+
+                // 각 바의 간격 계산
+                const step = halfPie / (proportionData.length - 1);
+                const angle = halfPie + index * step;
 
                 const x1 = radius * Math.cos(angle);
                 const y1 = radius * Math.sin(angle);
@@ -189,7 +216,7 @@ const NetworkPie = () => {
                     .attr('y1', y1)
                     .attr('x2', x2)
                     .attr('y2', y2)
-                    .attr('stroke', d3.interpolateBlues((index + 1) / 12))
+                    .attr('stroke', d3.interpolateGreys((index + 1) / 12))
                     .attr('stroke-width', barWidth)
                     .append('title')
                     .text(`proposal ${currentKey}: ${proposalValue}`);
