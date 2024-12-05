@@ -4,7 +4,7 @@ import jsonData from '../../data/chain_data.json';
 import linkData from '../../data/chain_link_data.json';
 import { PieColors } from '../color';
 
-const NetworkPie = () => {
+const NetworkPie = ({ onSelectChain }) => {
     const svgRef = useRef(null);
     const [selectedChain, setSelectedChain] = useState(null);
 
@@ -155,14 +155,10 @@ const NetworkPie = () => {
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
                 .on('click', () => {
-                    // 이전 선택 하이라이트 제거
                     svg.selectAll('.blockchain-group').attr('opacity', 1).selectAll('path').attr('stroke-width', 1);
-
-                    // 선택된 블록체인 하이라이트
                     blockchainGroup.attr('opacity', 1).selectAll('path').attr('stroke-width', 3).attr('stroke', 'red');
-
-                    // 선택된 체인 상태 업데이트
                     setSelectedChain(node.id);
+                    onSelectChain(node.id); // 선택된 체인을 상위로 전달
                 });
 
             // 파이 차트 렌더링
@@ -178,7 +174,7 @@ const NetworkPie = () => {
                 .append('title')
                 .text((d) => `${node.id} - proportion ${d.data.month}: ${(d.data.value * 100).toFixed(2)}%`);
 
-            const barWidth = 25;
+            const barWidth = 11;
 
             // 프로포절 데이터의 최소값과 최대값 계산
             const proposalValues = Object.values(chainData.proposal);
@@ -189,7 +185,7 @@ const NetworkPie = () => {
             const barLengthScale = d3
                 .scaleLinear()
                 .domain([minProposalValue, maxProposalValue])
-                .range([radius * 0.1, radius * 0.8]); // 최소 길이와 최대 길이 설정
+                .range([radius * 0.1, radius * 0.6]); // 최소 길이와 최대 길이 설정
 
             proportionData.forEach((d, index) => {
                 const proposalKeys = Object.keys(chainData.proposal).sort();
@@ -231,7 +227,7 @@ const NetworkPie = () => {
                 .attr('font-size', '14px')
                 .attr('font-weight', 'bold');
         });
-    }, []);
+    }, [onSelectChain]);
 
     return (
         <div>
