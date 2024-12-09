@@ -20,8 +20,8 @@ const Parallel = ({ data }) => {
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
 
-        const width = 800;
-        const height = 180;
+        const width = 820;
+        const height = 120;
 
         const g = svg.attr('width', width).attr('height', height).append('g');
         //            .attr('transform', `translate(${margin.left},${margin.top})`);
@@ -45,7 +45,7 @@ const Parallel = ({ data }) => {
 
         const voteScale = d3
             .scalePoint()
-            .domain(['NO', 'NO_WITH_VETO', 'NO_VOTE', 'ABSTAIN', 'YES'])
+            .domain(['NO_VOTE', 'NO', 'NO_WITH_VETO', 'ABSTAIN', 'YES'])
             .range([height, 0])
             .padding(0.5);
 
@@ -109,8 +109,7 @@ const Parallel = ({ data }) => {
     }, [data]);
 
     return (
-        <div className="border-t-4 border-b-4 pb-4">
-            <h2 className="mt-2 mb-2 text-2xl font-semibold">Votes by Voters</h2>
+        <div className="mt-1 flex justify-center items-center">
             <svg ref={svgRef}></svg>
         </div>
     );

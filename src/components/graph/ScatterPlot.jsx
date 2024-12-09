@@ -11,7 +11,7 @@ const ScatterPlot = ({ data }) => {
         svg.selectAll('*').remove();
 
         const width = 400;
-        const height = 200;
+        const height = 250;
         const margin = { top: 20, right: 20, bottom: 40, left: 50 };
 
         const chartWidth = width - margin.left - margin.right;
@@ -95,7 +95,6 @@ const ScatterPlot = ({ data }) => {
 
     return (
         <div>
-            <p className="mt-2 text-2xl font-semibold">Validator votes similarity</p>
             <svg ref={svgRef}></svg>
         </div>
     );

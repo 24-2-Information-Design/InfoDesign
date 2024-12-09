@@ -14,9 +14,27 @@ const NetworkPie = ({ onSelectChain }) => {
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
 
-        const width = 600;
-        const height = 600;
-        svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`);
+        const width = 550;
+        const height = 430;
+
+        const zoomableGroup = svg
+            .append('g')
+            .attr('class', 'zoomable-group');
+
+        // Zoom 기능 설정
+        const zoom = d3.zoom()
+            .scaleExtent([0.3, 5]) // 최소 0.5배, 최대 5배 줌
+            .translateExtent([[0, 0], [width, height]]) // 이동 제한
+            .on('zoom', (event) => {
+                zoomableGroup.attr('transform', event.transform);
+            });
+
+        svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`).call(zoom);
+
+        // 초기 확대/축소 설정
+        const initialScale = 0.8; // 초기 축소 비율
+        const initialTranslate = [width * 0.1, height * 0.1]; // 초기 이동 위치
+        svg.call(zoom.transform, d3.zoomIdentity.translate(...initialTranslate).scale(initialScale));
 
         // 포인트 생성 및 스케일링
         const points = jsonData.map((item) => ({
@@ -65,7 +83,7 @@ const NetworkPie = ({ onSelectChain }) => {
                         .attr('fill', '#FFFFFF')
                         .attr('fill-opacity', opacity)
                         .attr('stroke', '#888888')
-                        .attr('stroke-opacity', 0.5)
+                        .attr('stroke-opacity', 0.1)
                         .attr('stroke-width', strokeWidth);
 
                     const centroid = d3.polygonCentroid(cell);
@@ -77,6 +95,7 @@ const NetworkPie = ({ onSelectChain }) => {
                         .attr('font-size', '12px')
                         .attr('font-weight', 'bold')
                         .attr('fill', '#333')
+                        .attr('opacity', 0.1)
                         .text(point.chain);
 
                     return {
@@ -114,7 +133,7 @@ const NetworkPie = ({ onSelectChain }) => {
 
             if (sourceNode && targetNode) {
                 const lineThickness = Math.sqrt(link.shared_validators);
-                svg.append('line')
+                zoomableGroup.append('line')
                     .attr('x1', sourceNode.x)
                     .attr('y1', sourceNode.y)
                     .attr('x2', targetNode.x)
@@ -143,7 +162,7 @@ const NetworkPie = ({ onSelectChain }) => {
             const colorScale = d3.scaleOrdinal(PieColors);
             const arc = d3.arc().innerRadius(0).outerRadius(radius);
 
-            const blockchainGroup = svg
+            const blockchainGroup = zoomableGroup
                 .append('g')
                 .attr('transform', `translate(${node.x}, ${node.y})`)
                 .attr('class', 'blockchain-group')
@@ -199,7 +218,7 @@ const NetworkPie = ({ onSelectChain }) => {
             blockchainGroup
                 .append('text')
                 .attr('text-anchor', 'middle')
-                .attr('dy', radius + 40)
+                .attr('dy', radius + 15)
                 .text(node.id)
                 .attr('font-size', '14px')
                 .attr('font-weight', 'bold');
@@ -207,9 +226,9 @@ const NetworkPie = ({ onSelectChain }) => {
     }, [onSelectChain]);
 
     return (
-        <div>
+        <div className="mt-2 flex justify-center">
             <svg ref={svgRef}></svg>
-            {selectedChain && (
+            {/* {selectedChain && (
                 <div className="border-2">
                     <h3>Chain Result</h3>
                     <p>{selectedChain}</p>
@@ -228,7 +247,7 @@ const NetworkPie = ({ onSelectChain }) => {
                         </div>
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };
