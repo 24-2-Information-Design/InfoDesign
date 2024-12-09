@@ -23,7 +23,7 @@ const NetworkPie = ({ onSelectChain }) => {
 
         // Zoom 기능 설정
         const zoom = d3.zoom()
-            .scaleExtent([0.3, 5]) // 최소 0.5배, 최대 5배 줌
+            .scaleExtent([0.5, 5]) // 최소 0.5배, 최대 5배 줌
             .translateExtent([[0, 0], [width, height]]) // 이동 제한
             .on('zoom', (event) => {
                 zoomableGroup.attr('transform', event.transform);
@@ -83,20 +83,20 @@ const NetworkPie = ({ onSelectChain }) => {
                         .attr('fill', '#FFFFFF')
                         .attr('fill-opacity', opacity)
                         .attr('stroke', '#888888')
-                        .attr('stroke-opacity', 0.1)
-                        .attr('stroke-width', strokeWidth);
+                        .attr('stroke-opacity', 0.5)
+                        .attr('stroke-width', strokeWidth)
+                        .style('pointer-events', 'none');
 
                     const centroid = d3.polygonCentroid(cell);
 
-                    svg.append('text')
-                        .attr('x', centroid[0])
-                        .attr('y', centroid[1])
-                        .attr('text-anchor', 'middle')
-                        .attr('font-size', '12px')
-                        .attr('font-weight', 'bold')
-                        .attr('fill', '#333')
-                        .attr('opacity', 0.1)
-                        .text(point.chain);
+                    // svg.append('text')
+                    //     .attr('x', centroid[0])
+                    //     .attr('y', centroid[1])
+                    //     .attr('text-anchor', 'middle')
+                    //     .attr('font-size', '12px')
+                    //     .attr('font-weight', 'bold')
+                    //     .attr('fill', '#333')
+                    //     .text(point.chain);
 
                     return {
                         chain: point.chain,
