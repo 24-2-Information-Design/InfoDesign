@@ -14,8 +14,8 @@ const NetworkPie = ({ onSelectChain }) => {
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
 
-        const width = 1000;
-        const height = 700;
+        const width = 600;
+        const height = 600;
         svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`);
 
         // 포인트 생성 및 스케일링
@@ -42,39 +42,33 @@ const NetworkPie = ({ onSelectChain }) => {
             y: yScale(point.y),
         }));
 
-        // Voronoi 다이어그램 생성
+        // Voronoi 다이어그램 생성 (이전 코드와 동일)
         const delaunay = d3.Delaunay.from(
             scaledPoints,
             (d) => d.x,
             (d) => d.y
         );
         const voronoi = delaunay.voronoi([0, 0, width, height]);
-        const VoronoicolorScale = d3.scaleSequential().domain([0, points.length]).interpolator(d3.interpolateBlues);
 
-        // Voronoi 셀 렌더링
+        // Voronoi 셀 렌더링 (이전 코드와 동일)
         const cellCenters = scaledPoints
             .map((point, index) => {
                 const cell = voronoi.cellPolygon(index);
 
                 if (cell) {
-                    // 해당 포인트의 원본 radius 가져오기
                     const originalRadius = points[index].radius;
-
-                    // 셀의 중심점 계산
-                    const centroid = d3.polygonCentroid(cell);
-
-                    // Radius에 비례하여 불투명도와 선 굵기 조정
                     const opacity = 0.1 + (originalRadius / d3.max(points, (p) => p.radius)) * 0.3;
                     const strokeWidth = 0.5 + originalRadius / d3.max(points, (p) => p.radius);
 
-                    // Voronoi 셀 그리기
                     svg.append('path')
                         .attr('d', d3.line()(cell))
                         .attr('fill', '#FFFFFF')
                         .attr('fill-opacity', opacity)
-                        .attr('stroke', '#888888') // 회색으로 변경
+                        .attr('stroke', '#888888')
                         .attr('stroke-opacity', 0.5)
                         .attr('stroke-width', strokeWidth);
+
+                    const centroid = d3.polygonCentroid(cell);
 
                     svg.append('text')
                         .attr('x', centroid[0])
@@ -95,9 +89,8 @@ const NetworkPie = ({ onSelectChain }) => {
             })
             .filter(Boolean);
 
-        // 노드 및 링크 생성
+        // 노드 및 링크 생성 (이전 코드와 동일)
         const nodes = jsonData.map((chainData) => {
-            // Voronoi 셀의 중심점 찾기
             const cellCenter = cellCenters.find((center) => center.chain === chainData.chain);
             return {
                 id: chainData.chain,
@@ -108,7 +101,8 @@ const NetworkPie = ({ onSelectChain }) => {
                 proportion: chainData.proportion,
             };
         });
-        // 링크 렌더링
+
+        // 노드 및 링크 렌더링 (이전 코드와 동일)
         const nodeById = {};
         nodes.forEach((node) => {
             nodeById[node.id] = node;
@@ -138,15 +132,15 @@ const NetworkPie = ({ onSelectChain }) => {
             const chainData = jsonData.find((chain) => chain.chain === node.id);
 
             const maxRadius = Math.min(width, height) / 4;
-            const radius = Math.min(20 + chainData.radius * 1.5, maxRadius);
+            const radius = Math.min(20 + chainData.radius, maxRadius);
 
             const proportionData = Object.entries(chainData.proportion).map(([key, value]) => ({ month: key, value }));
+            const proposalKeys = Object.keys(chainData.proposal).sort();
 
+            // 파이 차트 렌더링
             const pie = d3.pie().value((d) => d.value);
             const arcData = pie(proportionData);
-
             const colorScale = d3.scaleOrdinal(PieColors);
-
             const arc = d3.arc().innerRadius(0).outerRadius(radius);
 
             const blockchainGroup = svg
@@ -158,65 +152,50 @@ const NetworkPie = ({ onSelectChain }) => {
                     svg.selectAll('.blockchain-group').attr('opacity', 1).selectAll('path').attr('stroke-width', 1);
                     blockchainGroup.attr('opacity', 1).selectAll('path').attr('stroke-width', 3).attr('stroke', 'red');
                     setSelectedChain(node.id);
-                    onSelectChain(node.id); // 선택된 체인을 상위로 전달
+                    onSelectChain(node.id);
                 });
 
-            // 파이 차트 렌더링
             blockchainGroup
-                .selectAll('path')
+                .selectAll('.pie-slice')
                 .data(arcData)
                 .enter()
                 .append('path')
                 .attr('d', arc)
                 .attr('fill', (d, i) => colorScale(i))
+                .attr('class', 'pie-slice')
                 .append('title')
                 .text((d) => `${node.id} - proportion ${d.data.month}: ${(d.data.value * 100).toFixed(2)}%`);
-
-            const barWidth = 11;
 
             // 프로포절 데이터의 최소값과 최대값 계산
             const proposalValues = Object.values(chainData.proposal);
             const minProposalValue = Math.min(...proposalValues);
             const maxProposalValue = Math.max(...proposalValues);
 
-            // 바 차트 길이를 위한 스케일 생성
-            const barLengthScale = d3
-                .scaleLinear()
-                .domain([minProposalValue, maxProposalValue])
-                .range([radius * 0.1, radius * 0.6]); // 최소 길이와 최대 길이 설정
+            // const radialBarLengthScale = d3
+            //     .scaleLinear()
+            //     .domain([minProposalValue, maxProposalValue])
+            //     .range([radius * 0.3, radius * 1.2]); // 더 긴 바 길이
 
-            proportionData.forEach((d, index) => {
-                const proposalKeys = Object.keys(chainData.proposal).sort();
-                const currentKey = proposalKeys[index % proposalKeys.length];
-                const proposalValue = chainData.proposal[currentKey] || 0;
+            // const bars = d3
+            //     .arc()
+            //     .innerRadius(radius * 1.1) // 파이 차트 밖에서 시작
+            //     .outerRadius((d) => radius * 1.1 + radialBarLengthScale(d.proposal))
+            //     .startAngle((d, i) => (i / proposalKeys.length) * Math.PI * 2)
+            //     .endAngle((d, i) => ((i + 1) / proposalKeys.length) * Math.PI * 2);
 
-                const barLength = barLengthScale(proposalValue);
+            // proposalKeys.forEach((key, i) => {
+            //     blockchainGroup
+            //         .append('path')
+            //         .datum({ proposal: chainData.proposal[key] || 0 })
+            //         .attr('d', (d) => bars(d, i))
+            //         .attr('fill', '#999999')
+            //         .attr('opacity', 0.6)
+            //         .attr('stroke', '#000')
+            //         .append('title')
+            //         .text((d) => `proposal ${key}: ${d.proposal}`);
+            // });
 
-                const halfPie = Math.PI; // 180도
-
-                // 각 바의 간격 계산
-                const step = halfPie / (proportionData.length - 1);
-                const angle = halfPie + index * step;
-
-                const x1 = radius * Math.cos(angle);
-                const y1 = radius * Math.sin(angle);
-
-                const x2 = (radius + barLength) * Math.cos(angle);
-                const y2 = (radius + barLength) * Math.sin(angle);
-
-                blockchainGroup
-                    .append('line')
-                    .attr('x1', x1)
-                    .attr('y1', y1)
-                    .attr('x2', x2)
-                    .attr('y2', y2)
-                    .attr('stroke', '#999999')
-                    .attr('stroke-width', barWidth)
-                    .append('title')
-                    .text(`proposal ${currentKey}: ${proposalValue}`);
-            });
-
-            // 블록체인 라벨 추가
+            // 블록체인 라벨 추가 (이전 코드와 동일)
             blockchainGroup
                 .append('text')
                 .attr('text-anchor', 'middle')
@@ -231,8 +210,23 @@ const NetworkPie = ({ onSelectChain }) => {
         <div>
             <svg ref={svgRef}></svg>
             {selectedChain && (
-                <div style={{ marginTop: '20px', padding: '10px', border: '1px solid #ddd' }}>
-                    <h3>Selected Blockchain: {selectedChain}</h3>
+                <div className="border-2">
+                    <h3>Chain Result</h3>
+                    <p>{selectedChain}</p>
+                    <div className="flex flex-wrap justify-between">
+                        <div className="w-full sm:w-1/2">
+                            <div className="flex flex-wrap">
+                                <p className="w-full sm:w-1/2">검증인 수: </p>
+                                <p className="w-full sm:w-1/2">군집 수: </p>
+                                <p className="w-full sm:w-1/2">proposal 수: {}</p>
+                                <p className="w-full sm:w-1/2">의견 포용력: </p>
+                            </div>
+                        </div>
+                        <div className="w-full sm:w-1/2 flex-wrap">
+                            <p>유사한 체인</p>
+                            <p>~~~~~</p>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

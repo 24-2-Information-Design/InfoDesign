@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
 const ScatterPlot = ({ data }) => {
@@ -10,8 +10,8 @@ const ScatterPlot = ({ data }) => {
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
 
-        const width = 600;
-        const height = 400;
+        const width = 400;
+        const height = 200;
         const margin = { top: 20, right: 20, bottom: 40, left: 50 };
 
         const chartWidth = width - margin.left - margin.right;
@@ -73,6 +73,7 @@ const ScatterPlot = ({ data }) => {
             .attr('cy', (d) => yScale(d.tsne_y))
             .attr('r', (d) => sizeScale(d.votingPower))
             .attr('fill', (d) => colorScale(d.cluster_label))
+            .attr('opacity', 0.6)
             .on('mouseover', (event, d) => {
                 tooltip
                     .style('visibility', 'visible')
@@ -92,7 +93,12 @@ const ScatterPlot = ({ data }) => {
             });
     }, [data]);
 
-    return <svg ref={svgRef}></svg>;
+    return (
+        <div>
+            <p className="mt-2 text-2xl font-semibold">Validator votes similarity</p>
+            <svg ref={svgRef}></svg>
+        </div>
+    );
 };
 
 export default ScatterPlot;
