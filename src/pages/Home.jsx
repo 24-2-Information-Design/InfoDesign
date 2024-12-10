@@ -118,9 +118,13 @@ const Home = () => {
                         </div>
                         <div className="h-[75%] mt-1 mb-1 border-l border-gray-200"></div>
 
-                        <div className="w-1/2 h-full">
-                            <h3 className="pl-3 pt-2">Cluster Results</h3>
-                            <p>Cluster {chainData.cluster_num}</p>
+                        <div className="w-1/2 h-full ">
+                            <h3 className="pl-3 pt-2 ">Cluster Results</h3>
+                            <div className="ml-4">
+                                <p>Cluster </p>
+                                <p>우호적 클러스터: </p>
+                                <p>적대적 클러스터: </p>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -39,7 +39,7 @@ const Parallel = ({ data }) => {
 
         const voteScale = d3
             .scalePoint()
-            .domain(['NO', 'NO_WITH_VETO', 'ABSTAIN', 'YES'])
+            .domain(['NO_VOTE', 'NO', 'NO_WITH_VETO', 'ABSTAIN', 'YES'])
             .range([height, 0])
             .padding(0.5);
 
@@ -93,7 +93,7 @@ const Parallel = ({ data }) => {
                 .attr('stroke', () => colorScale(voter.cluster_label))
                 .attr('stroke-width', 1.5)
                 .attr('d', line)
-                .style('opacity', 0.3);
+                .style('opacity', 0.6);
         });
     }, [data]);
 
