@@ -1,14 +1,6 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-
-const VOTE_COLORS = {
-    YES: '#4CAF50', // 녹색
-    NO: '#F44336', // 빨간색
-    ABSTAIN: '#FFC107', // 노란색
-    NO_WITH_VETO: '#9C27B0', // 보라색
-    NO_VOTE: '#3F3F3F', // 회색
-    null: '#E0E0E0', // 연한 회색
-};
+import { NormalColors } from '../color';
 
 const Parallel = ({ data }) => {
     const svgRef = useRef(null);
@@ -28,6 +20,8 @@ const Parallel = ({ data }) => {
 
         // 모든 체인 키 추출
         const chainKeys = Object.keys(data[0]).filter((key) => /^[a-z_]+\d+$/.test(key));
+
+        const colorScale = d3.scaleOrdinal(NormalColors);
 
         // x축 구성
         const xScale = d3
@@ -96,15 +90,10 @@ const Parallel = ({ data }) => {
             g.append('path')
                 .datum(lineData)
                 .attr('fill', 'none')
-                .attr('stroke', (d) => {
-                    // 각 점의 투표 값에 따라 색상 설정
-                    const votes = d.filter((point) => chainKeys.includes(point.chainID));
-                    const voteColors = votes.map((point) => VOTE_COLORS[point.vote] || VOTE_COLORS['NO_VOTE']);
-                    return voteColors.length > 0 ? voteColors[0] : VOTE_COLORS['NO_VOTE'];
-                })
+                .attr('stroke', () => colorScale(voter.cluster_label))
                 .attr('stroke-width', 1.5)
                 .attr('d', line)
-                .style('opacity', 0.3);
+                .style('opacity', 0.6);
         });
     }, [data]);
 

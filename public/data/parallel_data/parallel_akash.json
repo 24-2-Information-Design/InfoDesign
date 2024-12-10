@@ -51,7 +51,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Imperatorco",
@@ -105,7 +105,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "ABSTAIN",
         "akash_273": "ABSTAIN",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": " AutoStake  Slash Protected",
@@ -159,7 +159,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "ABSTAIN",
         "akash_273": "ABSTAIN",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "StakeWithUs",
@@ -213,7 +213,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Simply Staking",
@@ -267,7 +267,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "StakeLabzone",
@@ -321,7 +321,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "SpacePotato",
@@ -375,7 +375,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "ABSTAIN",
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Vitwit Previously Witval",
@@ -429,7 +429,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "SG1",
@@ -483,7 +483,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Chorus One",
@@ -537,7 +537,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Forbole",
@@ -591,7 +591,7 @@
         "akash_271": "YES",
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "POSTHUMAN  StakeDrop",
@@ -645,7 +645,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Ping",
@@ -699,7 +699,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "0basevc",
@@ -753,7 +753,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Smart Stake ",
@@ -807,7 +807,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "ABSTAIN",
         "akash_273": "ABSTAIN",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": " block pane ",
@@ -861,7 +861,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "WhisperNode ",
@@ -915,7 +915,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "a41",
@@ -969,7 +969,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Stakyio",
@@ -1023,7 +1023,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Kahuna",
@@ -1077,7 +1077,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 13
+        "cluster_label": 4
     },
     {
         "voter": "16psyche",
@@ -1131,7 +1131,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 13
+        "cluster_label": 4
     },
     {
         "voter": "Nocturnal Labs",
@@ -1185,7 +1185,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 5
+        "cluster_label": 4
     },
     {
         "voter": "decentralizehk  DHK dao",
@@ -1239,7 +1239,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Kalia Network",
@@ -1293,7 +1293,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 6
+        "cluster_label": 10
     },
     {
         "voter": "ECO Stake ",
@@ -1347,7 +1347,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "NosNode",
@@ -1401,7 +1401,7 @@
         "akash_271": null,
         "akash_272": "YES",
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Citadelone",
@@ -1455,7 +1455,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "ABSTAIN",
         "akash_273": "ABSTAIN",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Informal Systems",
@@ -1509,7 +1509,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": " LavenderFive Nodes ",
@@ -1563,7 +1563,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Frens ",
@@ -1617,7 +1617,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Cosmostation",
@@ -1671,7 +1671,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Kleomedes",
@@ -1725,7 +1725,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "ABSTAIN",
         "akash_273": null,
-        "cluster_label": 11
+        "cluster_label": 10
     },
     {
         "voter": "OmniFlix Network",
@@ -1779,7 +1779,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "GATA HUB",
@@ -1833,7 +1833,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "ABSTAIN",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "hydrogen18",
@@ -1887,7 +1887,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 13
+        "cluster_label": 4
     },
     {
         "voter": "Coinage x DAIC",
@@ -1941,7 +1941,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Stakecito",
@@ -1995,7 +1995,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Meria",
@@ -2049,7 +2049,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 5
+        "cluster_label": 4
     },
     {
         "voter": "BronBro",
@@ -2103,7 +2103,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Cypher Core",
@@ -2157,7 +2157,7 @@
         "akash_271": "YES",
         "akash_272": null,
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "ChainLayer",
@@ -2211,7 +2211,7 @@
         "akash_271": null,
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "Active Nodes",
@@ -2265,7 +2265,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "DACM",
@@ -2319,7 +2319,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "strangelove",
@@ -2373,7 +2373,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 6
+        "cluster_label": 13
     },
     {
         "voter": "ushakov",
@@ -2427,7 +2427,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 9
+        "cluster_label": 5
     },
     {
         "voter": "c29r3",
@@ -2481,7 +2481,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Allnodes",
@@ -2535,7 +2535,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 2
+        "cluster_label": 3
     },
     {
         "voter": "PoS Node",
@@ -2589,7 +2589,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 6
+        "cluster_label": 13
     },
     {
         "voter": "Tedcryptoio   TedLotto",
@@ -2643,7 +2643,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 11
+        "cluster_label": 10
     },
     {
         "voter": "kooltek68",
@@ -2697,7 +2697,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 13
+        "cluster_label": 9
     },
     {
         "voter": "CroutonDigital",
@@ -2751,7 +2751,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 13
+        "cluster_label": 9
     },
     {
         "voter": "coaction",
@@ -2805,7 +2805,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 0
     },
     {
         "voter": "EZ Staking",
@@ -2859,7 +2859,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 5
+        "cluster_label": 4
     },
     {
         "voter": "Stakin",
@@ -2913,7 +2913,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "ABSTAIN",
         "akash_273": "YES",
-        "cluster_label": 5
+        "cluster_label": 4
     },
     {
         "voter": "notional",
@@ -2967,7 +2967,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 11
+        "cluster_label": 10
     },
     {
         "voter": "WeStaking",
@@ -3021,7 +3021,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 5
+        "cluster_label": 4
     },
     {
         "voter": "SmartNodes  Slash Protected",
@@ -3075,7 +3075,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 11
+        "cluster_label": 10
     },
     {
         "voter": "Yurbason",
@@ -3129,7 +3129,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 11
+        "cluster_label": 10
     },
     {
         "voter": "Neta DAO",
@@ -3183,7 +3183,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 11
+        "cluster_label": 10
     },
     {
         "voter": "Chandra Station",
@@ -3237,7 +3237,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 11
+        "cluster_label": 10
     },
     {
         "voter": "Stake Frites  ",
@@ -3291,7 +3291,7 @@
         "akash_271": null,
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 3
+        "cluster_label": 12
     },
     {
         "voter": "Decloud Nodes Lab",
@@ -3345,7 +3345,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "HashKey Cloud",
@@ -3399,7 +3399,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 5
+        "cluster_label": 4
     },
     {
         "voter": "chainvibes",
@@ -3453,7 +3453,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 11
+        "cluster_label": 10
     },
     {
         "voter": "Consensus One",
@@ -3507,7 +3507,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 0
+        "cluster_label": 9
     },
     {
         "voter": "Stakewollecom  Autocompound",
@@ -3561,7 +3561,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 3
+        "cluster_label": 1
     },
     {
         "voter": "Wetez",
@@ -3615,7 +3615,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 9
+        "cluster_label": 5
     },
     {
         "voter": "Architect Nodes",
@@ -3669,7 +3669,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "ABSTAIN",
         "akash_273": "YES",
-        "cluster_label": 5
+        "cluster_label": 4
     },
     {
         "voter": "HEXXAGON",
@@ -3723,7 +3723,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 0
+        "cluster_label": 9
     },
     {
         "voter": "DECOMISSIONED AUDITone",
@@ -3777,7 +3777,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 3
+        "cluster_label": 7
     },
     {
         "voter": "Army IDs",
@@ -3831,7 +3831,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 6
+        "cluster_label": 13
     },
     {
         "voter": "Bit Cat",
@@ -3885,7 +3885,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 6
+        "cluster_label": 13
     },
     {
         "voter": "Easy 2 Stake",
@@ -3939,7 +3939,7 @@
         "akash_271": "YES",
         "akash_272": null,
         "akash_273": "YES",
-        "cluster_label": 7
+        "cluster_label": 8
     },
     {
         "voter": "Nodeasycom",
@@ -3993,7 +3993,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 1
+        "cluster_label": 11
     },
     {
         "voter": "jetlife",
@@ -4047,7 +4047,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 8
+        "cluster_label": 2
     },
     {
         "voter": "Bliss Dynamics",
@@ -4101,7 +4101,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Sikka",
@@ -4155,7 +4155,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "PLEASE REDELEGATECLOSED",
@@ -4209,7 +4209,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "SNZPool",
@@ -4263,7 +4263,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 13
+        "cluster_label": 1
     },
     {
         "voter": "Autonomy  Formerly PrithviDevs ",
@@ -4317,7 +4317,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Baset",
@@ -4371,7 +4371,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "Huobi",
@@ -4425,7 +4425,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 5
+        "cluster_label": 4
     },
     {
         "voter": "ChainodeTech",
@@ -4479,7 +4479,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 1
+        "cluster_label": 11
     },
     {
         "voter": "kano",
@@ -4533,7 +4533,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "Cosmic Validator  Auto Compound",
@@ -4587,7 +4587,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "ValidatorNode",
@@ -4641,7 +4641,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "UNDELEGATE FROM HERE",
@@ -4695,7 +4695,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "stakezone",
@@ -4749,7 +4749,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 7
     },
     {
         "voter": "gunray",
@@ -4803,7 +4803,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "Bi23",
@@ -4857,7 +4857,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Psycho Node",
@@ -4911,7 +4911,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Bitoven",
@@ -4965,7 +4965,7 @@
         "akash_271": "YES",
         "akash_272": "ABSTAIN",
         "akash_273": "ABSTAIN",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Komichaincom",
@@ -5019,7 +5019,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "BoxedCloudnet",
@@ -5073,7 +5073,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "MANTRA",
@@ -5127,7 +5127,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "eol",
@@ -5181,7 +5181,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "cosmosrescue",
@@ -5235,7 +5235,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "SkyNet  Validators",
@@ -5289,7 +5289,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Cosmonaut Stakes AKT",
@@ -5343,7 +5343,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Dwebnet",
@@ -5397,7 +5397,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "DLINODESCOM",
@@ -5451,7 +5451,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "GlacierLuo",
@@ -5505,7 +5505,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Domination Finance",
@@ -5559,7 +5559,7 @@
         "akash_271": "NO_VOTE",
         "akash_272": "NO_VOTE",
         "akash_273": "NO_VOTE",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Arcturian Tech",
@@ -5613,7 +5613,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Akash Af",
@@ -5667,7 +5667,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "ALTER  pathrocknetwork",
@@ -5721,7 +5721,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "decommissioned",
@@ -5775,7 +5775,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 0
     },
     {
         "voter": "BridgeTower",
@@ -5829,7 +5829,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 3
+        "cluster_label": 12
     },
     {
         "voter": "Dora Factory PGS",
@@ -5883,7 +5883,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 5
+        "cluster_label": 7
     },
     {
         "voter": "MedasDigital",
@@ -5937,7 +5937,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 3
+        "cluster_label": 12
     },
     {
         "voter": "STAKINOLD",
@@ -5991,7 +5991,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 7
     },
     {
         "voter": "Cloudmos",
@@ -6045,7 +6045,7 @@
         "akash_271": "YES",
         "akash_272": null,
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Former Moultrie Audits Inactive",
@@ -6099,7 +6099,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "MOVING TO NAKANODOXYZ",
@@ -6153,7 +6153,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 7
     },
     {
         "voter": "VaultStaking",
@@ -6207,7 +6207,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "TRGC By Liquify",
@@ -6261,7 +6261,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 1
+        "cluster_label": 11
     },
     {
         "voter": "astravoyage",
@@ -6315,7 +6315,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "Anonstake",
@@ -6369,7 +6369,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 0
+        "cluster_label": 2
     },
     {
         "voter": " polkachucom",
@@ -6423,7 +6423,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 5
+        "cluster_label": 4
     },
     {
         "voter": "kavalabs",
@@ -6477,7 +6477,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "AGE Network",
@@ -6531,7 +6531,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": "YES",
-        "cluster_label": 9
+        "cluster_label": 5
     },
     {
         "voter": "acheron",
@@ -6585,7 +6585,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "Octopos",
@@ -6639,7 +6639,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "shepaintedfireacrossthesky",
@@ -6693,7 +6693,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "monolith",
@@ -6747,7 +6747,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "SHEA Staking",
@@ -6801,7 +6801,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "Dorminik",
@@ -6855,7 +6855,7 @@
         "akash_271": null,
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "UNBONDING",
@@ -6909,7 +6909,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 3
+        "cluster_label": 12
     },
     {
         "voter": "Inactive pls undelegate",
@@ -6963,7 +6963,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "GreenStake One",
@@ -7017,7 +7017,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "inactive",
@@ -7071,7 +7071,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 3
+        "cluster_label": 1
     },
     {
         "voter": "Oni   Stake for BoostDrop ",
@@ -7125,7 +7125,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": null,
-        "cluster_label": 5
+        "cluster_label": 4
     },
     {
         "voter": "Praetor App",
@@ -7179,7 +7179,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "0xDEADBEEF",
@@ -7233,7 +7233,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 7
+        "cluster_label": 8
     },
     {
         "voter": "w3coins",
@@ -7287,7 +7287,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 8
+        "cluster_label": 4
     },
     {
         "voter": "Vixello",
@@ -7341,7 +7341,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 7
+        "cluster_label": 8
     },
     {
         "voter": "Aurora Staking ",
@@ -7395,7 +7395,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "50 Validator  Airdrop",
@@ -7449,7 +7449,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Passage",
@@ -7503,7 +7503,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "NoDumpNode",
@@ -7557,7 +7557,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Jormungand  0y",
@@ -7611,7 +7611,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "INACTIVE Please Redelegate  Trivium  TriviumNetwork",
@@ -7665,7 +7665,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "StakeSeeker by BTCS",
@@ -7719,7 +7719,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 5
+        "cluster_label": 4
     },
     {
         "voter": "Crypto Lab Tech",
@@ -7773,7 +7773,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "europlots",
@@ -7827,7 +7827,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": " CryptoCrew Validators",
@@ -7881,7 +7881,7 @@
         "akash_271": "ABSTAIN",
         "akash_272": "ABSTAIN",
         "akash_273": "ABSTAIN",
-        "cluster_label": 3
+        "cluster_label": 1
     },
     {
         "voter": "Quasarch",
@@ -7935,7 +7935,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 12
     },
     {
         "voter": "Ariel Akash Insider  Powered by NextNetWorks",
@@ -7989,7 +7989,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "Atomstaking",
@@ -8043,7 +8043,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "black lodge",
@@ -8097,7 +8097,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 4
+        "cluster_label": 9
     },
     {
         "voter": "SHUTTING DOWN",
@@ -8151,7 +8151,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "Crypto and Coffee",
@@ -8205,7 +8205,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "FoundryUSA",
@@ -8259,7 +8259,7 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 4
+        "cluster_label": 11
     },
     {
         "voter": "OGnome",
@@ -8313,7 +8313,7 @@
         "akash_271": null,
         "akash_272": null,
         "akash_273": null,
-        "cluster_label": 12
+        "cluster_label": 7
     },
     {
         "voter": "Defi Dojo Validation",
@@ -8367,6 +8367,6 @@
         "akash_271": "YES",
         "akash_272": "YES",
         "akash_273": "YES",
-        "cluster_label": 12
+        "cluster_label": 7
     }
 ]

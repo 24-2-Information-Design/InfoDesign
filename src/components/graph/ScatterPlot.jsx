@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-
+import { NormalColors } from '../color';
 const ScatterPlot = ({ data }) => {
     const svgRef = useRef(null);
 
@@ -38,10 +38,7 @@ const ScatterPlot = ({ data }) => {
             .domain(d3.extent(data, (d) => d.votingPower))
             .range([5, 20]);
 
-        const colorScale = d3
-            .scaleOrdinal()
-            .domain([...new Set(data.map((d) => d.cluster_label))])
-            .range(d3.schemeTableau10);
+        const colorScale = d3.scaleOrdinal(NormalColors);
 
         // 축 그리기
         chart

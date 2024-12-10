@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import jsonData from '../../data/chain_data.json';
 import linkData from '../../data/chain_link_data.json';
-import { PieColors } from '../color';
+import { NormalColors } from '../color';
+import useChainStore from '../../store/store';
 
-const NetworkPie = ({ onSelectChain }) => {
+const NetworkPie = () => {
     const svgRef = useRef(null);
-    const [selectedChain, setSelectedChain] = useState(null);
+    const { setSelectedChain } = useChainStore();
 
     useEffect(() => {
         if (!svgRef.current) return;
@@ -17,14 +18,16 @@ const NetworkPie = ({ onSelectChain }) => {
         const width = 550;
         const height = 430;
 
-        const zoomableGroup = svg
-            .append('g')
-            .attr('class', 'zoomable-group');
+        const zoomableGroup = svg.append('g').attr('class', 'zoomable-group');
 
         // Zoom 기능 설정
-        const zoom = d3.zoom()
-            .scaleExtent([0.5, 5]) // 최소 0.5배, 최대 5배 줌
-            .translateExtent([[0, 0], [width, height]]) // 이동 제한
+        const zoom = d3
+            .zoom()
+            .scaleExtent([0.5, 5])
+            .translateExtent([
+                [0, 0],
+                [width, height],
+            ])
             .on('zoom', (event) => {
                 zoomableGroup.attr('transform', event.transform);
             });
@@ -32,11 +35,11 @@ const NetworkPie = ({ onSelectChain }) => {
         svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`).call(zoom);
 
         // 초기 확대/축소 설정
-        const initialScale = 0.8; // 초기 축소 비율
-        const initialTranslate = [width * 0.1, height * 0.1]; // 초기 이동 위치
+        const initialScale = 0.8;
+        const initialTranslate = [width * 0.1, height * 0.1];
         svg.call(zoom.transform, d3.zoomIdentity.translate(...initialTranslate).scale(initialScale));
 
-        // 포인트 생성 및 스케일링
+        // 포인트 생성 및 스케일링 (기존 코드와 동일)
         const points = jsonData.map((item) => ({
             chain: item.chain,
             x: item['x-axis'],
@@ -60,7 +63,7 @@ const NetworkPie = ({ onSelectChain }) => {
             y: yScale(point.y),
         }));
 
-        // Voronoi 다이어그램 생성 (이전 코드와 동일)
+        // Voronoi 다이어그램 생성 (기존 코드와 동일)
         const delaunay = d3.Delaunay.from(
             scaledPoints,
             (d) => d.x,
@@ -68,7 +71,7 @@ const NetworkPie = ({ onSelectChain }) => {
         );
         const voronoi = delaunay.voronoi([0, 0, width, height]);
 
-        // Voronoi 셀 렌더링 (이전 코드와 동일)
+        // Voronoi 셀 렌더링 (기존 코드와 동일)
         const cellCenters = scaledPoints
             .map((point, index) => {
                 const cell = voronoi.cellPolygon(index);
@@ -89,15 +92,6 @@ const NetworkPie = ({ onSelectChain }) => {
 
                     const centroid = d3.polygonCentroid(cell);
 
-                    // svg.append('text')
-                    //     .attr('x', centroid[0])
-                    //     .attr('y', centroid[1])
-                    //     .attr('text-anchor', 'middle')
-                    //     .attr('font-size', '12px')
-                    //     .attr('font-weight', 'bold')
-                    //     .attr('fill', '#333')
-                    //     .text(point.chain);
-
                     return {
                         chain: point.chain,
                         x: centroid[0],
@@ -108,7 +102,7 @@ const NetworkPie = ({ onSelectChain }) => {
             })
             .filter(Boolean);
 
-        // 노드 및 링크 생성 (이전 코드와 동일)
+        // 노드 생성 (기존 코드와 동일)
         const nodes = jsonData.map((chainData) => {
             const cellCenter = cellCenters.find((center) => center.chain === chainData.chain);
             return {
@@ -121,10 +115,38 @@ const NetworkPie = ({ onSelectChain }) => {
             };
         });
 
-        // 노드 및 링크 렌더링 (이전 코드와 동일)
+        // 링크 렌더링 (기존 코드와 동일)
         const nodeById = {};
         nodes.forEach((node) => {
             nodeById[node.id] = node;
+        });
+
+        const forceSimulation = d3
+            .forceSimulation(nodes)
+            .force(
+                'x',
+                d3.forceX((d) => d.x).strength(0.1) // 초기 x 위치를 기준으로 힘 적용
+            )
+            .force(
+                'y',
+                d3.forceY((d) => d.y).strength(0.1) // 초기 y 위치를 기준으로 힘 적용
+            )
+            .force(
+                'collision',
+                d3.forceCollide((d) => d.radius + 20) // 노드의 반경과 최소 거리 확보
+            )
+            .stop();
+
+        // Force simulation 반복 실행
+        for (let i = 0; i < 300; i++) forceSimulation.tick();
+
+        // 노드 위치를 업데이트
+        nodes.forEach((node) => {
+            const updatedNode = forceSimulation.find(node.x, node.y, node.radius + 20);
+            if (updatedNode) {
+                node.x = updatedNode.x;
+                node.y = updatedNode.y;
+            }
         });
 
         linkData.forEach((link) => {
@@ -133,7 +155,8 @@ const NetworkPie = ({ onSelectChain }) => {
 
             if (sourceNode && targetNode) {
                 const lineThickness = Math.sqrt(link.shared_validators);
-                zoomableGroup.append('line')
+                zoomableGroup
+                    .append('line')
                     .attr('x1', sourceNode.x)
                     .attr('y1', sourceNode.y)
                     .attr('x2', targetNode.x)
@@ -146,108 +169,107 @@ const NetworkPie = ({ onSelectChain }) => {
             }
         });
 
-        // 파이 차트 및 노드 렌더링
+        // Radial Bar Chart 및 파이 차트 설정
+        const maxRadius = Math.min(width, height) / 6;
+        const chartRadius = maxRadius;
+        const arcMinRadius = 10;
+        const arcPadding = 2;
+        const numArcs = Object.keys(nodes[0].proposal).length;
+        const arcWidth = (chartRadius - arcMinRadius - numArcs * arcPadding) / (numArcs * 2);
+
+        const colorScale = d3.scaleOrdinal(NormalColors);
+
+        const getInnerRadius = (index) => arcMinRadius + index * (arcWidth + arcPadding);
+        const getOuterRadius = (index) => getInnerRadius(index) + arcWidth;
+
+        // 파이 차트 및 Radial Bar Chart 렌더링
         nodes.forEach((node) => {
             const chainData = jsonData.find((chain) => chain.chain === node.id);
 
-            const maxRadius = Math.min(width, height) / 4;
-            const radius = Math.min(20 + chainData.radius, maxRadius);
+            const radius = Math.min(10 + chainData.radius, maxRadius);
 
             const proportionData = Object.entries(chainData.proportion).map(([key, value]) => ({ month: key, value }));
-            const proposalKeys = Object.keys(chainData.proposal).sort();
 
-            // 파이 차트 렌더링
+            // 파이 차트 렌더링 (기존 코드와 동일)
             const pie = d3.pie().value((d) => d.value);
             const arcData = pie(proportionData);
-            const colorScale = d3.scaleOrdinal(PieColors);
-            const arc = d3.arc().innerRadius(0).outerRadius(radius);
+            const pieArc = d3.arc().innerRadius(0).outerRadius(radius);
 
             const blockchainGroup = zoomableGroup
                 .append('g')
+                .datum(node) // 데이터 바인딩
                 .attr('transform', `translate(${node.x}, ${node.y})`)
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
-                .on('click', () => {
-                    svg.selectAll('.blockchain-group').attr('opacity', 1).selectAll('path').attr('stroke-width', 1);
-                    blockchainGroup.attr('opacity', 1).selectAll('path').attr('stroke-width', 3).attr('stroke', 'red');
-                    setSelectedChain(node.id);
-                    onSelectChain(node.id);
+                .on('click', (event, d) => {
+                    setSelectedChain(d.id);
+
+                    // 선택된 파이차트와 링크된 차트 식별
+                    const linkedChains = linkData
+                        .filter((link) => link.chain1 === d.id || link.chain2 === d.id)
+                        .map((link) => (link.chain1 === d.id ? link.chain2 : link.chain1));
+
+                    // 모든 파이차트 업데이트
+                    d3.selectAll('.blockchain-group').each(function (d) {
+                        const currentGroup = d3.select(this);
+                        if (d.id === node.id) {
+                            currentGroup.style('opacity', 1); // 선택된 파이차트는 불투명
+                        } else if (linkedChains.includes(d.id)) {
+                            currentGroup.style('opacity', 0.6); // 링크된 차트는 0.6
+                        } else {
+                            currentGroup.style('opacity', 0.3); // 나머지 차트는 0.3
+                        }
+                    });
                 });
 
+            // 파이 슬라이스 렌더링
             blockchainGroup
                 .selectAll('.pie-slice')
                 .data(arcData)
                 .enter()
                 .append('path')
-                .attr('d', arc)
+                .attr('d', pieArc)
                 .attr('fill', (d, i) => colorScale(i))
                 .attr('class', 'pie-slice')
                 .append('title')
                 .text((d) => `${node.id} - proportion ${d.data.month}: ${(d.data.value * 100).toFixed(2)}%`);
 
-            // 프로포절 데이터의 최소값과 최대값 계산
-            const proposalValues = Object.values(chainData.proposal);
-            const minProposalValue = Math.min(...proposalValues);
-            const maxProposalValue = Math.max(...proposalValues);
+            const barData = Object.entries(chainData.proposal).map(([key, value]) => ({ month: key, value }));
+            const barColorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
-            // const radialBarLengthScale = d3
-            //     .scaleLinear()
-            //     .domain([minProposalValue, maxProposalValue])
-            //     .range([radius * 0.3, radius * 1.2]); // 더 긴 바 길이
+            const barArc = d3
+                .arc()
+                .innerRadius((d, i) => getInnerRadius(i) + radius - 8)
+                .outerRadius((d, i) => getOuterRadius(i) + radius - 8)
+                .startAngle(0)
+                .endAngle((d) => (d.value / 100) * 2 * Math.PI);
 
-            // const bars = d3
-            //     .arc()
-            //     .innerRadius(radius * 1.1) // 파이 차트 밖에서 시작
-            //     .outerRadius((d) => radius * 1.1 + radialBarLengthScale(d.proposal))
-            //     .startAngle((d, i) => (i / proposalKeys.length) * Math.PI * 2)
-            //     .endAngle((d, i) => ((i + 1) / proposalKeys.length) * Math.PI * 2);
+            blockchainGroup
+                .selectAll('.bar')
+                .data(barData)
+                .enter()
+                .append('path')
+                .attr('d', barArc)
+                .attr('fill', (d, i) => barColorScale(i))
+                .attr('opacity', 0.7) // 불투명도 조절
+                .attr('class', 'bar')
+                .append('title')
+                .text((d) => `${node.id} - proposal ${d.month}: ${d.value}`);
 
-            // proposalKeys.forEach((key, i) => {
-            //     blockchainGroup
-            //         .append('path')
-            //         .datum({ proposal: chainData.proposal[key] || 0 })
-            //         .attr('d', (d) => bars(d, i))
-            //         .attr('fill', '#999999')
-            //         .attr('opacity', 0.6)
-            //         .attr('stroke', '#000')
-            //         .append('title')
-            //         .text((d) => `proposal ${key}: ${d.proposal}`);
-            // });
-
-            // 블록체인 라벨 추가 (이전 코드와 동일)
+            // 블록체인 라벨 추가
             blockchainGroup
                 .append('text')
                 .attr('text-anchor', 'middle')
-                .attr('dy', radius + 15)
+                .attr('dy', radius + 15 + chartRadius)
                 .text(node.id)
                 .attr('font-size', '14px')
                 .attr('font-weight', 'bold');
         });
-    }, [onSelectChain]);
+    }, [setSelectedChain]);
 
     return (
-        <div className="mt-2 flex justify-center">
+        <div className="mt-2">
             <svg ref={svgRef}></svg>
-            {/* {selectedChain && (
-                <div className="border-2">
-                    <h3>Chain Result</h3>
-                    <p>{selectedChain}</p>
-                    <div className="flex flex-wrap justify-between">
-                        <div className="w-full sm:w-1/2">
-                            <div className="flex flex-wrap">
-                                <p className="w-full sm:w-1/2">검증인 수: </p>
-                                <p className="w-full sm:w-1/2">군집 수: </p>
-                                <p className="w-full sm:w-1/2">proposal 수: {}</p>
-                                <p className="w-full sm:w-1/2">의견 포용력: </p>
-                            </div>
-                        </div>
-                        <div className="w-full sm:w-1/2 flex-wrap">
-                            <p>유사한 체인</p>
-                            <p>~~~~~</p>
-                        </div>
-                    </div>
-                </div>
-            )} */}
         </div>
     );
 };
