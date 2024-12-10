@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import jsonData from '../../data/chain_data.json';
 import linkData from '../../data/chain_link_data.json';
 import { NormalColors } from '../color';
+import useChainStore from '../../store/store';
 
-const NetworkPie = ({ onSelectChain }) => {
+const NetworkPie = () => {
     const svgRef = useRef(null);
-    const [selectedChain, setSelectedChain] = useState(null);
+    const { setSelectedChain } = useChainStore();
 
     useEffect(() => {
         if (!svgRef.current) return;
@@ -141,12 +142,12 @@ const NetworkPie = ({ onSelectChain }) => {
         });
 
         // Radial Bar Chart 및 파이 차트 설정
-        const maxRadius = Math.min(width, height) / 4;
+        const maxRadius = Math.min(width, height) / 6;
         const chartRadius = maxRadius;
-        const arcMinRadius = 20;
-        const arcPadding = 5;
+        const arcMinRadius = 10;
+        const arcPadding = 2;
         const numArcs = Object.keys(nodes[0].proposal).length;
-        const arcWidth = (chartRadius - arcMinRadius - numArcs * arcPadding) / numArcs;
+        const arcWidth = (chartRadius - arcMinRadius - numArcs * arcPadding) / (numArcs * 2);
 
         const colorScale = d3.scaleOrdinal(NormalColors);
 
@@ -157,7 +158,7 @@ const NetworkPie = ({ onSelectChain }) => {
         nodes.forEach((node) => {
             const chainData = jsonData.find((chain) => chain.chain === node.id);
 
-            const radius = Math.min(20 + chainData.radius, maxRadius);
+            const radius = Math.min(10 + chainData.radius, maxRadius);
 
             const proportionData = Object.entries(chainData.proportion).map(([key, value]) => ({ month: key, value }));
 
@@ -172,10 +173,7 @@ const NetworkPie = ({ onSelectChain }) => {
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
                 .on('click', () => {
-                    svg.selectAll('.blockchain-group').attr('opacity', 1).selectAll('path').attr('stroke-width', 1);
-                    blockchainGroup.attr('opacity', 1).selectAll('path').attr('stroke-width', 3).attr('stroke', 'red');
                     setSelectedChain(node.id);
-                    onSelectChain(node.id);
                 });
 
             // 파이 슬라이스 렌더링
@@ -195,8 +193,8 @@ const NetworkPie = ({ onSelectChain }) => {
 
             const barArc = d3
                 .arc()
-                .innerRadius((d, i) => getInnerRadius(i) + radius)
-                .outerRadius((d, i) => getOuterRadius(i) + radius)
+                .innerRadius((d, i) => getInnerRadius(i) + radius - 8)
+                .outerRadius((d, i) => getOuterRadius(i) + radius - 8)
                 .startAngle(0)
                 .endAngle((d) => (d.value / 100) * 2 * Math.PI);
 
@@ -221,7 +219,7 @@ const NetworkPie = ({ onSelectChain }) => {
                 .attr('font-size', '14px')
                 .attr('font-weight', 'bold');
         });
-    }, [onSelectChain]);
+    }, [setSelectedChain]);
 
     return (
         <div className="mt-2">
