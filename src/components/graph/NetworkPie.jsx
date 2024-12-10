@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import jsonData from '../../data/chain_data.json';
 import linkData from '../../data/chain_link_data.json';
-import { PieColors } from '../color';
+import { NormalColors } from '../color';
 
 const NetworkPie = ({ onSelectChain }) => {
     const svgRef = useRef(null);
@@ -148,7 +148,7 @@ const NetworkPie = ({ onSelectChain }) => {
         const numArcs = Object.keys(nodes[0].proposal).length;
         const arcWidth = (chartRadius - arcMinRadius - numArcs * arcPadding) / numArcs;
 
-        const colorScale = d3.scaleOrdinal(PieColors);
+        const colorScale = d3.scaleOrdinal(NormalColors);
 
         const getInnerRadius = (index) => arcMinRadius + index * (arcWidth + arcPadding);
         const getOuterRadius = (index) => getInnerRadius(index) + arcWidth;
@@ -224,8 +224,27 @@ const NetworkPie = ({ onSelectChain }) => {
     }, [onSelectChain]);
 
     return (
-        <div className="mt-2 flex justify-center">
+        <div className="mt-2">
             <svg ref={svgRef}></svg>
+            {/* {selectedChain && (
+                <div className="border-2">
+                    <p>{selectedChain}</p>
+                    <div className="flex flex-wrap justify-between">
+                        <div className="w-full sm:w-1/2">
+                            <div className="flex flex-wrap">
+                                <p className="w-full sm:w-1/2">검증인 수: </p>
+                                <p className="w-full sm:w-1/2">군집 수: </p>
+                                <p className="w-full sm:w-1/2">proposal 수: {}</p>
+                                <p className="w-full sm:w-1/2">의견 포용력: </p>
+                            </div>
+                        </div>
+                        <div className="w-full sm:w-1/2 flex-wrap">
+                            <p>유사한 체인</p>
+                            <p>~~~~~</p>
+                        </div>
+                    </div>
+                </div>
+            )} */}
         </div>
     );
 };
