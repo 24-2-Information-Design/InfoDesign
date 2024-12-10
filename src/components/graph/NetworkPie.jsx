@@ -121,6 +121,34 @@ const NetworkPie = () => {
             nodeById[node.id] = node;
         });
 
+        const forceSimulation = d3
+            .forceSimulation(nodes)
+            .force(
+                'x',
+                d3.forceX((d) => d.x).strength(0.1) // 초기 x 위치를 기준으로 힘 적용
+            )
+            .force(
+                'y',
+                d3.forceY((d) => d.y).strength(0.1) // 초기 y 위치를 기준으로 힘 적용
+            )
+            .force(
+                'collision',
+                d3.forceCollide((d) => d.radius + 20) // 노드의 반경과 최소 거리 확보
+            )
+            .stop();
+
+        // Force simulation 반복 실행
+        for (let i = 0; i < 300; i++) forceSimulation.tick();
+
+        // 노드 위치를 업데이트
+        nodes.forEach((node) => {
+            const updatedNode = forceSimulation.find(node.x, node.y, node.radius + 20);
+            if (updatedNode) {
+                node.x = updatedNode.x;
+                node.y = updatedNode.y;
+            }
+        });
+
         linkData.forEach((link) => {
             const sourceNode = nodeById[link.chain1];
             const targetNode = nodeById[link.chain2];
@@ -169,11 +197,29 @@ const NetworkPie = () => {
 
             const blockchainGroup = zoomableGroup
                 .append('g')
+                .datum(node) // 데이터 바인딩
                 .attr('transform', `translate(${node.x}, ${node.y})`)
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
-                .on('click', () => {
-                    setSelectedChain(node.id);
+                .on('click', (event, d) => {
+                    setSelectedChain(d.id);
+
+                    // 선택된 파이차트와 링크된 차트 식별
+                    const linkedChains = linkData
+                        .filter((link) => link.chain1 === d.id || link.chain2 === d.id)
+                        .map((link) => (link.chain1 === d.id ? link.chain2 : link.chain1));
+
+                    // 모든 파이차트 업데이트
+                    d3.selectAll('.blockchain-group').each(function (d) {
+                        const currentGroup = d3.select(this);
+                        if (d.id === node.id) {
+                            currentGroup.style('opacity', 1); // 선택된 파이차트는 불투명
+                        } else if (linkedChains.includes(d.id)) {
+                            currentGroup.style('opacity', 0.6); // 링크된 차트는 0.6
+                        } else {
+                            currentGroup.style('opacity', 0.3); // 나머지 차트는 0.3
+                        }
+                    });
                 });
 
             // 파이 슬라이스 렌더링
@@ -224,25 +270,6 @@ const NetworkPie = () => {
     return (
         <div className="mt-2">
             <svg ref={svgRef}></svg>
-            {/* {selectedChain && (
-                <div className="border-2">
-                    <p>{selectedChain}</p>
-                    <div className="flex flex-wrap justify-between">
-                        <div className="w-full sm:w-1/2">
-                            <div className="flex flex-wrap">
-                                <p className="w-full sm:w-1/2">검증인 수: </p>
-                                <p className="w-full sm:w-1/2">군집 수: </p>
-                                <p className="w-full sm:w-1/2">proposal 수: {}</p>
-                                <p className="w-full sm:w-1/2">의견 포용력: </p>
-                            </div>
-                        </div>
-                        <div className="w-full sm:w-1/2 flex-wrap">
-                            <p>유사한 체인</p>
-                            <p>~~~~~</p>
-                        </div>
-                    </div>
-                </div>
-            )} */}
         </div>
     );
 };

@@ -39,7 +39,7 @@ const Parallel = ({ data }) => {
 
         const voteScale = d3
             .scalePoint()
-            .domain(['NO_VOTE', 'NO', 'NO_WITH_VETO', 'ABSTAIN', 'YES'])
+            .domain(['NO', 'NO_WITH_VETO', 'ABSTAIN', 'YES'])
             .range([height, 0])
             .padding(0.5);
 

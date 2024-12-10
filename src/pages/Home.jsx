@@ -8,6 +8,7 @@ const Home = () => {
     const { selectedChain, chainData } = useChainStore();
     const [scatterData, setScatterData] = useState(null);
     const [parallelData, setParallelData] = useState(null);
+    const [dendroData, setDendroData] = useState(null);
     const [loading, setLoading] = useState(false); // 로딩 상태 추가
     const [error, setError] = useState(null);
 
@@ -17,16 +18,19 @@ const Home = () => {
         setLoading(true);
         setError(null);
 
-        const ScatterFile = `/data/scatter_data/validator_scatter_${selectedChain}.json`; // 파일 경로
+        const ScatterFile = `/data/scatter_data/scatter_${selectedChain}.json`; // 파일 경로
         const ParallelFile = `/data/parallel_data/parallel_${selectedChain}.json`;
+        const DendroFile = `/data/parallel_data/parallel_${selectedChain}.json`;
 
         Promise.all([
             fetch(ScatterFile).then((response) => response.json()),
             fetch(ParallelFile).then((response) => response.json()),
+            fetch(DendroFile).then((response) => response.json()),
         ])
-            .then(([scatterResult, parallelResult]) => {
+            .then(([scatterResult, parallelResult, dendroResult]) => {
                 setScatterData(scatterResult);
                 setParallelData(parallelResult);
+                setDendroData(dendroData);
             })
             .catch((error) => {
                 console.log(error);
@@ -40,9 +44,6 @@ const Home = () => {
     return (
         <div className="flex flex-col w-full h-full">
             {/* header */}
-            <div className="w-full h-10">
-                <h1 className="ml-4 mt-3">Find Your Friends</h1>
-            </div>
 
             {/* body */}
             <div className="w-full h-full flex flex-row">
@@ -56,26 +57,26 @@ const Home = () => {
 
                     {/* chain result */}
                     <div className="w-full h-[30%]">
-                        <h3 className="pl-3 pt-2">Chain Results</h3>
-
-                        {selectedChain && chainData && (
-                            <div className="border p-4">
-                                <h2>{selectedChain}</h2>
-                                <p>
-                                    <strong>검증인 수:</strong> {chainData.validator_num}
-                                </p>
-                                <p>
-                                    <strong>Proposal 수:</strong> {chainData.proposal_num}
-                                </p>
-                                <p>
-                                    <strong>군집 수:</strong> {chainData.cluster_num}
-                                </p>
-                                <p>
-                                    <strong>의견 포용력:</strong> {chainData.radius}
-                                </p>
-                                <p>
-                                    <strong>유사한 체인:</strong> {chainData.similar_chains.join(', ')}
-                                </p>
+                        <h3 className="pl-3 pt-2 ml-4">Chain Results</h3>
+                        {selectedChain && (
+                            <div className="border-2 ml-4">
+                                <div className="ml-4">
+                                    <strong>{selectedChain}</strong>
+                                    <div className="flex flex-wrap justify-between">
+                                        <div className="w-full sm:w-2/3">
+                                            <div className="flex flex-wrap">
+                                                <p className="w-full sm:w-1/2">검증인 수: {chainData.validator_num}</p>
+                                                <p className="w-full sm:w-1/2">군집 수: {chainData.cluster_num}</p>
+                                                <p className="w-full sm:w-1/2">proposal 수: {chainData.proposal_num}</p>
+                                                <p className="w-full sm:w-1/2">의견 포용력: {chainData.radius}</p>
+                                            </div>
+                                        </div>
+                                        <div className="w-1/2 sm:w-1/3 flex-wrap">
+                                            <p>유사한 체인</p>
+                                            <p>{chainData.similar_chains.join(', ')}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -119,6 +120,7 @@ const Home = () => {
 
                         <div className="w-1/2 h-full">
                             <h3 className="pl-3 pt-2">Cluster Results</h3>
+                            <p>Cluster {chainData.cluster_num}</p>
                         </div>
                     </div>
                 </div>
