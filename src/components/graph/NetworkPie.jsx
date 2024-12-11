@@ -164,12 +164,12 @@ const NetworkPie = () => {
                     .attr('y2', targetNode.y)
                     .attr('stroke', '#dbe6f1')
                     .attr('stroke-width', Math.max(lineThickness, 1))
-                    .attr('opacity', 0.5)
+                    .attr('opacity', link.shared_validators >= 40 ? 0.6 : 0.3)
+                    .attr('class', `link-line link-${link.chain1} link-${link.chain2}`) // 클래스 추가
                     .append('title')
                     .text(`${link.chain1} ↔ ${link.chain2}: ${link.shared_validators} shared validators`);
             }
         });
-
         // 차트 색상 스케일
         const colorScale = d3.scaleOrdinal(NormalColors);
 
@@ -202,6 +202,7 @@ const NetworkPie = () => {
                         .filter((link) => link.chain1 === d.id || link.chain2 === d.id)
                         .map((link) => (link.chain1 === d.id ? link.chain2 : link.chain1));
 
+                    // 체인 그룹 opacity 업데이트
                     d3.selectAll('.blockchain-group').each(function (d) {
                         const currentGroup = d3.select(this);
                         if (d.id === node.id) {
@@ -212,7 +213,32 @@ const NetworkPie = () => {
                             currentGroup.style('opacity', 0.1);
                         }
                     });
+
+                    // 링크 라인 visibility 업데이트
+                    zoomableGroup
+                        .selectAll('line')
+                        .style('visibility', function () {
+                            const line = d3.select(this);
+                            const isConnected = line.classed(`link-${d.id}`);
+
+                            // 선택된 체인과 관련된 선만 보이도록 설정
+                            return isConnected ? 'visible' : 'hidden';
+                        })
+                        .style('opacity', function () {
+                            const line = d3.select(this);
+                            if (line.classed(`link-${d.id}`)) {
+                                // 연결된 선에 대해서만 shared_validators 값에 따른 opacity 적용
+                                const linkInfo = linkData.find(
+                                    (link) =>
+                                        (link.chain1 === d.id && line.classed(`link-${link.chain2}`)) ||
+                                        (link.chain2 === d.id && line.classed(`link-${link.chain1}`))
+                                );
+                                return linkInfo.shared_validators >= 40 ? 0.6 : 0.3;
+                            }
+                            return 0;
+                        });
                 });
+
             // 파이 슬라이스 렌더링
             blockchainGroup
                 .selectAll('.pie-slice')

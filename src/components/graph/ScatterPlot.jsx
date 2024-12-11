@@ -148,7 +148,10 @@ const ScatterPlot = ({ data }) => {
     }, [data, selectedValidators, baseValidator]);
     const handleReset = () => {
         setSelectedValidators([]);
-        setBaseValidator([]);
+        setBaseValidator(null); // null로 설정
+
+        // 노드들의 시각적 상태도 초기화
+        nodes.attr('opacity', 0.6).attr('stroke', 'none').attr('stroke-width', 1);
     };
     const uniqueClusters = [...new Set(data.map((d) => d.cluster_label))].sort((a, b) => a - b);
     return (
