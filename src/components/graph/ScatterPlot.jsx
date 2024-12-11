@@ -150,7 +150,7 @@ const ScatterPlot = ({ data }) => {
         setSelectedValidators([]);
         setBaseValidator([]);
     };
-
+    const uniqueClusters = [...new Set(data.map((d) => d.cluster_label))].sort((a, b) => a - b);
     return (
         <div>
             <div className="flex justify-between items-center mb-2">
@@ -159,7 +159,39 @@ const ScatterPlot = ({ data }) => {
                     Reset
                 </button>
             </div>
-            <svg ref={svgRef}></svg>
+            <div className="flex">
+                {/* Legend - 너비를 줄이고 높이는 유지 */}
+                <div className="w-16 pr-1" style={{ height: '250px' }}>
+                    {' '}
+                    {/* w-24 -> w-16으로 변경, 패딩 감소 */}
+                    <div className="text-xs font-medium mb-1">Clusters</div> {/* text-sm -> text-xs, 마진 감소 */}
+                    <div className="overflow-y-auto h-[calc(100%-1.5rem)]">
+                        {uniqueClusters.map((cluster, i) => (
+                            <div
+                                key={cluster}
+                                className="flex items-center mb-0.5" // mb-1 -> mb-0.5로 변경
+                            >
+                                <div
+                                    className="w-3 h-3 rounded-full mr-1" // w-4 h-4 -> w-3 h-3, 마진 감소
+                                    style={{
+                                        backgroundColor: NormalColors[cluster],
+                                        opacity: 0.6,
+                                    }}
+                                ></div>
+                                <span className="text-[10px]">
+                                    {' '}
+                                    {/* text-xs -> text-[10px]로 변경 */}
+                                    {cluster} {/* "Cluster" -> "C"로 축약 */}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                {/* Chart */}
+                <div className="flex-1">
+                    <svg ref={svgRef}></svg>
+                </div>
+            </div>
         </div>
     );
 };
