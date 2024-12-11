@@ -16,11 +16,24 @@ const Parallel = ({ data }) => {
         const height = 120;
 
         const g = svg.attr('width', width).attr('height', height).append('g');
-        //            .attr('transform', `translate(${margin.left},${margin.top})`);
 
-        // 모든 체인 키 추출
-        const chainKeys = Object.keys(data[0]).filter((key) => /^[a-z_]+\d+$/.test(key));
+        const chainKeys = Object.keys(data[0])
+            .filter((key) => {
+                // voter와 cluster_label 제외
+                if (key === 'voter' || key === 'cluster_label') return false;
 
+                // gravity-bridge_ 접두사가 있는 경우
+                if (key.startsWith('gravity-bridge_')) return true;
+
+                // 기존 패턴 (chain_숫자)
+                return /^[a-z_]+\d+$/.test(key);
+            })
+            .sort((a, b) => {
+                // 숫자 부분을 추출하여 정렬
+                const numA = parseInt(a.split('_').pop());
+                const numB = parseInt(b.split('_').pop());
+                return numA - numB;
+            });
         const colorScale = d3.scaleOrdinal(NormalColors);
 
         // x축 구성
@@ -43,10 +56,6 @@ const Parallel = ({ data }) => {
             .range([height, 0])
             .padding(0.5);
 
-        // x축 그리기
-        g.append('g').attr('transform', `translate(0, ${height})`);
-        // .call(d3.axisBottom(xScale).tickFormat((d) => (d === 'Cluster' || d === 'End' ? d : d.split('_')[1])));
-
         // 축 그리기
         g.selectAll('.axis')
             .data(['Cluster', ...chainKeys])
@@ -68,21 +77,16 @@ const Parallel = ({ data }) => {
                 if (d.chainID === 'Cluster' || d.chainID === 'End') {
                     return clusterScale(d.vote);
                 }
-                return voteScale(d.vote);
+                return voteScale(d.vote || 'NO_VOTE'); // null 값을 NO_VOTE로 처리
             })
-            .defined((d) => {
-                if (d.chainID === 'Cluster' || d.chainID === 'End') {
-                    return clusterScale(d.vote) !== undefined;
-                }
-                return voteScale(d.vote) !== undefined;
-            });
+            .defined((d) => d.vote !== undefined);
 
         data.forEach((voter) => {
             const lineData = [
                 { chainID: 'Cluster', vote: `Cluster ${voter.cluster_label}` },
                 ...chainKeys.map((chainID) => ({
                     chainID,
-                    vote: voter[chainID] || 'NO_VOTE',
+                    vote: voter[chainID] || 'NO_VOTE', // null 값을 NO_VOTE로 처리
                 })),
                 { chainID: 'End', vote: `Cluster ${voter.cluster_label}` },
             ];

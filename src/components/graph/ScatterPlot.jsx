@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { NormalColors } from '../color';
+
 const ScatterPlot = ({ data }) => {
     const svgRef = useRef(null);
 
@@ -22,21 +23,34 @@ const ScatterPlot = ({ data }) => {
 
         const chart = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-        // X, Y 도메인 설정
+        // 최대 노드 크기 계산
+        const maxNodeSize = 12; // 최대 노드 크기 제한
+
+        // 데이터의 범위 계산
+        const xExtent = d3.extent(data, (d) => d.tsne_x);
+        const yExtent = d3.extent(data, (d) => d.tsne_y);
+
+        // 여백 추가 (노드 크기를 고려한 패딩)
+        const padding = maxNodeSize;
+        const xPadding = (xExtent[1] - xExtent[0]) * 0.05; // 5% 추가 여백
+        const yPadding = (yExtent[1] - yExtent[0]) * 0.05;
+
+        // X, Y 도메인 설정 (패딩 포함)
         const xScale = d3
             .scaleLinear()
-            .domain(d3.extent(data, (d) => d.tsne_x))
-            .range([0, chartWidth]);
+            .domain([xExtent[0] - xPadding, xExtent[1] + xPadding])
+            .range([padding, chartWidth - padding]);
 
         const yScale = d3
             .scaleLinear()
-            .domain(d3.extent(data, (d) => d.tsne_y))
-            .range([chartHeight, 0]);
+            .domain([yExtent[0] - yPadding, yExtent[1] + yPadding])
+            .range([chartHeight - padding, padding]);
 
+        // 크기 스케일 수정
         const sizeScale = d3
             .scaleSqrt()
             .domain(d3.extent(data, (d) => d.votingPower))
-            .range([5, 20]);
+            .range([3, maxNodeSize]); // 최소, 최대 크기 조정
 
         const colorScale = d3.scaleOrdinal(NormalColors);
 
@@ -49,7 +63,7 @@ const ScatterPlot = ({ data }) => {
 
         chart.append('g').call(d3.axisLeft(yScale).ticks(10)).attr('font-size', '12px');
 
-        // 노드 그리기
+        // 툴팁 설정
         const tooltip = d3
             .select('body')
             .append('div')
@@ -59,8 +73,10 @@ const ScatterPlot = ({ data }) => {
             .style('color', '#fff')
             .style('padding', '5px 10px')
             .style('border-radius', '5px')
-            .style('font-size', '12px');
+            .style('font-size', '12px')
+            .style('pointer-events', 'none');
 
+        // 노드 그리기
         chart
             .selectAll('circle')
             .data(data)
@@ -88,6 +104,10 @@ const ScatterPlot = ({ data }) => {
             .on('mouseout', () => {
                 tooltip.style('visibility', 'hidden');
             });
+
+        return () => {
+            tooltip.remove();
+        };
     }, [data]);
 
     return (
