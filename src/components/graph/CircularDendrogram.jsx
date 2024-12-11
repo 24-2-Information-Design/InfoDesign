@@ -166,6 +166,7 @@ const CircularDendrogram = ({ data }) => {
 
     return (
         <div>
+            <h3 className="pl-3">Proposal Match</h3>
             <svg ref={svgRef} />
         </div>
     );

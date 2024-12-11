@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { NormalColors } from '../color';
+import useChainStore from '../../store/store';
 
 const ScatterPlot = ({ data }) => {
     const svgRef = useRef(null);
+    const { selectedValidators, setSelectedValidators } = useChainStore();
 
     useEffect(() => {
         if (!data) return;
@@ -77,7 +79,7 @@ const ScatterPlot = ({ data }) => {
             .style('pointer-events', 'none');
 
         // 노드 그리기
-        chart
+        const nodes = chart
             .selectAll('circle')
             .data(data)
             .enter()
@@ -86,7 +88,26 @@ const ScatterPlot = ({ data }) => {
             .attr('cy', (d) => yScale(d.tsne_y))
             .attr('r', (d) => sizeScale(d.votingPower))
             .attr('fill', (d) => colorScale(d.cluster_label))
-            .attr('opacity', 0.6)
+            .attr('opacity', (d) => (selectedValidators.includes(d.voter) ? 1 : 0.6))
+            .attr('stroke', (d) => (selectedValidators.includes(d.voter) ? '#000' : 'none'))
+            .attr('stroke-width', 1)
+            .style('cursor', 'pointer')
+            .on('click', (event, d) => {
+                // 클릭 시 선택/해제 토글
+                const isSelected = selectedValidators.includes(d.voter);
+                const newSelectedValidators = isSelected
+                    ? selectedValidators.filter((v) => v !== d.voter)
+                    : [...selectedValidators, d.voter];
+
+                setSelectedValidators(newSelectedValidators);
+
+                // 시각적 업데이트
+                nodes
+                    .attr('opacity', (d) =>
+                        newSelectedValidators.length === 0 || newSelectedValidators.includes(d.voter) ? 1 : 0.6
+                    )
+                    .attr('stroke', (d) => (newSelectedValidators.includes(d.voter) ? '#000' : 'none'));
+            })
             .on('mouseover', (event, d) => {
                 tooltip
                     .style('visibility', 'visible')
@@ -108,10 +129,19 @@ const ScatterPlot = ({ data }) => {
         return () => {
             tooltip.remove();
         };
-    }, [data]);
+    }, [data, selectedValidators, setSelectedValidators]);
+    const handleReset = () => {
+        setSelectedValidators([]);
+    };
 
     return (
         <div>
+            <div className="flex justify-between items-center mb-2">
+                <h3 className="text-lg">Validator Votes Similarity</h3>
+                <button onClick={handleReset} className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">
+                    Reset
+                </button>
+            </div>
             <svg ref={svgRef}></svg>
         </div>
     );

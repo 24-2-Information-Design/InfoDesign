@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { NormalColors } from '../color';
+import useChainStore from '../../store/store';
 
 const Parallel = ({ data }) => {
     const svgRef = useRef(null);
-
+    const { selectedValidators } = useChainStore();
     useEffect(() => {
         if (!svgRef.current || !data || data.length === 0) return;
 
@@ -81,25 +82,39 @@ const Parallel = ({ data }) => {
             })
             .defined((d) => d.vote !== undefined);
 
-        data.forEach((voter) => {
-            const lineData = [
-                { chainID: 'Cluster', vote: `Cluster ${voter.cluster_label}` },
-                ...chainKeys.map((chainID) => ({
-                    chainID,
-                    vote: voter[chainID] || 'NO_VOTE', // null 값을 NO_VOTE로 처리
-                })),
-                { chainID: 'End', vote: `Cluster ${voter.cluster_label}` },
-            ];
-
-            g.append('path')
-                .datum(lineData)
-                .attr('fill', 'none')
-                .attr('stroke', () => colorScale(voter.cluster_label))
-                .attr('stroke-width', 1.5)
-                .attr('d', line)
-                .style('opacity', 0.6);
-        });
-    }, [data]);
+        g.selectAll('.voter-path')
+            .data(data)
+            .enter()
+            .append('path')
+            .attr('class', 'voter-path')
+            .datum((voter) => {
+                return {
+                    id: voter.voter,
+                    cluster: voter.cluster_label,
+                    values: [
+                        { chainID: 'Cluster', vote: `Cluster ${voter.cluster_label}` },
+                        ...chainKeys.map((chainID) => ({
+                            chainID,
+                            vote: voter[chainID] || 'NO_VOTE',
+                        })),
+                        { chainID: 'End', vote: `Cluster ${voter.cluster_label}` },
+                    ],
+                };
+            })
+            .attr('fill', 'none')
+            .attr('stroke', (d) => colorScale(d.cluster)) // 클러스터 값으로 색상 지정
+            .attr('stroke-width', (d) => (selectedValidators.includes(d.id) ? 2.5 : 1.5))
+            .attr('d', (d) => line(d.values))
+            .style('opacity', (d) => (selectedValidators.length === 0 || selectedValidators.includes(d.id) ? 0.6 : 0.1))
+            .on('mouseover', function (event, d) {
+                d3.select(this).attr('stroke-width', 3).style('opacity', 0.9);
+            })
+            .on('mouseout', function (event, d) {
+                d3.select(this)
+                    .attr('stroke-width', selectedValidators.includes(d.id) ? 2.5 : 1.5)
+                    .style('opacity', selectedValidators.length === 0 || selectedValidators.includes(d.id) ? 0.6 : 0.1);
+            });
+    }, [data, selectedValidators]);
 
     return (
         <div className="mt-1 flex justify-center items-center">

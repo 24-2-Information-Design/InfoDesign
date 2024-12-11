@@ -162,7 +162,7 @@ const NetworkPie = () => {
                     .attr('y1', sourceNode.y)
                     .attr('x2', targetNode.x)
                     .attr('y2', targetNode.y)
-                    .attr('stroke', 'rgba(49, 74, 196, 0.5)')
+                    .attr('stroke', '#dbe6f1')
                     .attr('stroke-width', Math.max(lineThickness, 1))
                     .attr('opacity', 0.5)
                     .append('title')
