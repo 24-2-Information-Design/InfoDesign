@@ -3,6 +3,9 @@ import NetworkPie from '../components/graph/NetworkPie';
 import ScatterPlot from '../components/graph/ScatterPlot';
 import Parallel from '../components/graph/Parallel';
 import useChainStore from '../store/store';
+import CircularDendrogram from '../components/graph/CircularDendrogram';
+import ValidatorTable from '../components/ValidatorTable';
+import ClusterResult from '../components/ClusterResult';
 
 const Home = () => {
     const { selectedChain, chainData } = useChainStore();
@@ -20,7 +23,7 @@ const Home = () => {
 
         const ScatterFile = `/data/scatter_data/scatter_${selectedChain}.json`; // 파일 경로
         const ParallelFile = `/data/parallel_data/parallel_${selectedChain}.json`;
-        const DendroFile = `/data/parallel_data/parallel_${selectedChain}.json`;
+        const DendroFile = `/data/dendrogram/dendrogram_${selectedChain}.json`;
 
         Promise.all([
             fetch(ScatterFile).then((response) => response.json()),
@@ -30,7 +33,7 @@ const Home = () => {
             .then(([scatterResult, parallelResult, dendroResult]) => {
                 setScatterData(scatterResult);
                 setParallelData(parallelResult);
-                setDendroData(dendroData);
+                setDendroData(dendroResult);
             })
             .catch((error) => {
                 console.log(error);
@@ -44,7 +47,7 @@ const Home = () => {
     return (
         <div className="flex flex-col w-full h-full">
             {/* header */}
-
+            <h1 className="ml-4 mt-4">Find your friends</h1>
             {/* body */}
             <div className="w-full h-full flex flex-row">
                 {/* left section */}
@@ -89,7 +92,6 @@ const Home = () => {
                     {/* validator & proposal view */}
                     <div className="w-full h-[42%] flex flex-row">
                         <div className="w-1/2 h-full">
-                            <h3 className="pl-3">Validator Votes Similarity</h3>
                             {scatterData ? (
                                 <ScatterPlot data={scatterData} />
                             ) : (
@@ -97,7 +99,7 @@ const Home = () => {
                             )}
                         </div>
                         <div className="w-1/2 h-full">
-                            <h3 className="pl-3">Proposal Match</h3>
+                            <CircularDendrogram data={dendroData} />
                         </div>
                     </div>
 
@@ -114,17 +116,11 @@ const Home = () => {
                     {/* result view */}
                     <div className="w-full h-[28%] flex flex-row">
                         <div className="w-1/2 h-full">
-                            <h3 className="pl-3 pt-2">Validator Results</h3>
+                            <ValidatorTable />
                         </div>
-                        <div className="h-[75%] mt-1 mb-1 border-l border-gray-200"></div>
 
                         <div className="w-1/2 h-full ">
-                            <h3 className="pl-3 pt-2 ">Cluster Results</h3>
-                            <div className="ml-4">
-                                <p>Cluster </p>
-                                <p>우호적 클러스터: </p>
-                                <p>적대적 클러스터: </p>
-                            </div>
+                            <ClusterResult />
                         </div>
                     </div>
                 </div>
