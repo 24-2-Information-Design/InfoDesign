@@ -194,20 +194,7 @@ const NetworkPie = () => {
                 .attr('transform', `translate(${node.x}, ${node.y})`)
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
-                .style('opacity', () => {
-                    // 선택된 검증인이 없으면 모든 체인 표시
-                    if (selectedValidators.length === 0) return 1;
 
-                    // 해당 체인의 검증인 목록 가져오기
-                    const chainValidators = chainData.validators || [];
-
-                    // 선택된 검증인들이 모두 포함되어 있는지 확인
-                    const allValidatorsIncluded = selectedValidators.every((validator) =>
-                        chainValidators.includes(validator)
-                    );
-
-                    return allValidatorsIncluded ? 1 : 0.2;
-                })
                 .on('click', (event, d) => {
                     setSelectedChain(d.id);
 
@@ -220,9 +207,9 @@ const NetworkPie = () => {
                         if (d.id === node.id) {
                             currentGroup.style('opacity', 1);
                         } else if (linkedChains.includes(d.id)) {
-                            currentGroup.style('opacity', 0.6);
+                            currentGroup.style('opacity', 0.1);
                         } else {
-                            currentGroup.style('opacity', 0.3);
+                            currentGroup.style('opacity', 0.1);
                         }
                     });
                 });

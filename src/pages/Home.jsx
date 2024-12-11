@@ -4,6 +4,8 @@ import ScatterPlot from '../components/graph/ScatterPlot';
 import Parallel from '../components/graph/Parallel';
 import useChainStore from '../store/store';
 import CircularDendrogram from '../components/graph/CircularDendrogram';
+import ValidatorTable from '../components/ValidatorTable';
+import ClusterResult from '../components/ClusterResult';
 
 const Home = () => {
     const { selectedChain, chainData } = useChainStore();
@@ -45,7 +47,7 @@ const Home = () => {
     return (
         <div className="flex flex-col w-full h-full">
             {/* header */}
-
+            <h1 className="ml-4 mt-4">Find your friends</h1>
             {/* body */}
             <div className="w-full h-full flex flex-row">
                 {/* left section */}
@@ -114,17 +116,11 @@ const Home = () => {
                     {/* result view */}
                     <div className="w-full h-[28%] flex flex-row">
                         <div className="w-1/2 h-full">
-                            <h3 className="pl-3 pt-2">Validator Results</h3>
+                            <ValidatorTable />
                         </div>
-                        <div className="h-[75%] mt-1 mb-1 border-l border-gray-200"></div>
 
                         <div className="w-1/2 h-full ">
-                            <h3 className="pl-3 pt-2 ">Cluster Results</h3>
-                            <div className="ml-4">
-                                <p>Cluster </p>
-                                <p>우호적 클러스터: </p>
-                                <p>적대적 클러스터: </p>
-                            </div>
+                            <ClusterResult />
                         </div>
                     </div>
                 </div>

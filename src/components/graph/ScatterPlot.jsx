@@ -5,7 +5,7 @@ import useChainStore from '../../store/store';
 
 const ScatterPlot = ({ data }) => {
     const svgRef = useRef(null);
-    const { selectedValidators, setSelectedValidators } = useChainStore();
+    const { selectedValidators, setSelectedValidators, baseValidator, setBaseValidator } = useChainStore();
 
     useEffect(() => {
         if (!data) return;
@@ -94,19 +94,35 @@ const ScatterPlot = ({ data }) => {
             .style('cursor', 'pointer')
             .on('click', (event, d) => {
                 // 클릭 시 선택/해제 토글
+                event.stopPropagation();
                 const isSelected = selectedValidators.includes(d.voter);
-                const newSelectedValidators = isSelected
-                    ? selectedValidators.filter((v) => v !== d.voter)
-                    : [...selectedValidators, d.voter];
+                let newSelected;
 
-                setSelectedValidators(newSelectedValidators);
+                if (isSelected) {
+                    // 선택 해제
+                    newSelected = selectedValidators.filter((v) => v !== d.voter);
+                    if (d.voter === baseValidator) {
+                        // 기준 검증인을 해제하는 경우, 남은 검증인 중 첫 번째를 기준으로 설정
+                        setBaseValidator(newSelected.length > 0 ? newSelected[0] : null);
+                    }
+                } else {
+                    // 새로 선택
+                    newSelected = [...selectedValidators, d.voter];
+                    if (!baseValidator) {
+                        setBaseValidator(d.voter);
+                    }
+                }
+
+                setSelectedValidators(newSelected);
 
                 // 시각적 업데이트
                 nodes
-                    .attr('opacity', (d) =>
-                        newSelectedValidators.length === 0 || newSelectedValidators.includes(d.voter) ? 1 : 0.6
-                    )
-                    .attr('stroke', (d) => (newSelectedValidators.includes(d.voter) ? '#000' : 'none'));
+                    .attr('opacity', (d) => (newSelected.length === 0 || newSelected.includes(d.voter) ? 0.6 : 0.2))
+                    .attr('stroke', (d) => {
+                        if (d.voter === baseValidator) return '#000';
+                        return newSelected.includes(d.voter) ? '#666' : 'none';
+                    })
+                    .attr('stroke-width', (d) => (d.voter === baseValidator ? 2 : 1));
             })
             .on('mouseover', (event, d) => {
                 tooltip
@@ -129,9 +145,10 @@ const ScatterPlot = ({ data }) => {
         return () => {
             tooltip.remove();
         };
-    }, [data, selectedValidators, setSelectedValidators]);
+    }, [data, selectedValidators, baseValidator]);
     const handleReset = () => {
         setSelectedValidators([]);
+        setBaseValidator([]);
     };
 
     return (

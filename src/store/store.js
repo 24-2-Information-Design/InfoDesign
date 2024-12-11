@@ -10,6 +10,7 @@ export const useChainStore = create((set, get) => ({
     selectedValidators: [], // 선택된 검증인 배열
     highlightedChains: [], // 하이라이트된 체인 배열
     highlightedValidators: [], // Parallel Coordinates에서 하이라이트할 검증인 배열
+    baseValidator: null,
 
     // 기존 액션
     setSelectedChain: (chain) => {
@@ -38,6 +39,7 @@ export const useChainStore = create((set, get) => ({
             .map((chain) => chain.chain);
         set({ highlightedChains: commonChains });
     },
+    setBaseValidator: (validator) => set({ baseValidator: validator }),
 
     // 하이라이트된 체인 설정
     setHighlightedChains: (chains) => {
