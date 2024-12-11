@@ -175,8 +175,7 @@ const NetworkPie = () => {
         const arcMinRadius = 10;
         const arcPadding = 2;
         const numArcs = Object.keys(nodes[0].proposal).length;
-        const arcWidth = (chartRadius - arcMinRadius - numArcs * arcPadding) / (numArcs * 2);
-
+        const arcWidth = (chartRadius - arcMinRadius - numArcs * arcPadding) / (numArcs * 4);
         const colorScale = d3.scaleOrdinal(NormalColors);
 
         const getInnerRadius = (index) => arcMinRadius + index * (arcWidth + arcPadding);

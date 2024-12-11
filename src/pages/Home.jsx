@@ -3,6 +3,7 @@ import NetworkPie from '../components/graph/NetworkPie';
 import ScatterPlot from '../components/graph/ScatterPlot';
 import Parallel from '../components/graph/Parallel';
 import useChainStore from '../store/store';
+import CircularDendrogram from '../components/graph/CircularDendrogram';
 
 const Home = () => {
     const { selectedChain, chainData } = useChainStore();
@@ -20,7 +21,7 @@ const Home = () => {
 
         const ScatterFile = `/data/scatter_data/scatter_${selectedChain}.json`; // 파일 경로
         const ParallelFile = `/data/parallel_data/parallel_${selectedChain}.json`;
-        const DendroFile = `/data/parallel_data/parallel_${selectedChain}.json`;
+        const DendroFile = `/data/dendrogram/dendrogram_${selectedChain}.json`;
 
         Promise.all([
             fetch(ScatterFile).then((response) => response.json()),
@@ -30,7 +31,7 @@ const Home = () => {
             .then(([scatterResult, parallelResult, dendroResult]) => {
                 setScatterData(scatterResult);
                 setParallelData(parallelResult);
-                setDendroData(dendroData);
+                setDendroData(dendroResult);
             })
             .catch((error) => {
                 console.log(error);
@@ -89,7 +90,11 @@ const Home = () => {
                     {/* validator & proposal view */}
                     <div className="w-full h-[42%] flex flex-row">
                         <div className="w-1/2 h-full">
-                            <h3 className="pl-3">Validator Votes Similarity</h3>
+                            <div className="flex">
+                                <h3 className="pl-3 mr-8 ">Validator Votes Similarity</h3>
+                                <button className="h-10">초기화</button>
+                            </div>
+
                             {scatterData ? (
                                 <ScatterPlot data={scatterData} />
                             ) : (
@@ -98,6 +103,7 @@ const Home = () => {
                         </div>
                         <div className="w-1/2 h-full">
                             <h3 className="pl-3">Proposal Match</h3>
+                            <CircularDendrogram data={dendroData} />
                         </div>
                     </div>
 
