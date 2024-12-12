@@ -50,14 +50,58 @@ const NetworkPie = () => {
         const arcWidth = (chartRadius - arcMinRadius - numArcs * arcPadding) / (numArcs * 5);
 
         // 노드 데이터 생성
-        const nodes = jsonData.map((chainData) => ({
-            id: chainData.chain,
-            radius: chainData.radius,
-            proposal: chainData.proposal,
-            proportion: chainData.proportion,
-            x: padding + Math.random() * effectiveWidth,
-            y: padding + Math.random() * effectiveHeight,
-        }));
+        const nodes = jsonData.map((chainData) => {
+            // x-axis, y-axis 값을 스케일링하여 사용
+            const xScale = d3
+                .scaleLinear()
+                .domain(d3.extent(jsonData, (d) => d['x-axis']))
+                .range([padding + chartRadius + 20, width - (padding + chartRadius + 20)]);
+
+            const yScale = d3
+                .scaleLinear()
+                .domain(d3.extent(jsonData, (d) => d['y-axis']))
+                .range([padding + chartRadius + 20, height - (padding + chartRadius + 20)]);
+
+            return {
+                id: chainData.chain,
+                radius: chainData.radius,
+                proposal: chainData.proposal,
+                proportion: chainData.proportion,
+                // 스케일링된 x, y 좌표 사용
+                x: xScale(chainData['x-axis']),
+                y: yScale(chainData['y-axis']),
+                // 위치를 약간 조정할 수 있도록 fx, fy는 설정하지 않음
+            };
+        });
+
+        // Force simulation 설정 수정
+        const forceSimulation = d3
+            .forceSimulation(nodes)
+            .force('charge', d3.forceManyBody().strength(-100))
+            .force(
+                'collision',
+                d3
+                    .forceCollide()
+                    .radius((d) => {
+                        const baseRadius = Math.min(8 + d.radius, maxRadius);
+                        return baseRadius + chartRadius + 20;
+                    })
+                    .strength(1)
+            ) // 충돌 강도를 1로 설정하여 확실히 겹치지 않도록 함
+            .force('x', d3.forceX((d) => d.x).strength(0.5)) // 원래 x 위치로 돌아가려는 힘
+            .force('y', d3.forceY((d) => d.y).strength(0.5)) // 원래 y 위치로 돌아가려는 힘
+            // 경계 검사 force 추가
+            .force('bounds', () => {
+                nodes.forEach((node) => {
+                    const r = Math.min(8 + node.radius, maxRadius) + chartRadius + 20;
+                    // 경계를 벗어나지 않도록 조정
+                    node.x = Math.max(r, Math.min(width - r, node.x));
+                    node.y = Math.max(r, Math.min(height - r, node.y));
+                });
+            });
+
+        // Force simulation 반복 횟수 증가
+        for (let i = 0; i < 500; i++) forceSimulation.tick();
 
         // 노드 매핑
         const nodeById = {};
@@ -66,33 +110,6 @@ const NetworkPie = () => {
         });
 
         // Force simulation 설정
-        const forceSimulation = d3
-            .forceSimulation(nodes)
-            .force('charge', d3.forceManyBody().strength(-200))
-            .force('center', d3.forceCenter(width / 2, height / 2))
-            // x축 경계 설정
-            .force('x', d3.forceX(width / 2).strength(0.1))
-            // y축 경계 설정
-            .force('y', d3.forceY(height / 2).strength(0.1))
-            .force(
-                'collision',
-                d3.forceCollide().radius((d) => {
-                    const baseRadius = Math.min(8 + d.radius, maxRadius);
-                    // 텍스트 라벨을 고려한 충돌 반경
-                    return baseRadius + chartRadius + 20;
-                })
-            )
-            // 경계 설정
-            .force('bounds', () => {
-                for (let node of nodes) {
-                    const r = Math.min(8 + node.radius, maxRadius) + chartRadius + 20;
-                    node.x = Math.max(r, Math.min(width - r, node.x));
-                    node.y = Math.max(r, Math.min(height - r, node.y));
-                }
-            });
-
-        // Force simulation 실행
-        for (let i = 0; i < 300; i++) forceSimulation.tick();
 
         const points = nodes.map((node) => ({
             x: node.x,
