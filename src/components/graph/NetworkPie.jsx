@@ -304,7 +304,7 @@ const NetworkPie = () => {
 
     return (
         <div className="mt-2">
-            <svg ref={svgRef}></svg>
+            <svg className="ml-4" ref={svgRef}></svg>
         </div>
     );
 };
