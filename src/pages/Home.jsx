@@ -3,7 +3,7 @@ import NetworkPie from '../components/graph/NetworkPie';
 import ScatterPlot from '../components/graph/ScatterPlot';
 import Parallel from '../components/graph/Parallel';
 import useChainStore from '../store/store';
-import CircularDendrogram from '../components/graph/CircularDendrogram';
+import SunburstChart from '../components/graph/SunburstChart';
 import ValidatorTable from '../components/ValidatorTable';
 import ClusterResult from '../components/ClusterResult';
 
@@ -99,7 +99,7 @@ const Home = () => {
                             )}
                         </div>
                         <div className="w-1/2 h-full">
-                            <CircularDendrogram data={dendroData} />
+                            <SunburstChart data={dendroData} />
                         </div>
                     </div>
 
