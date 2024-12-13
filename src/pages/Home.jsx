@@ -107,11 +107,11 @@ const Home = () => {
 
                     {/* parallel view */}
                     <div className="w-full h-[26%]">
-                        <h3 className="pl-3 pt-2">Votes Tendency</h3>
+                        <h3 className="pl-3">Votes Tendency</h3>
                         {parallelData ? <Parallel data={parallelData} /> : selectedChain && <p>Loading... </p>}
                     </div>
 
-                    <div className="w-[95%] ml-5 mt-2 mb-1 flex border-t border-gray-200"></div>
+                    <div className="w-[95%] ml-5 mb-1 flex border-t border-gray-200"></div>
 
                     {/* result view */}
                     <div className="w-full h-[28%] flex flex-row">

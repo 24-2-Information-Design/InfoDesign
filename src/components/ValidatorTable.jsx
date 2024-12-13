@@ -73,21 +73,21 @@ const ValidatorTable = () => {
     };
 
     return (
-        <div className="w-full h-[28%] p-4">
-            <h3 className="pl-3 pt-2">Validator Results</h3>
-            <div className="overflow-auto">
+        <div className="w-full h-[28%] ">
+            <h3 className="pl-3">Validator Results</h3>
+            <div>
                 {!baseValidator || selectedValidators.length < 0 ? (
                     <p className="text-sm text-gray-500 ml-4">선택된 검증인이 없습니다.</p>
                 ) : (
-                    <table className="min-w-full">
+                    <table className="min-w-full border-4">
                         <thead>
                             <tr className="border-b">
-                                <th className="px-4 py-2">No.</th>
-                                <th className="px-4 py-2">검증인</th>
-                                <th className="px-4 py-2  cursor-pointer" onClick={handleSortClick}>
+                                <th className="p-1 border-r-2">No.</th>
+                                <th className="p-1 border-r-2">검증인</th>
+                                <th className="p-1 border-r-2 cursor-pointer" onClick={handleSortClick}>
                                     일치율(%) {isDescending ? '▼' : '▲'}
                                 </th>
-                                <th className="px-4 py-2">Cluster</th>
+                                <th className="p-1">Cluster</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -99,15 +99,15 @@ const ValidatorTable = () => {
                                     }`}
                                     onClick={() => index !== 0 && handleValidatorClick(data.validator)}
                                 >
-                                    <td className="px-4 py-2">{index + 1}</td>
-                                    <td className="px-4 py-2">
+                                    <td className="px-4 py-2 border-r-2">{index + 1}</td>
+                                    <td className="px-4 py-2 border-r-2">
                                         {index === 0 ? (
                                             <span className="font-medium">{data.validator}</span>
                                         ) : (
                                             data.validator
                                         )}
                                     </td>
-                                    <td className="px-4 py-2">{(data.matchRate * 100).toFixed(2)}</td>
+                                    <td className="px-4 py-2 border-r-2">{(data.matchRate * 100).toFixed(2)}</td>
                                     <td className="px-4 py-2">{data.cluster}</td>
                                 </tr>
                             ))}
