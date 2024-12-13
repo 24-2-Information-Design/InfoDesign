@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import useChainStore from '../../store/store';
 
-const SunburstChart = ({ data }) => {
+const SunburstChart = ({ data, parallelData }) => {
   const svgRef = useRef(null);
+  const { selectedValidators } = useChainStore();
 
   const voteTypes = [
     { name: 'Yes', color: '#2ecc71' },
@@ -11,6 +13,25 @@ const SunburstChart = ({ data }) => {
     { name: 'Abstain', color: '#3498db' },
     { name: 'No Vote', color: '#95a5a6' }
   ];
+
+  const checkVoteAgreement = (proposalId, parallelData, selectedValidators) => {
+    if (!selectedValidators || selectedValidators.length < 2) return false;
+    
+    // proposal ID를 parallel 데이터 형식으로 변환
+    const proposalKey = `akash_${proposalId}`;
+    
+    // 선택된 검증인들의 투표 데이터 추출
+    const validatorVotes = selectedValidators.map(validator => {
+      const validatorData = parallelData.find(d => d.voter === validator);
+      return validatorData ? validatorData[proposalKey] : null;
+    }).filter(vote => vote !== null);  // null 투표 제외
+
+    // 유효한 투표가 2개 미만이면 false
+    if (validatorVotes.length < 2) return false;
+
+    // 모든 투표가 동일한지 확인
+    return validatorVotes.every(vote => vote === validatorVotes[0]);
+  };
 
   const transformData = (rawData) => {
     if (!rawData) return null;
@@ -21,17 +42,19 @@ const SunburstChart = ({ data }) => {
         name: type.name.toLowerCase(),
         color: type.color,
         children: rawData
-          .filter(d => d[type.name.toLowerCase().replace(' ', '_')] > 0)
+          .filter(d => d[type.name.toLowerCase()] > 0)  // 투표 타입을 소문자로 매칭
           .map(d => ({
             name: d.title,
-            value: 1
+            value: 1,
+            proposalId: d.id,  // dendrogram의 id 필드 사용
+            hasAgreement: checkVoteAgreement(d.id, parallelData, selectedValidators)
           }))
       }))
     };
   };
 
   useEffect(() => {
-    if (!data) return;
+    if (!data || !parallelData) return;
 
     const width = 500;
     const height = 500;
@@ -73,6 +96,18 @@ const SunburstChart = ({ data }) => {
       .innerRadius(d => d.y0)
       .outerRadius(d => d.y1);
 
+    // 툴팁 설정
+    const tooltip = d3.select('body')
+      .append('div')
+      .attr('class', 'tooltip')
+      .style('position', 'absolute')
+      .style('visibility', 'hidden')
+      .style('background-color', 'white')
+      .style('border', '1px solid #ddd')
+      .style('padding', '10px')
+      .style('border-radius', '4px')
+      .style('font-size', '12px');
+
     const path = svg.selectAll("path")
       .data(root.descendants().slice(1))
       .enter()
@@ -80,13 +115,37 @@ const SunburstChart = ({ data }) => {
       .attr("d", arc)
       .style("fill", d => {
         if (d.depth === 2) {
-          return "#d3d3d3";
+          // 선택된 검증인들의 투표가 일치하는 경우 강조색 사용
+          return d.data.hasAgreement ? d.parent.data.color : "#d3d3d3";
         }
         return colorMap[d.data.name];
       })
-      .style("opacity", 0.8)
+      .style("opacity", d => d.depth === 2 && d.data.hasAgreement ? 0.8 : 0.6)
       .style("stroke", "white")
-      .style("stroke-width", "0.5");
+      .style("stroke-width", "0.5")
+      .on('mouseover', function(event, d) {
+        if (d.depth === 2) {
+          tooltip.style('visibility', 'visible')
+            .html(`
+              <strong>Proposal: ${d.data.name}</strong><br/>
+              <strong>Vote Type: ${d.parent.data.name}</strong>
+              ${d.data.hasAgreement ? '<br/><span style="color: green;">✓ Selected validators agreed on this proposal</span>' : ''}
+            `)
+            .style('left', (event.pageX + 10) + 'px')
+            .style('top', (event.pageY - 10) + 'px');
+
+          d3.select(this)
+            .style("opacity", 1)
+            .style("stroke-width", "2");
+        }
+      })
+      .on('mouseout', function(event, d) {
+        tooltip.style('visibility', 'hidden');
+        
+        d3.select(this)
+          .style("opacity", d.depth === 2 && d.data.hasAgreement ? 0.8 : 0.6)
+          .style("stroke-width", "0.5");
+      });
 
     const text = svg.selectAll("text")
       .data(root.descendants().filter(d => d.depth === 1))
@@ -103,7 +162,11 @@ const SunburstChart = ({ data }) => {
       .style("fill", "white")
       .text(d => d.data.name.charAt(0).toUpperCase() + d.data.name.slice(1));
 
-  }, [data]);
+    return () => {
+      tooltip.remove();
+    };
+
+  }, [data, parallelData, selectedValidators]);
 
   return <svg ref={svgRef} className="w-full h-full" />;
 };
