@@ -7,7 +7,7 @@ import useChainStore from '../../store/store';
 
 const NetworkPie = () => {
     const svgRef = useRef(null);
-    const { setSelectedChain, selectedValidators, setSelectedValidators } = useChainStore();
+    const { setSelectedChain, selectedValidators } = useChainStore();
 
     useEffect(() => {
         if (!svgRef.current) return;
@@ -107,6 +107,15 @@ const NetworkPie = () => {
             nodeById[node.id] = node;
         });
 
+        // Force simulation 설정
+
+        const points = nodes.map((node) => ({
+            x: node.x,
+            y: node.y,
+            radius: node.radius,
+            id: node.id,
+        }));
+
         // 링크 렌더링
         linkData.forEach((link) => {
             const sourceNode = nodeById[link.chain1];
@@ -153,19 +162,7 @@ const NetworkPie = () => {
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
                 .on('click', (event, d) => {
-                    const chainData = jsonData.find((chain) => chain.chain === d.id);
-
-                    // 선택된 검증인들이 새로 선택된 체인에 모두 포함되어 있는지 확인
-                    const allValidatorsIncluded =
-                        selectedValidators.length > 0 &&
-                        selectedValidators.every((validator) => chainData.validators?.includes(validator));
-
                     setSelectedChain(d.id);
-
-                    // 선택된 검증인들이 새 체인에 포함되지 않으면 검증인 선택 초기화
-                    if (!allValidatorsIncluded && selectedValidators.length > 0) {
-                        setSelectedValidators([]);
-                    }
 
                     // 연결된 체인과 공유 검증인 수 정보 가져오기
                     const linkedChainsInfo = linkData
@@ -175,59 +172,40 @@ const NetworkPie = () => {
                             sharedValidators: link.shared_validators,
                         }));
 
-                    // 선택된 검증인들이 포함된 체인들 찾기
-                    const chainsWithSelectedValidators =
-                        selectedValidators.length > 0
-                            ? jsonData
-                                  .filter((chain) =>
-                                      selectedValidators.every((validator) => chain.validators?.includes(validator))
-                                  )
-                                  .map((chain) => chain.chain)
-                            : [];
+                    // 공유 검증인 수의 범위 계산
+                    const maxSharedValidators = d3.max(linkedChainsInfo, (info) => info.sharedValidators);
+                    const minSharedValidators = d3.min(linkedChainsInfo, (info) => info.sharedValidators);
 
-                    // 투명도 설정
+                    // 투명도 스케일 설정 (공유 검증인 수가 많을수록 불투명)
+                    const opacityScale = d3
+                        .scaleLinear()
+                        .domain([minSharedValidators, maxSharedValidators])
+                        .range([0.1, 0.9]); // 최소 0.1, 최대 0.9 투명도
+
+                    // 체인 그룹 opacity 업데이트
                     d3.selectAll('.blockchain-group').each(function (groupD) {
                         const currentGroup = d3.select(this);
                         if (groupD.id === d.id) {
-                            currentGroup.style('opacity', 1); // 선택된 체인
-                        } else if (selectedValidators.length > 0) {
-                            // 선택된 검증인들이 있는 경우
-                            if (chainsWithSelectedValidators.includes(groupD.id)) {
-                                // 선택된 검증인들을 모두 포함하는 체인
-                                const linkedInfo = linkedChainsInfo.find((info) => info.chain === groupD.id);
-                                const opacityValue = linkedInfo ? 0.3 + (linkedInfo.sharedValidators / 100) * 0.7 : 0.3;
-                                currentGroup.style('opacity', opacityValue);
-                            } else {
-                                currentGroup.style('opacity', 0.1); // 선택된 검증인들을 포함하지 않는 체인
-                            }
+                            currentGroup.style('opacity', 1); // 선택된 체인은 완전 불투명
                         } else {
-                            // 선택된 검증인이 없는 경우 기존 로직 적용
                             const linkedInfo = linkedChainsInfo.find((info) => info.chain === groupD.id);
                             if (linkedInfo) {
-                                const opacityValue = 0.3 + (linkedInfo.sharedValidators / 100) * 0.7;
-                                currentGroup.style('opacity', opacityValue);
+                                // 연결된 체인은 공유 검증인 수에 따른 투명도
+                                currentGroup.style('opacity', opacityScale(linkedInfo.sharedValidators));
                             } else {
+                                // 연결되지 않은 체인은 매우 투명하게
                                 currentGroup.style('opacity', 0.1);
                             }
                         }
                     });
 
-                    // 링크 라인 업데이트
+                    // 링크 라인 visibility 업데이트
                     zoomableGroup
                         .selectAll('line')
                         .style('visibility', function () {
                             const line = d3.select(this);
-                            if (selectedValidators.length > 0) {
-                                // 선택된 검증인들이 있는 경우
-                                const isConnectedToSelected =
-                                    line.classed(`link-${d.id}`) &&
-                                    (line.classed(`link-${chainsWithSelectedValidators[0]}`) ||
-                                        chainsWithSelectedValidators.some((chain) => line.classed(`link-${chain}`)));
-                                return isConnectedToSelected ? 'visible' : 'hidden';
-                            } else {
-                                // 기존 로직
-                                return line.classed(`link-${d.id}`) ? 'visible' : 'hidden';
-                            }
+                            const isConnected = line.classed(`link-${d.id}`);
+                            return isConnected ? 'visible' : 'hidden';
                         })
                         .style('opacity', function () {
                             const line = d3.select(this);
@@ -287,7 +265,7 @@ const NetworkPie = () => {
                 .attr('font-size', '12px')
                 .attr('font-weight', 'bold');
         });
-    }, [setSelectedChain, selectedValidators, setSelectedValidators]);
+    }, [setSelectedChain, selectedValidators]);
 
     return (
         <div className="mt-2">
