@@ -235,7 +235,6 @@ const NetworkPie = () => {
 
             // 바 차트 데이터 및 렌더링
             const barData = Object.entries(chainData.proposal).map(([key, value]) => ({ month: key, value }));
-            const barColorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
             const barArc = d3
                 .arc()
@@ -250,7 +249,7 @@ const NetworkPie = () => {
                 .enter()
                 .append('path')
                 .attr('d', barArc)
-                .attr('fill', '#2ca02c')
+                .attr('fill', '#8aaed3')
                 .attr('opacity', 0.7)
                 .attr('class', 'bar')
                 .append('title')

@@ -53,41 +53,41 @@ const Home = () => {
                 {/* left section */}
                 <div className="w-2/5 h-full m-1 ml-3 shadow-xl rounded-lg border-slate-100 border-[0.3px]">
                     <h2 className="pl-3 pt-2">Overall Chain View</h2>
-                    <div className="w-full h-[69%]">
+                    <div className="w-full h-[60%]">
                         <NetworkPie />
                     </div>
                     <div className="w-[94%] ml-4 mt-1 mb-1 flex border-t border-gray-200"></div>
 
                     {/* chain result */}
                     <div className="w-full h-auto">
-                        <h3 className="pl-3 pt-2 ml-4">Chain Results</h3>
+                        <h3 className="pl-3 ml-4">Chain Results</h3>
                         {selectedChain && (
-                            <div className="border-2 ml-4 p-4">
+                            <div className=" ml-4 p-2">
                                 {/* 상단 3개 */}
-                                <div className="grid grid-cols-3 gap-4 text-center mb-6">
+                                <div className="grid grid-cols-3 gap-4 text-center  ">
                                     <div>
                                         <img
-                                            src={`src/assets/${selectedChain}.png`}
+                                            src={`src/assets/chain/${selectedChain}.png`}
                                             alt="selected-chain"
-                                            className="mx-auto w-12 h-12 mb-2"
+                                            className="mx-auto w-8 h-8 "
                                         />
                                         <strong className="text-lg">{selectedChain}</strong>
                                         <p className="text-sm text-gray-500">Selected Chain</p>
                                     </div>
                                     <div>
                                         <img
-                                            src="src/assets/validator.png"
+                                            src="src/assets/result/validator.png"
                                             alt="validators"
-                                            className="mx-auto w-12 h-12 mb-2"
+                                            className="mx-auto  w-8 h-8 "
                                         />
                                         <strong className="text-lg">{chainData.validator_num}</strong>
                                         <p className="text-sm text-gray-500">Number of Validator</p>
                                     </div>
                                     <div>
                                         <img
-                                            src="src/assets/proposal.png"
+                                            src="src/assets/result/proposal.png"
                                             alt="proposals"
-                                            className="mx-auto w-12 h-12 mb-2"
+                                            className="mx-auto  w-8 h-8"
                                         />
                                         <strong className="text-lg">{chainData.proposal_num}</strong>
                                         <p className="text-sm text-gray-500">Number of Proposal</p>
@@ -101,9 +101,9 @@ const Home = () => {
                                             {chainData.similar_chains.map((chain, index) => (
                                                 <img
                                                     key={index}
-                                                    src={`src/assets/${chain}.png`}
+                                                    src={`src/assets/chain/${chain}.png`}
                                                     alt={`similar-chain-${chain}`}
-                                                    className="w-12 h-12 mr-2"
+                                                    className=" w-8 h-8 mr-1"
                                                 />
                                             ))}
                                         </div>
@@ -112,18 +112,18 @@ const Home = () => {
                                     </div>
                                     <div>
                                         <img
-                                            src="src/assets/cluster.png"
+                                            src="src/assets/result/cluster.png"
                                             alt="clusters"
-                                            className="mx-auto w-12 h-12 mb-2"
+                                            className="mx-auto  w-8 h-8"
                                         />
                                         <strong className="text-lg">{chainData.cluster_num}</strong>
                                         <p className="text-sm text-gray-500">Number of Cluster</p>
                                     </div>
                                     <div>
                                         <img
-                                            src="src/assets/tolerance.png"
+                                            src="src/assets/result/tolerance.png"
                                             alt="tolerance"
-                                            className="mx-auto w-12 h-12 mb-2"
+                                            className="mx-auto w-8 h-8"
                                         />
                                         <strong className="text-lg">{chainData.radius}</strong>
                                         <p className="text-sm text-gray-500">Tolerance of Opinions</p>
