@@ -19,8 +19,7 @@ const Parallel = ({ data }) => {
         const spacing = 100; // 기준선 간격
 
         // SVG 설정
-        svg.attr('width', width)
-           .attr('height', height);
+        svg.attr('width', width).attr('height', height);
 
         const chainKeys = Object.keys(data[0])
             .filter((key) => {
@@ -43,20 +42,19 @@ const Parallel = ({ data }) => {
         const colorScale = d3.scaleOrdinal(NormalColors);
 
         // 메인 컨테이너
-        const container = svg.append('g')
-            .attr('class', 'container');
+        const container = svg.append('g').attr('class', 'container');
 
-        // x축 구성
+        // x축 구성 (End 포함)
         const xScale = d3
             .scalePoint()
-            .domain(['Cluster', ...chainKeys, 'End'])
+            .domain(['C', ...chainKeys, 'End'])
             .range([0, totalWidth])
             .padding(0.5);
 
         // y축 구성
         const clusterScale = d3
             .scalePoint()
-            .domain([...Array.from({ length: 14 }, (_, i) => `Cluster ${i}`)])
+            .domain([...Array.from({ length: 14 }, (_, i) => `C ${i}`)])
             .range([height, 0])
             .padding(0.5);
 
@@ -66,25 +64,41 @@ const Parallel = ({ data }) => {
             .range([height, 0])
             .padding(0.5);
 
-        // 축 그리기
-        container.selectAll('.axis')
-            .data(['Cluster', ...chainKeys])
+        // 축 그리기 (Cluster 축과 첫 번째 투표 축에만 레이블 표시)
+        container
+            .selectAll('.axis')
+            .data(['C', ...chainKeys, 'End']) // End 추가
             .enter()
             .append('g')
             .attr('class', 'axis')
             .attr('transform', (d) => `translate(${xScale(d)}, 0)`)
-            .each(function (d) {
-                d3.select(this).call(d3.axisLeft(d === 'Cluster' ? clusterScale : voteScale));
-            })
-            .selectAll('.tick text')
-            .remove();
+            .each(function (d, i) {
+                const isCluster = d === 'C' || d === 'End';
+                const axis = d3.axisLeft(isCluster ? clusterScale : voteScale);
+                d3.select(this).call(axis);
+
+                // Cluster 축, 첫 번째 투표 축, End 축을 제외한 모든 축의 텍스트 제거
+                if (d !== 'C' && i !== 1) {
+                    d3.select(this).selectAll('.tick text').remove();
+                }
+
+                // Cluster 축과 End 축의 텍스트 스타일 조정
+                if (d === 'C') {
+                    d3.select(this).selectAll('.tick text').style('font-size', '10px').style('text-anchor', 'end');
+                }
+
+                // 첫 번째 투표 축의 텍스트 스타일 조정
+                if (i === 1) {
+                    d3.select(this).selectAll('.tick text').style('font-size', '10px').style('text-anchor', 'end');
+                }
+            });
 
         // 라인 생성
         const line = d3
             .line()
             .x((d) => xScale(d.chainID))
             .y((d) => {
-                if (d.chainID === 'Cluster' || d.chainID === 'End') {
+                if (d.chainID === 'C' || d.chainID === 'End') {
                     return clusterScale(d.vote);
                 }
                 return voteScale(d.vote || 'NO_VOTE');
@@ -92,7 +106,8 @@ const Parallel = ({ data }) => {
             .defined((d) => d.vote !== undefined);
 
         // 라인 그리기
-        container.selectAll('.voter-path')
+        container
+            .selectAll('.voter-path')
             .data(data)
             .enter()
             .append('path')
@@ -101,12 +116,12 @@ const Parallel = ({ data }) => {
                 id: voter.voter,
                 cluster: voter.cluster_label,
                 values: [
-                    { chainID: 'Cluster', vote: `Cluster ${voter.cluster_label}` },
+                    { chainID: 'C', vote: `C ${voter.cluster_label}` },
                     ...chainKeys.map((chainID) => ({
                         chainID,
                         vote: voter[chainID] || 'NO_VOTE',
                     })),
-                    { chainID: 'End', vote: `Cluster ${voter.cluster_label}` },
+                    { chainID: 'End', vote: `C ${voter.cluster_label}` },
                 ],
             }))
             .attr('fill', 'none')
@@ -114,42 +129,33 @@ const Parallel = ({ data }) => {
             .attr('stroke-width', (d) => (selectedValidators.includes(d.id) ? 2.5 : 1.5))
             .attr('d', (d) => line(d.values))
             .style('opacity', (d) => (selectedValidators.length === 0 || selectedValidators.includes(d.id) ? 0.6 : 0.1))
-            .on('mouseover', function(event, d) {
-                d3.select(this)
-                    .attr('stroke-width', 3)
-                    .style('opacity', 0.9);
+            .on('mouseover', function (event, d) {
+                d3.select(this).attr('stroke-width', 3).style('opacity', 0.9);
             })
-            .on('mouseout', function(event, d) {
+            .on('mouseout', function (event, d) {
                 d3.select(this)
                     .attr('stroke-width', selectedValidators.includes(d.id) ? 2.5 : 1.5)
                     .style('opacity', selectedValidators.length === 0 || selectedValidators.includes(d.id) ? 0.6 : 0.1);
             });
 
         // Zoom 행동 정의
-        const zoom = d3.zoom()
-            .scaleExtent([minScale, 2]) // 최소 스케일을 화면 비율로 설정
+        const zoom = d3
+            .zoom()
+            .scaleExtent([minScale, 2])
             .on('zoom', (event) => {
                 const transform = event.transform;
                 const scale = transform.k;
-                
-                // 이동 범위 제한 계산
-                const maxX = 0; // 오른쪽 한계
-                const minX = -totalWidth * scale + width; // 왼쪽 한계
-                
-                // x 좌표를 제한된 범위 내로 조정
+
+                const maxX = 0;
+                const minX = -totalWidth * scale + width;
+
                 const x = Math.min(maxX, Math.max(minX, transform.x));
-                
+
                 container.attr('transform', `translate(${x},0) scale(${scale},1)`);
             });
 
         // 초기 transform 설정 및 zoom 적용
-        svg.call(zoom)
-           .call(
-                zoom.transform, 
-                d3.zoomIdentity
-                    .scale(minScale) // 초기 스케일도 최소 스케일로 설정
-            );
-
+        svg.call(zoom).call(zoom.transform, d3.zoomIdentity.scale(minScale));
     }, [data, selectedValidators]);
 
     return (

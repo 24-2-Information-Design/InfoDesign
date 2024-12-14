@@ -59,25 +59,74 @@ const Home = () => {
                     <div className="w-[94%] ml-4 mt-1 mb-1 flex border-t border-gray-200"></div>
 
                     {/* chain result */}
-                    <div className="w-full h-[30%]">
+                    <div className="w-full h-auto">
                         <h3 className="pl-3 pt-2 ml-4">Chain Results</h3>
                         {selectedChain && (
-                            <div className="border-2 ml-4">
-                                <div className="ml-4">
-                                    <strong>{selectedChain}</strong>
-                                    <div className="flex flex-wrap justify-between">
-                                        <div className="w-full sm:w-2/3">
-                                            <div className="flex flex-wrap">
-                                                <p className="w-full sm:w-1/2">검증인 수: {chainData.validator_num}</p>
-                                                <p className="w-full sm:w-1/2">군집 수: {chainData.cluster_num}</p>
-                                                <p className="w-full sm:w-1/2">proposal 수: {chainData.proposal_num}</p>
-                                                <p className="w-full sm:w-1/2">의견 포용력: {chainData.radius}</p>
-                                            </div>
+                            <div className="border-2 ml-4 p-4">
+                                {/* 상단 3개 */}
+                                <div className="grid grid-cols-3 gap-4 text-center mb-6">
+                                    <div>
+                                        <img
+                                            src={`src/assets/${selectedChain}.png`}
+                                            alt="selected-chain"
+                                            className="mx-auto w-12 h-12 mb-2"
+                                        />
+                                        <strong className="text-lg">{selectedChain}</strong>
+                                        <p className="text-sm text-gray-500">Selected Chain</p>
+                                    </div>
+                                    <div>
+                                        <img
+                                            src="src/assets/validator.png"
+                                            alt="validators"
+                                            className="mx-auto w-12 h-12 mb-2"
+                                        />
+                                        <strong className="text-lg">{chainData.validator_num}</strong>
+                                        <p className="text-sm text-gray-500">Number of Validator</p>
+                                    </div>
+                                    <div>
+                                        <img
+                                            src="src/assets/proposal.png"
+                                            alt="proposals"
+                                            className="mx-auto w-12 h-12 mb-2"
+                                        />
+                                        <strong className="text-lg">{chainData.proposal_num}</strong>
+                                        <p className="text-sm text-gray-500">Number of Proposal</p>
+                                    </div>
+                                </div>
+
+                                {/* 하단 3개 */}
+                                <div className="grid grid-cols-3 gap-4 text-center">
+                                    <div>
+                                        <div className="flex justify-center mb-2">
+                                            {chainData.similar_chains.map((chain, index) => (
+                                                <img
+                                                    key={index}
+                                                    src={`src/assets/${chain}.png`}
+                                                    alt={`similar-chain-${chain}`}
+                                                    className="w-12 h-12 mr-2"
+                                                />
+                                            ))}
                                         </div>
-                                        <div className="w-1/2 sm:w-1/3 flex-wrap">
-                                            <p>유사한 체인</p>
-                                            <p>{chainData.similar_chains.join(', ')}</p>
-                                        </div>
+                                        <strong className="text-lg">{chainData.similar_chains.join(', ')}</strong>
+                                        <p className="text-sm text-gray-500">Similar Chain</p>
+                                    </div>
+                                    <div>
+                                        <img
+                                            src="src/assets/cluster.png"
+                                            alt="clusters"
+                                            className="mx-auto w-12 h-12 mb-2"
+                                        />
+                                        <strong className="text-lg">{chainData.cluster_num}</strong>
+                                        <p className="text-sm text-gray-500">Number of Cluster</p>
+                                    </div>
+                                    <div>
+                                        <img
+                                            src="src/assets/tolerance.png"
+                                            alt="tolerance"
+                                            className="mx-auto w-12 h-12 mb-2"
+                                        />
+                                        <strong className="text-lg">{chainData.radius}</strong>
+                                        <p className="text-sm text-gray-500">Tolerance of Opinions</p>
                                     </div>
                                 </div>
                             </div>

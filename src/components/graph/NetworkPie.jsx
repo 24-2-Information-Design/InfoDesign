@@ -18,8 +18,6 @@ const NetworkPie = () => {
         const width = 550;
         const height = 430;
         const padding = 60; // 여백
-        const effectiveWidth = width - padding * 2;
-        const effectiveHeight = height - padding * 2;
 
         // Zoom 설정
         const zoomableGroup = svg.append('g').attr('class', 'zoomable-group');
@@ -109,62 +107,70 @@ const NetworkPie = () => {
             nodeById[node.id] = node;
         });
 
-        // Force simulation 설정
-
-        const points = nodes.map((node) => ({
-            x: node.x,
-            y: node.y,
-            radius: node.radius,
-            id: node.id,
-        }));
-
-        // Weighted Voronoi를 시뮬레이션하기 위한 다수의 포인트 생성
-        const weightedPoints = [];
-        points.forEach((point) => {
-            // radius 값에 따라 포인트 수를 조절
-            const numPoints = Math.max(1, Math.floor(point.radius * 2));
-            const spread = point.radius / 2; // 분산 정도
-
-            for (let i = 0; i < numPoints; i++) {
-                // 원형으로 포인트 분산
-                const angle = (2 * Math.PI * i) / numPoints;
-                const jitter = spread * Math.random() * 0.5; // 약간의 랜덤성 추가
-                weightedPoints.push({
-                    x: point.x + Math.cos(angle) * jitter,
-                    y: point.y + Math.sin(angle) * jitter,
-                    originalId: point.id,
-                });
+        const updateChainOpacity = () => {
+            if (selectedValidators.length === 0) {
+                // 선택된 검증인이 없으면 모든 체인을 보통 opacity로
+                d3.selectAll('.blockchain-group').style('opacity', 0.6);
+                zoomableGroup
+                    .selectAll('line')
+                    .style('visibility', 'visible')
+                    .style('opacity', (d) => (d.shared_validators >= 40 ? 0.6 : 0.3));
+                return;
             }
-        });
 
-        // Voronoi 다이어그램 생성
-        // Voronoi 다이어그램 생성
-        const delaunay = d3.Delaunay.from(
-            points, // 가중치 포인트 대신 원본 포인트 사용
-            (d) => d.x,
-            (d) => d.y
-        );
-        const voronoi = delaunay.voronoi([0, 0, width, height]);
+            // 각 체인별로 선택된 검증인들의 포함 여부 계산
+            const chainValidatorCounts = {};
+            jsonData.forEach((chain) => {
+                const validators = Object.entries(chain.proportion)
+                    .filter(([validator, proportion]) => proportion > 0)
+                    .map(([validator]) => validator);
 
-        // Voronoi 영역 렌더링
-        points.forEach((point, i) => {
-            const cell = voronoi.cellPolygon(i);
-            if (!cell) return;
+                const selectedValidatorCount = selectedValidators.filter((v) => validators.includes(v)).length;
+                chainValidatorCounts[chain.chain] = selectedValidatorCount;
+            });
 
-            const chainData = jsonData.find((d) => d.chain === point.id);
-            const opacity = 0.1 + (chainData.radius / d3.max(jsonData, (d) => d.radius)) * 0.2;
+            // opacity scale 설정 (0은 0.1, 최대값은 0.9)
+            const maxCount = Math.max(...Object.values(chainValidatorCounts));
+            const opacityScale = d3.scaleLinear().domain([0, maxCount]).range([0.1, 0.9]);
 
+            // 체인 그룹 opacity 업데이트
+            d3.selectAll('.blockchain-group').style('opacity', function (d) {
+                return opacityScale(chainValidatorCounts[d.id]);
+            });
+
+            // 링크 업데이트
             zoomableGroup
-                .append('path')
-                .attr('d', d3.line()(cell))
-                .attr('fill', '#FFFFFF')
-                .attr('fill-opacity', opacity)
-                .attr('stroke', '#888888')
-                .attr('stroke-opacity', 0.3)
-                .attr('stroke-width', 0.5)
-                .attr('class', `voronoi-cell-${point.id}`)
-                .style('pointer-events', 'none');
-        });
+                .selectAll('line')
+                .style('visibility', function () {
+                    const line = d3.select(this);
+                    const [chain1, chain2] = line
+                        .attr('class')
+                        .split(' ')
+                        .filter((c) => c.startsWith('link-'))
+                        .map((c) => c.replace('link-', ''));
+
+                    const count1 = chainValidatorCounts[chain1];
+                    const count2 = chainValidatorCounts[chain2];
+
+                    // 양쪽 체인 모두 선택된 검증인이 하나 이상 있는 경우만 표시
+                    return count1 > 0 && count2 > 0 ? 'visible' : 'hidden';
+                })
+                .style('opacity', function () {
+                    const line = d3.select(this);
+                    const [chain1, chain2] = line
+                        .attr('class')
+                        .split(' ')
+                        .filter((c) => c.startsWith('link-'))
+                        .map((c) => c.replace('link-', ''));
+
+                    const count1 = chainValidatorCounts[chain1];
+                    const count2 = chainValidatorCounts[chain2];
+
+                    // 양쪽 체인의 검증인 포함 비율에 따라 opacity 결정
+                    const avgCount = (count1 + count2) / 2;
+                    return opacityScale(avgCount);
+                });
+        };
 
         // 링크 렌더링
         linkData.forEach((link) => {
@@ -211,23 +217,41 @@ const NetworkPie = () => {
                 .attr('transform', `translate(${node.x}, ${node.y})`)
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
-
                 .on('click', (event, d) => {
                     setSelectedChain(d.id);
 
-                    const linkedChains = linkData
+                    // 연결된 체인과 공유 검증인 수 정보 가져오기
+                    const linkedChainsInfo = linkData
                         .filter((link) => link.chain1 === d.id || link.chain2 === d.id)
-                        .map((link) => (link.chain1 === d.id ? link.chain2 : link.chain1));
+                        .map((link) => ({
+                            chain: link.chain1 === d.id ? link.chain2 : link.chain1,
+                            sharedValidators: link.shared_validators,
+                        }));
+
+                    // 공유 검증인 수의 범위 계산
+                    const maxSharedValidators = d3.max(linkedChainsInfo, (info) => info.sharedValidators);
+                    const minSharedValidators = d3.min(linkedChainsInfo, (info) => info.sharedValidators);
+
+                    // 투명도 스케일 설정 (공유 검증인 수가 많을수록 불투명)
+                    const opacityScale = d3
+                        .scaleLinear()
+                        .domain([minSharedValidators, maxSharedValidators])
+                        .range([0.1, 0.9]); // 최소 0.1, 최대 0.9 투명도
 
                     // 체인 그룹 opacity 업데이트
-                    d3.selectAll('.blockchain-group').each(function (d) {
+                    d3.selectAll('.blockchain-group').each(function (groupD) {
                         const currentGroup = d3.select(this);
-                        if (d.id === node.id) {
-                            currentGroup.style('opacity', 1);
-                        } else if (linkedChains.includes(d.id)) {
-                            currentGroup.style('opacity', 0.1);
+                        if (groupD.id === d.id) {
+                            currentGroup.style('opacity', 1); // 선택된 체인은 완전 불투명
                         } else {
-                            currentGroup.style('opacity', 0.1);
+                            const linkedInfo = linkedChainsInfo.find((info) => info.chain === groupD.id);
+                            if (linkedInfo) {
+                                // 연결된 체인은 공유 검증인 수에 따른 투명도
+                                currentGroup.style('opacity', opacityScale(linkedInfo.sharedValidators));
+                            } else {
+                                // 연결되지 않은 체인은 매우 투명하게
+                                currentGroup.style('opacity', 0.1);
+                            }
                         }
                     });
 
@@ -237,14 +261,11 @@ const NetworkPie = () => {
                         .style('visibility', function () {
                             const line = d3.select(this);
                             const isConnected = line.classed(`link-${d.id}`);
-
-                            // 선택된 체인과 관련된 선만 보이도록 설정
                             return isConnected ? 'visible' : 'hidden';
                         })
                         .style('opacity', function () {
                             const line = d3.select(this);
                             if (line.classed(`link-${d.id}`)) {
-                                // 연결된 선에 대해서만 shared_validators 값에 따른 opacity 적용
                                 const linkInfo = linkData.find(
                                     (link) =>
                                         (link.chain1 === d.id && line.classed(`link-${link.chain2}`)) ||
@@ -255,7 +276,6 @@ const NetworkPie = () => {
                             return 0;
                         });
                 });
-
             // 파이 슬라이스 렌더링
             blockchainGroup
                 .selectAll('.pie-slice')
@@ -285,7 +305,7 @@ const NetworkPie = () => {
                 .enter()
                 .append('path')
                 .attr('d', barArc)
-                .attr('fill', (d, i) => barColorScale(i))
+                .attr('fill', '#2ca02c')
                 .attr('opacity', 0.7)
                 .attr('class', 'bar')
                 .append('title')
