@@ -4,7 +4,7 @@ import useChainStore from '../../store/store';
 
 const SunburstChart = ({ data, parallelData }) => {
   const svgRef = useRef(null);
-  const { selectedValidators } = useChainStore();
+  const { selectedValidators, selectedChain } = useChainStore();
 
   const voteTypes = [
     { name: 'Yes', color: '#2ecc71' },
@@ -17,8 +17,8 @@ const SunburstChart = ({ data, parallelData }) => {
   const checkVoteAgreement = (proposalId, parallelData, selectedValidators) => {
     if (!selectedValidators || selectedValidators.length < 2) return false;
     
-    // proposal ID를 parallel 데이터 형식으로 변환
-    const proposalKey = `akash_${proposalId}`;
+    // 현재 선택된 체인을 기반으로 proposal ID 생성
+    const proposalKey = `${selectedChain}_${proposalId}`;
     
     // 선택된 검증인들의 투표 데이터 추출
     const validatorVotes = selectedValidators.map(validator => {
@@ -166,7 +166,7 @@ const SunburstChart = ({ data, parallelData }) => {
       tooltip.remove();
     };
 
-  }, [data, parallelData, selectedValidators]);
+  }, [data, parallelData, selectedValidators, selectedChain]); // selectedChain 의존성 추가
 
   return <svg ref={svgRef} className="w-full h-full" />;
 };
