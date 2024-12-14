@@ -41,11 +41,21 @@ const ValidatorTable = () => {
                             validator,
                             matchRate: baseValidatorData[validator] || 0,
                             cluster: clusterLabel,
+                            overallMatchRate: validatorInfo?.overall_match_rate || 0,
+                            clusterMatchRate: validatorInfo?.cluster_match_rate || 0,
+                            participationRate: validatorInfo?.participation_rate || 0,
                         };
                     });
 
                 setValidatorData([
-                    { validator: baseValidator, matchRate: 1, cluster: baseValidatorData.cluster_label },
+                    {
+                        validator: baseValidator,
+                        matchRate: 1,
+                        cluster: baseValidatorData.cluster_label,
+                        overallMatchRate: baseValidatorData.overall_match_rate || 0,
+                        clusterMatchRate: baseValidatorData.cluster_match_rate || 0,
+                        participationRate: baseValidatorData.participation_rate || 0,
+                    },
                     ...validatorsInfo,
                 ]);
             })
@@ -61,7 +71,7 @@ const ValidatorTable = () => {
     };
 
     const handleSortClick = () => {
-        setIsDescending(!isDescending); // 정렬 방향 토글
+        setIsDescending(!isDescending);
         setValidatorData((prevData) => {
             if (prevData.length <= 1) return prevData;
             const [first, ...rest] = prevData;
@@ -73,49 +83,55 @@ const ValidatorTable = () => {
     };
 
     return (
-        <div className="w-full h-[28%] ">
-            <h3 className="pl-3">Validator Results</h3>
-            <div>
-                {!baseValidator || selectedValidators.length < 0 ? (
-                    <p className="text-sm text-gray-500 ml-4">선택된 검증인이 없습니다.</p>
-                ) : (
-                    <table className="min-w-full border-4">
-                        <thead>
-                            <tr className="border-b">
-                                <th className="p-1 border-r-2">No.</th>
-                                <th className="p-1 border-r-2">검증인</th>
-                                <th className="p-1 border-r-2 cursor-pointer" onClick={handleSortClick}>
-                                    일치율(%) {isDescending ? '▼' : '▲'}
-                                </th>
-                                <th className="p-1">Cluster</th>
+        // div className="max-h-[400px] overflow-auto" 부분을 다음과 같이 수정합니다
+        <div className="border rounded-lg">
+            <div style={{ maxHeight: 'calc((2.5rem * 3) + 2.5rem)' }} className="overflow-auto">
+                <table className="w-full">
+                    <thead className="sticky top-0 bg-white border-b">
+                        <tr>
+                            <th className="p-1 text-left font-medium text-sm border-r">No.</th>
+                            <th className="p-0 text-left text-center font-medium text-sm border-r">검증인</th>
+                            <th
+                                className="p-0 text-left font-medium text-sm border-r cursor-pointer"
+                                onClick={handleSortClick}
+                            >
+                                일치율(%) {isDescending ? '▼' : '▲'}
+                            </th>
+                            <th className="p-0 text-left font-medium text-sm border-r">Cluster</th>
+                            <th className="p-0 text-left font-medium text-sm border-r">전체 일치율</th>
+                            <th className="p-0 text-left font-medium text-sm border-r">클러스터 일치율</th>
+                            <th className="p-0 text-left font-medium text-sm">참여율</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {validatorData.map((data, index) => (
+                            <tr
+                                key={data.validator}
+                                className={`border-b last:border-b-0 ${
+                                    index === 0 ? 'bg-gray-50' : 'hover:bg-gray-100 cursor-pointer'
+                                }`}
+                                onClick={() => index !== 0 && handleValidatorClick(data.validator)}
+                            >
+                                <td className="p-2 border-r">{index + 1}</td>
+                                <td className="p-2 border-r">
+                                    {index === 0 ? (
+                                        <span className="font-medium">{data.validator}</span>
+                                    ) : (
+                                        data.validator
+                                    )}
+                                </td>
+                                <td className="p-2 border-r">{(data.matchRate * 100).toFixed(2)}</td>
+                                <td className="p-2 border-r">{data.cluster}</td>
+                                <td className="p-2 border-r">{(data.overallMatchRate * 100).toFixed(2)}</td>
+                                <td className="p-2 border-r">{(data.clusterMatchRate * 100).toFixed(2)}</td>
+                                <td className="p-2">{(data.participationRate * 100).toFixed(2)}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {validatorData.map((data, index) => (
-                                <tr
-                                    key={data.validator}
-                                    className={`border-b ${
-                                        index === 0 ? 'bg-gray-50' : 'hover:bg-gray-100 cursor-pointer'
-                                    }`}
-                                    onClick={() => index !== 0 && handleValidatorClick(data.validator)}
-                                >
-                                    <td className="px-4 py-2 border-r-2">{index + 1}</td>
-                                    <td className="px-4 py-2 border-r-2">
-                                        {index === 0 ? (
-                                            <span className="font-medium">{data.validator}</span>
-                                        ) : (
-                                            data.validator
-                                        )}
-                                    </td>
-                                    <td className="px-4 py-2 border-r-2">{(data.matchRate * 100).toFixed(2)}</td>
-                                    <td className="px-4 py-2">{data.cluster}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )}
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
 };
+
 export default ValidatorTable;

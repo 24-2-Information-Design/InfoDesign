@@ -71,6 +71,74 @@ const ScatterPlot = ({ data }) => {
             .style('font-size', '12px')
             .style('pointer-events', 'none');
 
+        // 노드 클릭 핸들러
+        function handleNodeClick(event, d) {
+            event.stopPropagation();
+            if (singleSelectMode) {
+                // 단일 선택 모드
+                const isCurrentlySelected = selectedValidators.includes(d.voter);
+                const newSelected = isCurrentlySelected ? [] : [d.voter];
+                setSelectedValidators(newSelected);
+                setBaseValidator(isCurrentlySelected ? null : d.voter);
+            } else {
+                // 다중 선택 모드
+                const isSelected = selectedValidators.includes(d.voter);
+                let newSelected;
+                if (isSelected) {
+                    newSelected = selectedValidators.filter((v) => v !== d.voter);
+                    if (d.voter === baseValidator) {
+                        setBaseValidator(newSelected.length > 0 ? newSelected[0] : null);
+                    }
+                } else {
+                    newSelected = [...selectedValidators, d.voter];
+                    if (!baseValidator) {
+                        setBaseValidator(d.voter);
+                    }
+                }
+                setSelectedValidators(newSelected);
+            }
+        }
+
+        // 브러시 설정
+        const brush = d3
+            .brush()
+            .extent([
+                [0, 0],
+                [chartWidth, chartHeight],
+            ])
+            .on('end', (event) => {
+                if (!event.selection || singleSelectMode) return;
+
+                const [[x0, y0], [x1, y1]] = event.selection;
+                const selectedNodes = data.filter(
+                    (d) =>
+                        xScale(d.tsne_x) >= x0 &&
+                        xScale(d.tsne_x) <= x1 &&
+                        yScale(d.tsne_y) >= y0 &&
+                        yScale(d.tsne_y) <= y1
+                );
+
+                if (selectedNodes.length > 0) {
+                    const newSelected = [...selectedValidators, ...selectedNodes.map((d) => d.voter)];
+                    const uniqueSelected = [...new Set(newSelected)];
+                    setSelectedValidators(uniqueSelected);
+                    if (!baseValidator && uniqueSelected.length > 0) {
+                        setBaseValidator(uniqueSelected[0]);
+                    }
+                }
+
+                // 브러시 선택 영역 초기화
+                chart.select('.brush').call(brush.move, null);
+            });
+
+        // 브러시 컨테이너 추가
+        const brushContainer = chart.append('g').attr('class', 'brush');
+
+        if (!singleSelectMode) {
+            brushContainer.call(brush);
+        }
+
+        // 노드 그리기
         const nodes = chart
             .selectAll('circle')
             .data(data)
@@ -81,43 +149,13 @@ const ScatterPlot = ({ data }) => {
             .attr('r', (d) => sizeScale(d.votingPower))
             .attr('fill', (d) => colorScale(d.cluster_label))
             .attr('opacity', (d) => (selectedValidators.includes(d.voter) ? 1 : 0.6))
-            .attr('stroke', (d) => (selectedValidators.includes(d.voter) ? '#000' : 'none'))
-            .attr('stroke-width', 1)
-            .style('cursor', 'pointer')
-            .on('click', (event, d) => {
-                event.stopPropagation();
-                const isSelected = selectedValidators.includes(d.voter);
-                let newSelected;
-
-                if (singleSelectMode) {
-                    // 단일 선택 모드
-                    newSelected = isSelected ? [] : [d.voter];
-                    setBaseValidator(isSelected ? null : d.voter);
-                } else {
-                    // 다중 선택 모드
-                    if (isSelected) {
-                        newSelected = selectedValidators.filter((v) => v !== d.voter);
-                        if (d.voter === baseValidator) {
-                            setBaseValidator(newSelected.length > 0 ? newSelected[0] : null);
-                        }
-                    } else {
-                        newSelected = [...selectedValidators, d.voter];
-                        if (!baseValidator) {
-                            setBaseValidator(d.voter);
-                        }
-                    }
-                }
-
-                setSelectedValidators(newSelected);
-
-                nodes
-                    .attr('opacity', (d) => (newSelected.length === 0 || newSelected.includes(d.voter) ? 0.6 : 0.2))
-                    .attr('stroke', (d) => {
-                        if (d.voter === baseValidator) return '#000';
-                        return newSelected.includes(d.voter) ? '#666' : 'none';
-                    })
-                    .attr('stroke-width', (d) => (d.voter === baseValidator ? 2 : 1));
+            .attr('stroke', (d) => {
+                if (d.voter === baseValidator) return '#000';
+                return selectedValidators.includes(d.voter) ? '#666' : 'none';
             })
+            .attr('stroke-width', (d) => (d.voter === baseValidator ? 2 : 1))
+            .style('cursor', 'pointer')
+            .on('click', handleNodeClick)
             .on('mouseover', (event, d) => {
                 tooltip
                     .style('visibility', 'visible')
@@ -136,6 +174,17 @@ const ScatterPlot = ({ data }) => {
                 tooltip.style('visibility', 'hidden');
             });
 
+        // 선택 상태 변경시 노드 스타일 업데이트
+        function updateNodesStyle() {
+            nodes
+                .attr('opacity', (d) => (selectedValidators.includes(d.voter) ? 1 : 0.6))
+                .attr('stroke', (d) => {
+                    if (d.voter === baseValidator) return '#000';
+                    return selectedValidators.includes(d.voter) ? '#666' : 'none';
+                })
+                .attr('stroke-width', (d) => (d.voter === baseValidator ? 2 : 1));
+        }
+
         return () => {
             tooltip.remove();
         };
@@ -144,8 +193,6 @@ const ScatterPlot = ({ data }) => {
     const handleReset = () => {
         setSelectedValidators([]);
         setBaseValidator(null);
-        const nodes = d3.select(svgRef.current).selectAll('circle');
-        nodes.attr('opacity', 0.6).attr('stroke', 'none').attr('stroke-width', 1);
     };
 
     const uniqueClusters = [...new Set(data.map((d) => d.cluster_label))].sort((a, b) => a - b);
@@ -161,11 +208,9 @@ const ScatterPlot = ({ data }) => {
                             checked={singleSelectMode}
                             onChange={(e) => {
                                 setSingleSelectMode(e.target.checked);
-                                if (e.target.checked && selectedValidators.length > 1) {
-                                    // 단일 선택 모드로 전환 시 첫 번째 선택된 검증인만 유지
-                                    const firstSelected = selectedValidators[0];
-                                    setSelectedValidators([firstSelected]);
-                                    setBaseValidator(firstSelected);
+                                if (e.target.checked) {
+                                    setSelectedValidators([]);
+                                    setBaseValidator(null);
                                 }
                             }}
                             className="form-checkbox h-4 w-4"
