@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { NormalColors } from '../color';
 import useChainStore from '../../store/store';
@@ -6,6 +6,7 @@ import useChainStore from '../../store/store';
 const ScatterPlot = ({ data }) => {
     const svgRef = useRef(null);
     const { selectedValidators, setSelectedValidators, baseValidator, setBaseValidator } = useChainStore();
+    const [singleSelectMode, setSingleSelectMode] = useState(false);
 
     useEffect(() => {
         if (!data) return;
@@ -20,24 +21,19 @@ const ScatterPlot = ({ data }) => {
         const chartWidth = width - margin.left - margin.right;
         const chartHeight = height - margin.top - margin.bottom;
 
-        // SVG 설정
         svg.attr('width', width).attr('height', height);
 
         const chart = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-        // 최대 노드 크기 계산
-        const maxNodeSize = 12; // 최대 노드 크기 제한
+        const maxNodeSize = 12;
 
-        // 데이터의 범위 계산
         const xExtent = d3.extent(data, (d) => d.tsne_x);
         const yExtent = d3.extent(data, (d) => d.tsne_y);
 
-        // 여백 추가 (노드 크기를 고려한 패딩)
         const padding = maxNodeSize;
-        const xPadding = (xExtent[1] - xExtent[0]) * 0.05; // 5% 추가 여백
+        const xPadding = (xExtent[1] - xExtent[0]) * 0.05;
         const yPadding = (yExtent[1] - yExtent[0]) * 0.05;
 
-        // X, Y 도메인 설정 (패딩 포함)
         const xScale = d3
             .scaleLinear()
             .domain([xExtent[0] - xPadding, xExtent[1] + xPadding])
@@ -48,15 +44,13 @@ const ScatterPlot = ({ data }) => {
             .domain([yExtent[0] - yPadding, yExtent[1] + yPadding])
             .range([chartHeight - padding, padding]);
 
-        // 크기 스케일 수정
         const sizeScale = d3
             .scaleSqrt()
             .domain(d3.extent(data, (d) => d.votingPower))
-            .range([3, maxNodeSize]); // 최소, 최대 크기 조정
+            .range([3, maxNodeSize]);
 
         const colorScale = d3.scaleOrdinal(NormalColors);
 
-        // 축 그리기
         chart
             .append('g')
             .attr('transform', `translate(0, ${chartHeight})`)
@@ -65,7 +59,6 @@ const ScatterPlot = ({ data }) => {
 
         chart.append('g').call(d3.axisLeft(yScale).ticks(10)).attr('font-size', '12px');
 
-        // 툴팁 설정
         const tooltip = d3
             .select('body')
             .append('div')
@@ -78,7 +71,6 @@ const ScatterPlot = ({ data }) => {
             .style('font-size', '12px')
             .style('pointer-events', 'none');
 
-        // 노드 그리기
         const nodes = chart
             .selectAll('circle')
             .data(data)
@@ -93,29 +85,31 @@ const ScatterPlot = ({ data }) => {
             .attr('stroke-width', 1)
             .style('cursor', 'pointer')
             .on('click', (event, d) => {
-                // 클릭 시 선택/해제 토글
                 event.stopPropagation();
                 const isSelected = selectedValidators.includes(d.voter);
                 let newSelected;
 
-                if (isSelected) {
-                    // 선택 해제
-                    newSelected = selectedValidators.filter((v) => v !== d.voter);
-                    if (d.voter === baseValidator) {
-                        // 기준 검증인을 해제하는 경우, 남은 검증인 중 첫 번째를 기준으로 설정
-                        setBaseValidator(newSelected.length > 0 ? newSelected[0] : null);
-                    }
+                if (singleSelectMode) {
+                    // 단일 선택 모드
+                    newSelected = isSelected ? [] : [d.voter];
+                    setBaseValidator(isSelected ? null : d.voter);
                 } else {
-                    // 새로 선택
-                    newSelected = [...selectedValidators, d.voter];
-                    if (!baseValidator) {
-                        setBaseValidator(d.voter);
+                    // 다중 선택 모드
+                    if (isSelected) {
+                        newSelected = selectedValidators.filter((v) => v !== d.voter);
+                        if (d.voter === baseValidator) {
+                            setBaseValidator(newSelected.length > 0 ? newSelected[0] : null);
+                        }
+                    } else {
+                        newSelected = [...selectedValidators, d.voter];
+                        if (!baseValidator) {
+                            setBaseValidator(d.voter);
+                        }
                     }
                 }
 
                 setSelectedValidators(newSelected);
 
-                // 시각적 업데이트
                 nodes
                     .attr('opacity', (d) => (newSelected.length === 0 || newSelected.includes(d.voter) ? 0.6 : 0.2))
                     .attr('stroke', (d) => {
@@ -145,48 +139,62 @@ const ScatterPlot = ({ data }) => {
         return () => {
             tooltip.remove();
         };
-    }, [data, selectedValidators, baseValidator]);
+    }, [data, selectedValidators, baseValidator, singleSelectMode]);
+
     const handleReset = () => {
         setSelectedValidators([]);
-        setBaseValidator(null); // null로 설정
-
-        // 노드들의 시각적 상태도 초기화
+        setBaseValidator(null);
+        const nodes = d3.select(svgRef.current).selectAll('circle');
         nodes.attr('opacity', 0.6).attr('stroke', 'none').attr('stroke-width', 1);
     };
+
     const uniqueClusters = [...new Set(data.map((d) => d.cluster_label))].sort((a, b) => a - b);
+
     return (
         <div>
             <div className="flex justify-between items-center mb-2">
-                <h3 className="text-lg pl-3">Validator Votes Similarity</h3>
+                <div className="flex items-center gap-4">
+                    <h3 className="text-lg pl-3">Validator Votes Similarity</h3>
+                    <label className="flex items-center space-x-2 text-sm">
+                        <input
+                            type="checkbox"
+                            checked={singleSelectMode}
+                            onChange={(e) => {
+                                setSingleSelectMode(e.target.checked);
+                                if (e.target.checked && selectedValidators.length > 1) {
+                                    // 단일 선택 모드로 전환 시 첫 번째 선택된 검증인만 유지
+                                    const firstSelected = selectedValidators[0];
+                                    setSelectedValidators([firstSelected]);
+                                    setBaseValidator(firstSelected);
+                                }
+                            }}
+                            className="form-checkbox h-4 w-4"
+                        />
+                        <span>단일 선택 모드</span>
+                    </label>
+                </div>
                 <button onClick={handleReset} className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">
                     Reset
                 </button>
             </div>
             <div className="flex">
-                {/* Legend - 너비를 줄이고 높이는 유지 */}
                 <div className="w-16 pr-1" style={{ height: '250px' }}>
-                    {' '}
-                    {/* w-24 -> w-16으로 변경, 패딩 감소 */}
-                    <div className="text-xs font-medium pl-3 mb-1">Clusters</div> {/* text-sm -> text-xs, 마진 감소 */}
+                    <div className="text-xs font-medium pl-3 mb-1">Clusters</div>
                     <div className="overflow-y-auto pl-3 h-[calc(100%-1.5rem)]">
-                        {uniqueClusters.map((cluster, i) => (
-                            <div
-                                key={cluster}
-                                className="flex items-center mb-0.5" // mb-1 -> mb-0.5로 변경
-                            >
+                        {uniqueClusters.map((cluster) => (
+                            <div key={cluster} className="flex items-center mb-0.5">
                                 <div
-                                    className="w-3 h-3 rounded-full mr-1" // w-4 h-4 -> w-3 h-3, 마진 감소
+                                    className="w-3 h-3 rounded-full mr-1"
                                     style={{
                                         backgroundColor: NormalColors[cluster],
                                         opacity: 0.6,
                                     }}
                                 ></div>
-                                <span className="text-[9px]"> {cluster}</span>
+                                <span className="text-[9px]">{cluster}</span>
                             </div>
                         ))}
                     </div>
                 </div>
-                {/* Chart */}
                 <div className="flex-1">
                     <svg ref={svgRef}></svg>
                 </div>
