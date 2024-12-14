@@ -11,8 +11,8 @@ const Home = () => {
     const { selectedChain, chainData } = useChainStore();
     const [scatterData, setScatterData] = useState(null);
     const [parallelData, setParallelData] = useState(null);
-    const [dendroData, setDendroData] = useState(null);
-    const [loading, setLoading] = useState(false); // 로딩 상태 추가
+    const [sunburstData, setSunburstData] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -21,19 +21,19 @@ const Home = () => {
         setLoading(true);
         setError(null);
 
-        const ScatterFile = `/data/scatter_data/scatter_${selectedChain}.json`; // 파일 경로
+        const ScatterFile = `/data/scatter_data/scatter_${selectedChain}.json`;
         const ParallelFile = `/data/parallel_data/parallel_${selectedChain}.json`;
-        const DendroFile = `/data/dendrogram/dendrogram_${selectedChain}.json`;
+        const SunburstFile = `/data/sunburst_data/sunburst_${selectedChain}.json`;
 
         Promise.all([
             fetch(ScatterFile).then((response) => response.json()),
             fetch(ParallelFile).then((response) => response.json()),
-            fetch(DendroFile).then((response) => response.json()),
+            fetch(SunburstFile).then((response) => response.json()),
         ])
-            .then(([scatterResult, parallelResult, dendroResult]) => {
+            .then(([scatterResult, parallelResult, sunburstResult]) => {
                 setScatterData(scatterResult);
                 setParallelData(parallelResult);
-                setDendroData(dendroResult);
+                setSunburstData(sunburstResult);
             })
             .catch((error) => {
                 console.log(error);
@@ -99,7 +99,7 @@ const Home = () => {
                             )}
                         </div>
                         <div className="w-1/2 h-full">
-                            <SunburstChart data={dendroData} parallelData={parallelData} />
+                            <SunburstChart data={sunburstData} parallelData={parallelData} />
                         </div>
                     </div>
 
@@ -126,38 +126,6 @@ const Home = () => {
                 </div>
             </div>
         </div>
-
-        // <div className="flex flex-row">
-        //     <div className="w-2/5 ml-4 border-r-2">
-        //         <h1 className="mb-4">Overall Chain View</h1>
-        //         <NetworkPie onSelectChain={setSelectedChain} />
-        //     </div>
-
-        //     <div className="w-3/5 flex flex-col ml-8">
-        //         <h1 className="font-bold">Specific Validator View</h1>
-        //         {/* 오른쪽 위 2/3 영역 */}
-        //         <div className="flex-2/5 ">
-        //             {scatterData ? (
-        //                 <ScatterPlot data={scatterData} />
-        //             ) : (
-        //                 selectedChain && <p>Loading scatter plot for {selectedChain}...</p>
-        //             )}
-        //         </div>
-
-        //         {/* 오른쪽 아래 1/3 영역 */}
-        //         <div className="flex-2/5 ">
-        //             {parallelData ? <Parallel data={parallelData} /> : selectedChain && <p>Loading... </p>}
-        //         </div>
-        //         <div className="flex h-full ">
-        //             <div className="w-1/2">
-        //                 <p>Validator Result</p>
-        //             </div>
-        //             <div className="w-1/2  h-full border-l-4">
-        //                 <p>Cluster Result</p>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
     );
 };
 
