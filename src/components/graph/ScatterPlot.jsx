@@ -14,9 +14,9 @@ const ScatterPlot = ({ data }) => {
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
 
-        const width = 400;
-        const height = 250;
-        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+        const width = 500;
+        const height = 300;
+        const margin = { top: 10, right: 20, bottom: 50, left: 50 };
 
         const chartWidth = width - margin.left - margin.right;
         const chartHeight = height - margin.top - margin.bottom;
@@ -71,17 +71,14 @@ const ScatterPlot = ({ data }) => {
             .style('font-size', '12px')
             .style('pointer-events', 'none');
 
-        // 노드 클릭 핸들러
         function handleNodeClick(event, d) {
             event.stopPropagation();
             if (singleSelectMode) {
-                // 단일 선택 모드
                 const isCurrentlySelected = selectedValidators.includes(d.voter);
                 const newSelected = isCurrentlySelected ? [] : [d.voter];
                 setSelectedValidators(newSelected);
                 setBaseValidator(isCurrentlySelected ? null : d.voter);
             } else {
-                // 다중 선택 모드
                 const isSelected = selectedValidators.includes(d.voter);
                 let newSelected;
                 if (isSelected) {
@@ -99,7 +96,6 @@ const ScatterPlot = ({ data }) => {
             }
         }
 
-        // 브러시 설정
         const brush = d3
             .brush()
             .extent([
@@ -127,18 +123,15 @@ const ScatterPlot = ({ data }) => {
                     }
                 }
 
-                // 브러시 선택 영역 초기화
                 chart.select('.brush').call(brush.move, null);
             });
 
-        // 브러시 컨테이너 추가
         const brushContainer = chart.append('g').attr('class', 'brush');
 
         if (!singleSelectMode) {
             brushContainer.call(brush);
         }
 
-        // 노드 그리기
         const nodes = chart
             .selectAll('circle')
             .data(data)
@@ -174,17 +167,6 @@ const ScatterPlot = ({ data }) => {
                 tooltip.style('visibility', 'hidden');
             });
 
-        // 선택 상태 변경시 노드 스타일 업데이트
-        function updateNodesStyle() {
-            nodes
-                .attr('opacity', (d) => (selectedValidators.includes(d.voter) ? 1 : 0.6))
-                .attr('stroke', (d) => {
-                    if (d.voter === baseValidator) return '#000';
-                    return selectedValidators.includes(d.voter) ? '#666' : 'none';
-                })
-                .attr('stroke-width', (d) => (d.voter === baseValidator ? 2 : 1));
-        }
-
         return () => {
             tooltip.remove();
         };
@@ -195,11 +177,9 @@ const ScatterPlot = ({ data }) => {
         setBaseValidator(null);
     };
 
-    const uniqueClusters = [...new Set(data.map((d) => d.cluster_label))].sort((a, b) => a - b);
-
     return (
         <div>
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                     <h3 className="text-lg pl-3">Validator Votes Similarity</h3>
                     <label className="flex items-center space-x-2 text-sm">
@@ -222,28 +202,7 @@ const ScatterPlot = ({ data }) => {
                     Reset
                 </button>
             </div>
-            <div className="flex">
-                <div className="w-16 pr-1" style={{ height: '250px' }}>
-                    <div className="text-xs font-medium pl-3 mb-1">Clusters</div>
-                    <div className="overflow-y-auto pl-3 h-[calc(100%-1.5rem)]">
-                        {uniqueClusters.map((cluster) => (
-                            <div key={cluster} className="flex items-center mb-0.5">
-                                <div
-                                    className="w-3 h-3 rounded-full mr-1"
-                                    style={{
-                                        backgroundColor: NormalColors[cluster],
-                                        opacity: 0.6,
-                                    }}
-                                ></div>
-                                <span className="text-[9px]">{cluster}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="flex-1">
-                    <svg ref={svgRef}></svg>
-                </div>
-            </div>
+            <svg ref={svgRef}></svg>
         </div>
     );
 };

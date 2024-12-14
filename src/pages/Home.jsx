@@ -53,7 +53,7 @@ const Home = () => {
                 {/* left section */}
                 <div className="w-2/5 h-full m-1 ml-3 shadow-xl rounded-lg border-slate-100 border-[0.3px]">
                     <h2 className="pl-3 pt-2">Overall Chain View</h2>
-                    <div className="w-full h-[60%]">
+                    <div className="w-full h-[69%]">
                         <NetworkPie />
                     </div>
                     <div className="w-[94%] ml-4 mt-1 mb-1 flex border-t border-gray-200"></div>
@@ -69,27 +69,27 @@ const Home = () => {
                                         <img
                                             src={`src/assets/chain/${selectedChain}.png`}
                                             alt="selected-chain"
-                                            className="mx-auto w-8 h-8 "
+                                            className="mx-auto  w-6 h-6 "
                                         />
-                                        <strong className="text-lg">{selectedChain}</strong>
+                                        <strong className="text-sm">{selectedChain}</strong>
                                         <p className="text-sm text-gray-500">Selected Chain</p>
                                     </div>
                                     <div>
                                         <img
                                             src="src/assets/result/validator.png"
                                             alt="validators"
-                                            className="mx-auto  w-8 h-8 "
+                                            className="mx-auto  w-6 h-6 "
                                         />
-                                        <strong className="text-lg">{chainData.validator_num}</strong>
+                                        <strong className="text-sm">{chainData.validator_num}</strong>
                                         <p className="text-sm text-gray-500">Number of Validator</p>
                                     </div>
                                     <div>
                                         <img
                                             src="src/assets/result/proposal.png"
                                             alt="proposals"
-                                            className="mx-auto  w-8 h-8"
+                                            className="mx-auto  w-6 h-6"
                                         />
-                                        <strong className="text-lg">{chainData.proposal_num}</strong>
+                                        <strong className="text-sm">{chainData.proposal_num}</strong>
                                         <p className="text-sm text-gray-500">Number of Proposal</p>
                                     </div>
                                 </div>
@@ -97,35 +97,35 @@ const Home = () => {
                                 {/* 하단 3개 */}
                                 <div className="grid grid-cols-3 gap-4 text-center">
                                     <div>
-                                        <div className="flex justify-center mb-2">
+                                        <div className="flex justify-center ">
                                             {chainData.similar_chains.map((chain, index) => (
                                                 <img
                                                     key={index}
                                                     src={`src/assets/chain/${chain}.png`}
                                                     alt={`similar-chain-${chain}`}
-                                                    className=" w-8 h-8 mr-1"
+                                                    className=" w-6 h-6 mr-1"
                                                 />
                                             ))}
                                         </div>
-                                        <strong className="text-lg">{chainData.similar_chains.join(', ')}</strong>
+                                        <strong className="text-sm">{chainData.similar_chains.join(', ')}</strong>
                                         <p className="text-sm text-gray-500">Similar Chain</p>
                                     </div>
                                     <div>
                                         <img
                                             src="src/assets/result/cluster.png"
                                             alt="clusters"
-                                            className="mx-auto  w-8 h-8"
+                                            className="mx-auto w-6 h-6"
                                         />
-                                        <strong className="text-lg">{chainData.cluster_num}</strong>
+                                        <strong className="text-sm">{chainData.cluster_num}</strong>
                                         <p className="text-sm text-gray-500">Number of Cluster</p>
                                     </div>
                                     <div>
                                         <img
                                             src="src/assets/result/tolerance.png"
                                             alt="tolerance"
-                                            className="mx-auto w-8 h-8"
+                                            className="mx-auto w-6 h-6"
                                         />
-                                        <strong className="text-lg">{chainData.radius}</strong>
+                                        <strong className="text-sm">{chainData.radius}</strong>
                                         <p className="text-sm text-gray-500">Tolerance of Opinions</p>
                                     </div>
                                 </div>
@@ -164,11 +164,11 @@ const Home = () => {
 
                     {/* result view */}
                     <div className="w-full h-[28%] flex flex-row">
-                        <div className="w-1/2 h-full">
+                        <div className="w-[70%] h-full">
                             <ValidatorTable />
                         </div>
 
-                        <div className="w-1/2 h-full ">
+                        <div className="w-[30%] h-full ">
                             <ClusterResult />
                         </div>
                     </div>

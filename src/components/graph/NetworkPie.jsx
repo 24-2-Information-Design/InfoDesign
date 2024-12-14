@@ -266,8 +266,26 @@ const NetworkPie = () => {
         });
     }, [setSelectedChain, selectedValidators]);
 
+    const clusters = Array.from({ length: 14 }, (_, i) => i);
+
     return (
         <div className="mt-2">
+            <div className="ml-4 mb-2">
+                <div className="grid grid-cols-7 gap-x-1 gap-y-1 w-fit">
+                    {clusters.map((cluster) => (
+                        <div key={cluster} className="flex items-center gap-2">
+                            <div
+                                className="w-3 h-3 rounded-full"
+                                style={{
+                                    backgroundColor: NormalColors[cluster],
+                                    opacity: 0.6,
+                                }}
+                            />
+                            <span className="text-xs text-gray-600">Cluster {cluster}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
             <svg className="ml-4" ref={svgRef}></svg>
         </div>
     );

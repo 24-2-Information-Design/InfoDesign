@@ -83,32 +83,32 @@ const ValidatorTable = () => {
     };
 
     return (
-        // div className="max-h-[400px] overflow-auto" 부분을 다음과 같이 수정합니다
         <div className="border rounded-lg">
-            <div style={{ maxHeight: 'calc((2.5rem * 3) + 2.5rem)' }} className="overflow-auto">
-                <table className="w-full">
-                    <thead className="sticky top-0 bg-white border-b">
+            <h3 className="pl-3">Validator Results</h3>
+            <div style={{ maxHeight: 'calc((2.5rem * 3) + 2.5rem)' }} className="relative overflow-auto">
+                <table className="w-full" style={{ minWidth: '800px' }}>
+                    <thead className="sticky top-0 bg-white border-b text-xs text-center">
                         <tr>
-                            <th className="p-1 text-left font-medium text-sm border-r">No.</th>
-                            <th className="p-0 text-left text-center font-medium text-sm border-r">검증인</th>
+                            <th className="p-1 font-medium border-r whitespace-nowrap">No.</th>
+                            <th className="p-0 font-medium border-r whitespace-nowrap">검증인</th>
                             <th
-                                className="p-0 text-left font-medium text-sm border-r cursor-pointer"
+                                className="p-0 font-medium border-r whitespace-nowrap cursor-pointer"
                                 onClick={handleSortClick}
                             >
                                 일치율(%) {isDescending ? '▼' : '▲'}
                             </th>
-                            <th className="p-0 text-left font-medium text-sm border-r">Cluster</th>
-                            <th className="p-0 text-left font-medium text-sm border-r">전체 일치율</th>
-                            <th className="p-0 text-left font-medium text-sm border-r">클러스터 일치율</th>
-                            <th className="p-0 text-left font-medium text-sm">참여율</th>
+                            <th className="p-0 font-medium border-r whitespace-nowrap">Cluster</th>
+                            <th className="p-0 font-medium border-r whitespace-nowrap">전체 일치율</th>
+                            <th className="p-0 font-medium border-r whitespace-nowrap">클러스터 일치율</th>
+                            <th className="p-0 font-medium whitespace-nowrap">참여율</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="text-xs text-center">
                         {validatorData.map((data, index) => (
                             <tr
                                 key={data.validator}
                                 className={`border-b last:border-b-0 ${
-                                    index === 0 ? 'bg-gray-50' : 'hover:bg-gray-100 cursor-pointer'
+                                    index === 0 ? 'bg-gray-50' : 'hover:bg-blue-200 cursor-pointer'
                                 }`}
                                 onClick={() => index !== 0 && handleValidatorClick(data.validator)}
                             >
