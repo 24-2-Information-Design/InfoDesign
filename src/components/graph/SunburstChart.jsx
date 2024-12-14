@@ -19,17 +19,22 @@ const SunburstChart = ({ data, parallelData }) => {
     return voteColors[voteName] || '#95a5a6';
   };
 
-  const checkVoteAgreement = (proposalId, parallelData, selectedValidators) => {
-    if (!selectedValidators || selectedValidators.length < 2) return false;
+  const checkVoteResult = (proposalId, parallelData, selectedValidators) => {
+    if (!selectedValidators || selectedValidators.length === 0) return false;
     
     const proposalKey = `${selectedChain}_${proposalId}`;
     
+    // 단일 검증인 선택 시
+    if (selectedValidators.length === 1) {
+      const validatorData = parallelData.find(d => d.voter === selectedValidators[0]);
+      return validatorData ? (validatorData[proposalKey] || 'NO_VOTE') : 'NO_VOTE';
+    }
+    
+    // 복수 검증인 선택 시
     const validatorVotes = selectedValidators.map(validator => {
       const validatorData = parallelData.find(d => d.voter === validator);
       return validatorData ? (validatorData[proposalKey] || 'NO_VOTE') : 'NO_VOTE';
     });
-
-    if (validatorVotes.length < 2) return false;
 
     const allSameVote = validatorVotes.every(vote => vote === validatorVotes[0]);
     return allSameVote ? validatorVotes[0] : false;
@@ -39,9 +44,10 @@ const SunburstChart = ({ data, parallelData }) => {
     if (!selectedValidators || selectedValidators.length < 2) return 0;
 
     const totalProposals = rawData.length;
-    const agreedProposals = rawData.filter(d => 
-      checkVoteAgreement(d.id, parallelData, selectedValidators)
-    ).length;
+    const agreedProposals = rawData.filter(d => {
+      const voteResult = checkVoteResult(d.id, parallelData, selectedValidators);
+      return typeof voteResult === 'string';  // string인 경우는 투표가 일치한 경우
+    }).length;
 
     return (agreedProposals / totalProposals * 100).toFixed(1);
   };
@@ -71,7 +77,7 @@ const SunburstChart = ({ data, parallelData }) => {
             name: d.title,
             value: 1,
             proposalId: d.id,
-            agreedVote: checkVoteAgreement(d.id, parallelData, selectedValidators)
+            voteResult: checkVoteResult(d.id, parallelData, selectedValidators)
           }))
       }))
     };
@@ -100,14 +106,13 @@ const SunburstChart = ({ data, parallelData }) => {
 
     const root = partition(hierarchyData);
 
-    // 도넛 형태를 위한 내부 반지름 설정
     root.descendants().forEach(d => {
       if (d.depth === 1) {
-        d.y0 = radius * 0.4; // 내부 여백 증가
+        d.y0 = radius * 0.4;
         d.y1 = radius * 0.7;
       } else if (d.depth === 2) {
         d.y0 = radius * 0.7;
-        d.y1 = radius * 0.95; // 외부 여백 추가
+        d.y1 = radius * 0.95;
       }
     });
 
@@ -135,11 +140,15 @@ const SunburstChart = ({ data, parallelData }) => {
       .attr("d", arc)
       .style("fill", d => {
         if (d.depth === 2) {
-          return d.data.agreedVote ? getVoteTypeColor(d.data.agreedVote) : "#d3d3d3";
+          if (selectedValidators.length === 1) {
+            return getVoteTypeColor(d.data.voteResult);
+          } else {
+            return d.data.voteResult ? getVoteTypeColor(d.data.voteResult) : "#d3d3d3";
+          }
         }
         return d.data.color;
       })
-      .style("opacity", d => d.depth === 2 && d.data.agreedVote ? 0.8 : 0.6)
+      .style("opacity", d => d.depth === 2 && (selectedValidators.length === 1 || d.data.voteResult) ? 0.8 : 0.6)
       .style("stroke", "white")
       .style("stroke-width", "0.5")
       .on('mouseover', function(event, d) {
@@ -148,7 +157,12 @@ const SunburstChart = ({ data, parallelData }) => {
             .html(`
               <strong>Proposal: ${d.data.name}</strong><br/>
               <strong>Type: ${d.parent.data.name}</strong>
-              ${d.data.agreedVote ? '<br/><span style="color: green;">✓ Selected validators agreed: ' + d.data.agreedVote + '</span>' : ''}
+              ${selectedValidators.length === 1 
+                ? `<br/><span style="color: green;">Vote: ${d.data.voteResult}</span>`
+                : d.data.voteResult 
+                  ? '<br/><span style="color: green;">✓ Selected validators agreed: ' + d.data.voteResult + '</span>'
+                  : ''
+              }
             `)
             .style('left', (event.pageX + 10) + 'px')
             .style('top', (event.pageY - 10) + 'px');
@@ -161,7 +175,7 @@ const SunburstChart = ({ data, parallelData }) => {
       .on('mouseout', function(event, d) {
         tooltip.style('visibility', 'hidden');
         d3.select(this)
-          .style("opacity", d.depth === 2 && d.data.agreedVote ? 0.8 : 0.6)
+          .style("opacity", d.depth === 2 && (selectedValidators.length === 1 || d.data.voteResult) ? 0.8 : 0.6)
           .style("stroke-width", "0.5");
       });
 
@@ -180,7 +194,7 @@ const SunburstChart = ({ data, parallelData }) => {
       .style("fill", "white")
       .text(d => d.data.name);
 
-    // 중앙에 일치율 표시
+    // 중앙에 일치율 표시 (2명 이상 선택시에만)
     const centerGroup = svg.append("g")
       .attr("class", "center-stats")
       .style("opacity", selectedValidators.length >= 2 ? 1 : 0);
