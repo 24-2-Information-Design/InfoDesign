@@ -64,13 +64,13 @@ export const useChainStore = create((set, get) => ({
                     (link.chain2 === selectedChain && link.chain1 === chainId)
             );
 
-            if (!linkData) return 0.2;
+            if (!linkData) return 0.3;
 
             // shared_validator 값을 0.2~0.8 범위로 정규화
             const minValidators = d3.min(linkDataJson, (d) => d.shared_validators);
             const maxValidators = d3.max(linkDataJson, (d) => d.shared_validators);
 
-            return 0.2 + ((linkData.shared_validators - minValidators) / (maxValidators - minValidators)) * 0.6;
+            return 0.3 + ((linkData.shared_validators - minValidators) / (maxValidators - minValidators)) * 0.7;
         }
 
         // 선택된 검증인이 있을 때
