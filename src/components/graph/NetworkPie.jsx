@@ -7,7 +7,7 @@ import useChainStore from '../../store/store';
 
 const NetworkPie = () => {
     const svgRef = useRef(null);
-    const { setSelectedChain, selectedValidators } = useChainStore();
+    const { setSelectedChain, selectedValidators, highlightedChains, selectedChain } = useChainStore();
 
     useEffect(() => {
         if (!svgRef.current) return;
@@ -18,8 +18,6 @@ const NetworkPie = () => {
         const width = 550;
         const height = 430;
         const padding = 60; // 여백
-        const effectiveWidth = width - padding * 2;
-        const effectiveHeight = height - padding * 2;
 
         // Zoom 설정
         const zoomableGroup = svg.append('g').attr('class', 'zoomable-group');
@@ -118,54 +116,6 @@ const NetworkPie = () => {
             id: node.id,
         }));
 
-        // Weighted Voronoi를 시뮬레이션하기 위한 다수의 포인트 생성
-        const weightedPoints = [];
-        points.forEach((point) => {
-            // radius 값에 따라 포인트 수를 조절
-            const numPoints = Math.max(1, Math.floor(point.radius * 2));
-            const spread = point.radius / 2; // 분산 정도
-
-            for (let i = 0; i < numPoints; i++) {
-                // 원형으로 포인트 분산
-                const angle = (2 * Math.PI * i) / numPoints;
-                const jitter = spread * Math.random() * 0.5; // 약간의 랜덤성 추가
-                weightedPoints.push({
-                    x: point.x + Math.cos(angle) * jitter,
-                    y: point.y + Math.sin(angle) * jitter,
-                    originalId: point.id,
-                });
-            }
-        });
-
-        // Voronoi 다이어그램 생성
-        // Voronoi 다이어그램 생성
-        const delaunay = d3.Delaunay.from(
-            points, // 가중치 포인트 대신 원본 포인트 사용
-            (d) => d.x,
-            (d) => d.y
-        );
-        const voronoi = delaunay.voronoi([0, 0, width, height]);
-
-        // Voronoi 영역 렌더링
-        points.forEach((point, i) => {
-            const cell = voronoi.cellPolygon(i);
-            if (!cell) return;
-
-            const chainData = jsonData.find((d) => d.chain === point.id);
-            const opacity = 0.1 + (chainData.radius / d3.max(jsonData, (d) => d.radius)) * 0.2;
-
-            zoomableGroup
-                .append('path')
-                .attr('d', d3.line()(cell))
-                .attr('fill', '#FFFFFF')
-                .attr('fill-opacity', opacity)
-                .attr('stroke', '#888888')
-                .attr('stroke-opacity', 0.3)
-                .attr('stroke-width', 0.5)
-                .attr('class', `voronoi-cell-${point.id}`)
-                .style('pointer-events', 'none');
-        });
-
         // 링크 렌더링
         linkData.forEach((link) => {
             const sourceNode = nodeById[link.chain1];
@@ -211,23 +161,46 @@ const NetworkPie = () => {
                 .attr('transform', `translate(${node.x}, ${node.y})`)
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
-
+                .style('opacity', () => {
+                    if (selectedChain === node.id) return 1;
+                    if (highlightedChains.length === 0) return 1;
+                    return highlightedChains.includes(node.id) ? 0.5 : 0.1;
+                })
                 .on('click', (event, d) => {
                     setSelectedChain(d.id);
 
-                    const linkedChains = linkData
+                    // 연결된 체인과 공유 검증인 수 정보 가져오기
+                    const linkedChainsInfo = linkData
                         .filter((link) => link.chain1 === d.id || link.chain2 === d.id)
-                        .map((link) => (link.chain1 === d.id ? link.chain2 : link.chain1));
+                        .map((link) => ({
+                            chain: link.chain1 === d.id ? link.chain2 : link.chain1,
+                            sharedValidators: link.shared_validators,
+                        }));
+
+                    // 공유 검증인 수의 범위 계산
+                    const maxSharedValidators = d3.max(linkedChainsInfo, (info) => info.sharedValidators);
+                    const minSharedValidators = d3.min(linkedChainsInfo, (info) => info.sharedValidators);
+
+                    // 투명도 스케일 설정 (공유 검증인 수가 많을수록 불투명)
+                    const opacityScale = d3
+                        .scaleLinear()
+                        .domain([minSharedValidators, maxSharedValidators])
+                        .range([0.1, 0.9]); // 최소 0.1, 최대 0.9 투명도
 
                     // 체인 그룹 opacity 업데이트
-                    d3.selectAll('.blockchain-group').each(function (d) {
+                    d3.selectAll('.blockchain-group').each(function (groupD) {
                         const currentGroup = d3.select(this);
-                        if (d.id === node.id) {
-                            currentGroup.style('opacity', 1);
-                        } else if (linkedChains.includes(d.id)) {
-                            currentGroup.style('opacity', 0.1);
+                        if (groupD.id === d.id) {
+                            currentGroup.style('opacity', 1); // 선택된 체인은 완전 불투명
                         } else {
-                            currentGroup.style('opacity', 0.1);
+                            const linkedInfo = linkedChainsInfo.find((info) => info.chain === groupD.id);
+                            if (linkedInfo) {
+                                // 연결된 체인은 공유 검증인 수에 따른 투명도
+                                currentGroup.style('opacity', opacityScale(linkedInfo.sharedValidators));
+                            } else {
+                                // 연결되지 않은 체인은 매우 투명하게
+                                currentGroup.style('opacity', 0.1);
+                            }
                         }
                     });
 
@@ -237,20 +210,17 @@ const NetworkPie = () => {
                         .style('visibility', function () {
                             const line = d3.select(this);
                             const isConnected = line.classed(`link-${d.id}`);
-
-                            // 선택된 체인과 관련된 선만 보이도록 설정
                             return isConnected ? 'visible' : 'hidden';
                         })
                         .style('opacity', function () {
                             const line = d3.select(this);
                             if (line.classed(`link-${d.id}`)) {
-                                // 연결된 선에 대해서만 shared_validators 값에 따른 opacity 적용
                                 const linkInfo = linkData.find(
                                     (link) =>
                                         (link.chain1 === d.id && line.classed(`link-${link.chain2}`)) ||
                                         (link.chain2 === d.id && line.classed(`link-${link.chain1}`))
                                 );
-                                return linkInfo.shared_validators >= 40 ? 0.6 : 0.3;
+                                return linkInfo.shared_validators >= 40 ? 0.5 : 0.2;
                             }
                             return 0;
                         });
@@ -270,7 +240,6 @@ const NetworkPie = () => {
 
             // 바 차트 데이터 및 렌더링
             const barData = Object.entries(chainData.proposal).map(([key, value]) => ({ month: key, value }));
-            const barColorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
             const barArc = d3
                 .arc()
@@ -285,7 +254,7 @@ const NetworkPie = () => {
                 .enter()
                 .append('path')
                 .attr('d', barArc)
-                .attr('fill', (d, i) => barColorScale(i))
+                .attr('fill', '#8aaed3')
                 .attr('opacity', 0.7)
                 .attr('class', 'bar')
                 .append('title')
@@ -300,10 +269,28 @@ const NetworkPie = () => {
                 .attr('font-size', '12px')
                 .attr('font-weight', 'bold');
         });
-    }, [setSelectedChain, selectedValidators]);
+    }, [setSelectedChain, selectedValidators, highlightedChains, selectedChain]);
+
+    const clusters = Array.from({ length: 14 }, (_, i) => i);
 
     return (
         <div className="mt-2">
+            <div className="ml-4 mb-2">
+                <div className="grid grid-cols-7 gap-x-1 gap-y-1 w-fit">
+                    {clusters.map((cluster) => (
+                        <div key={cluster} className="flex items-center gap-2">
+                            <div
+                                className="w-3 h-3 rounded-full"
+                                style={{
+                                    backgroundColor: NormalColors[cluster],
+                                    opacity: 0.6,
+                                }}
+                            />
+                            <span className="text-xs text-gray-600">Cluster {cluster}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
             <svg className="ml-4" ref={svgRef}></svg>
         </div>
     );

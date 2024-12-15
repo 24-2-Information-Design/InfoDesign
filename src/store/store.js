@@ -1,64 +1,107 @@
 import { create } from 'zustand';
 import chainData from '../data/chain_data.json';
 
+// 헬퍼 함수들
+const findChainMetadata = (chain) => {
+    const metadata = chainData.find((item) => item.chain === chain);
+    if (!metadata) return null;
+
+    return {
+        radius: metadata.radius,
+        validator_num: metadata.validator_num,
+        proposal_num: metadata.proposal_num,
+        cluster_num: metadata.cluster_num,
+        similar_chains: metadata.similar_chains,
+        validators: metadata.validators,
+    };
+};
+
+const findCommonChains = (validators) => {
+    return chainData
+        .filter((chain) => validators.every((validator) => chain.validators?.includes(validator)))
+        .map((chain) => chain.chain);
+};
+
+const findValidatorChains = (validators) => {
+    return chainData
+        .filter((chain) => validators.some((validator) => chain.validators?.includes(validator)))
+        .map((chain) => chain.chain);
+};
+
+// 새로운 헬퍼 함수: 체인이 선택된 검증인들을 모두 포함하는지 확인
+const chainContainsAllValidators = (chain, validators) => {
+    const chainData = findChainMetadata(chain);
+    return validators.every((validator) => chainData?.validators?.includes(validator));
+};
+
 export const useChainStore = create((set, get) => ({
-    // 기존 상태
+    // 초기 상태
     selectedChain: null,
     chainData: null,
-
-    // 새로운 상태
-    selectedValidators: [], // 선택된 검증인 배열
-    highlightedChains: [], // 하이라이트된 체인 배열
-    highlightedValidators: [], // Parallel Coordinates에서 하이라이트할 검증인 배열
+    selectedValidators: [],
+    highlightedChains: [],
+    highlightedValidators: [],
     baseValidator: null,
+    validatorChains: [],
 
-    // 기존 액션
+    // 액션들
     setSelectedChain: (chain) => {
-        const metadata = chainData.find((item) => item.chain === chain);
+        if (!chain) {
+            set({
+                selectedChain: null,
+                chainData: null,
+                validatorChains: [],
+            });
+            return;
+        }
+
+        const currentValidators = get().selectedValidators;
+        const metadata = findChainMetadata(chain);
+
+        // 새로운 체인에 현재 선택된 검증인들이 모두 포함되어 있는지 확인
+        const containsAllValidators = chainContainsAllValidators(chain, currentValidators);
 
         set({
             selectedChain: chain,
-            chainData: metadata
-                ? {
-                      radius: metadata.radius,
-                      validator_num: metadata.validator_num,
-                      proposal_num: metadata.proposal_num,
-                      cluster_num: metadata.cluster_num,
-                      similar_chains: metadata.similar_chains,
-                  }
-                : null,
+            chainData: metadata,
+            validatorChains: metadata?.validators || [],
+            // 검증인 포함 여부에 따라 선택 상태 유지 또는 초기화
+            ...(containsAllValidators
+                ? {}
+                : {
+                      selectedValidators: [],
+                      highlightedValidators: [],
+                      baseValidator: null,
+                      highlightedChains: [],
+                  }),
         });
     },
 
-    // 새로운 액션
     setSelectedValidators: (validators) => {
-        set({ selectedValidators: validators });
-        // 선택된 검증인들이 공통으로 속한 체인들을 하이라이트
-        const commonChains = chainData
-            .filter((chain) => validators.every((validator) => chain.validators?.includes(validator)))
-            .map((chain) => chain.chain);
-        set({ highlightedChains: commonChains });
+        const commonChains = findCommonChains(validators);
+        const validatorChains = findValidatorChains(validators);
+
+        set({
+            selectedValidators: validators,
+            highlightedChains: commonChains,
+            validatorChains,
+        });
     },
+
     setBaseValidator: (validator) => set({ baseValidator: validator }),
 
-    // 하이라이트된 체인 설정
-    setHighlightedChains: (chains) => {
-        set({ highlightedChains: chains });
-    },
+    setHighlightedChains: (chains) => set({ highlightedChains: chains }),
 
-    // 하이라이트된 검증인 설정 (Parallel Coordinates용)
-    setHighlightedValidators: (validators) => {
-        set({ highlightedValidators: validators });
-    },
+    setHighlightedValidators: (validators) => set({ highlightedValidators: validators }),
 
-    // 검증인 선택 초기화
-    resetValidatorSelection: () => {
+    resetValidatorSelection: () =>
         set({
             selectedValidators: [],
             highlightedChains: [],
             highlightedValidators: [],
-        });
-    },
+            validatorChains: [],
+            baseValidator: null,
+        }),
 }));
 
 export default useChainStore;
