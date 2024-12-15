@@ -165,41 +165,6 @@ const NetworkPie = () => {
                 .on('click', (event, d) => {
                     setSelectedChain(d.id);
 
-                    // 연결된 체인과 공유 검증인 수 정보 가져오기
-                    const linkedChainsInfo = linkData
-                        .filter((link) => link.chain1 === d.id || link.chain2 === d.id)
-                        .map((link) => ({
-                            chain: link.chain1 === d.id ? link.chain2 : link.chain1,
-                            sharedValidators: link.shared_validators,
-                        }));
-
-                    // 공유 검증인 수의 범위 계산
-                    const maxSharedValidators = d3.max(linkedChainsInfo, (info) => info.sharedValidators);
-                    const minSharedValidators = d3.min(linkedChainsInfo, (info) => info.sharedValidators);
-
-                    // 투명도 스케일 설정 (공유 검증인 수가 많을수록 불투명)
-                    const opacityScale = d3
-                        .scaleLinear()
-                        .domain([minSharedValidators, maxSharedValidators])
-                        .range([0.1, 0.9]); // 최소 0.1, 최대 0.9 투명도
-
-                    // 체인 그룹 opacity 업데이트
-                    d3.selectAll('.blockchain-group').each(function (groupD) {
-                        const currentGroup = d3.select(this);
-                        if (groupD.id === d.id) {
-                            currentGroup.style('opacity', 1); // 선택된 체인은 완전 불투명
-                        } else {
-                            const linkedInfo = linkedChainsInfo.find((info) => info.chain === groupD.id);
-                            if (linkedInfo) {
-                                // 연결된 체인은 공유 검증인 수에 따른 투명도
-                                currentGroup.style('opacity', opacityScale(linkedInfo.sharedValidators));
-                            } else {
-                                // 연결되지 않은 체인은 매우 투명하게
-                                currentGroup.style('opacity', 0.1);
-                            }
-                        }
-                    });
-
                     // 링크 라인 visibility 업데이트
                     zoomableGroup
                         .selectAll('line')
