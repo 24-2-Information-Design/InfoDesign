@@ -117,6 +117,8 @@ const NetworkPie = () => {
         }));
 
         // 링크 렌더링
+        // 링크 렌더링
+        // 링크 렌더링
         linkData.forEach((link) => {
             const sourceNode = nodeById[link.chain1];
             const targetNode = nodeById[link.chain2];
@@ -132,7 +134,16 @@ const NetworkPie = () => {
                     .attr('stroke', '#dbe6f1')
                     .attr('stroke-width', Math.max(lineThickness, 1))
                     .attr('opacity', link.shared_validators >= 40 ? 0.6 : 0.3)
-                    .attr('class', `link-line link-${link.chain1} link-${link.chain2}`) // 클래스 추가
+                    .attr('class', `link-line link-${link.chain1} link-${link.chain2}`)
+                    // 선택된 체인이 없으면 모든 링크 표시, 있으면 해당 체인과 연결된 링크만 표시
+                    .style(
+                        'visibility',
+                        selectedChain
+                            ? link.chain1 === selectedChain || link.chain2 === selectedChain
+                                ? 'visible'
+                                : 'hidden'
+                            : 'visible'
+                    )
                     .append('title')
                     .text(`${link.chain1} ↔ ${link.chain2}: ${link.shared_validators} shared validators`);
             }
@@ -269,7 +280,7 @@ const NetworkPie = () => {
                 .attr('font-size', '12px')
                 .attr('font-weight', 'bold');
         });
-    }, [setSelectedChain, selectedValidators, highlightedChains, selectedChain]);
+    }, [setSelectedChain, highlightedChains, selectedChain]);
 
     const clusters = Array.from({ length: 14 }, (_, i) => i);
 
