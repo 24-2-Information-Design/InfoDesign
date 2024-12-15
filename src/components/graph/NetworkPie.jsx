@@ -7,7 +7,7 @@ import useChainStore from '../../store/store';
 
 const NetworkPie = () => {
     const svgRef = useRef(null);
-    const { setSelectedChain, selectedValidators } = useChainStore();
+    const { setSelectedChain, selectedValidators, highlightedChains } = useChainStore();
 
     useEffect(() => {
         if (!svgRef.current) return;
@@ -161,6 +161,10 @@ const NetworkPie = () => {
                 .attr('transform', `translate(${node.x}, ${node.y})`)
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
+                .style('opacity', () => {
+                    if (highlightedChains.length === 0) return 1; // 모든 체인 표시
+                    return highlightedChains.includes(node.id) ? 0.6 : 0.1; // 선택된 체인 강조
+                })
                 .on('click', (event, d) => {
                     setSelectedChain(d.id);
 

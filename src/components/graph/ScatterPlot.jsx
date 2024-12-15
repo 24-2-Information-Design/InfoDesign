@@ -73,6 +73,8 @@ const ScatterPlot = ({ data }) => {
 
         function handleNodeClick(event, d) {
             event.stopPropagation();
+
+            // 기존 검증인 선택 로직 유지
             if (singleSelectMode) {
                 const isCurrentlySelected = selectedValidators.includes(d.voter);
                 const newSelected = isCurrentlySelected ? [] : [d.voter];
