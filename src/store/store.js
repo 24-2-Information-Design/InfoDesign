@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import chainData from '../data/chain_data.json';
-
+import * as d3 from 'd3';
+import linkDataJson from '../data/chain_link_data.json';
 // 헬퍼 함수들
 const findChainMetadata = (chain) => {
     const metadata = chainData.find((item) => item.chain === chain);
@@ -43,6 +44,46 @@ export const useChainStore = create((set, get) => ({
     highlightedValidators: [],
     baseValidator: null,
     validatorChains: [],
+
+    getChainOpacity: (chainId) => {
+        const state = get();
+        const { selectedChain, selectedValidators } = state;
+
+        if (!selectedChain) return 1;
+
+        if (chainId === selectedChain) return 1;
+
+        // 선택된 검증인이 없을 때
+        if (selectedValidators.length === 0) {
+            if (chainId === selectedChain) return 1;
+
+            // shared_validator에 따른 투명도 계산
+            const linkData = linkDataJson.find(
+                (link) =>
+                    (link.chain1 === selectedChain && link.chain2 === chainId) ||
+                    (link.chain2 === selectedChain && link.chain1 === chainId)
+            );
+
+            if (!linkData) return 0.2;
+
+            // shared_validator 값을 0.2~0.8 범위로 정규화
+            const minValidators = d3.min(linkDataJson, (d) => d.shared_validators);
+            const maxValidators = d3.max(linkDataJson, (d) => d.shared_validators);
+
+            return 0.2 + ((linkData.shared_validators - minValidators) / (maxValidators - minValidators)) * 0.6;
+        }
+
+        // 선택된 검증인이 있을 때
+        const chainData = findChainMetadata(chainId);
+        if (!chainData || !chainData.validators) return 0.2;
+
+        // 해당 체인이 모든 선택된 검증인을 포함하는지 확인
+
+        const containsAllValidators = selectedValidators.every((validator) => chainData.validators.includes(validator));
+
+        // 모든 선택된 검증인을 포함하면 0.8, 그렇지 않으면 0.2
+        return containsAllValidators ? 0.7 : 0.2;
+    },
 
     // 액션들
     setSelectedChain: (chain) => {

@@ -7,7 +7,7 @@ import useChainStore from '../../store/store';
 
 const NetworkPie = () => {
     const svgRef = useRef(null);
-    const { setSelectedChain, selectedValidators, highlightedChains, selectedChain } = useChainStore();
+    const { setSelectedChain, selectedValidators, highlightedChains, selectedChain, getChainOpacity } = useChainStore();
 
     useEffect(() => {
         if (!svgRef.current) return;
@@ -107,15 +107,6 @@ const NetworkPie = () => {
             nodeById[node.id] = node;
         });
 
-        // Force simulation 설정
-
-        const points = nodes.map((node) => ({
-            x: node.x,
-            y: node.y,
-            radius: node.radius,
-            id: node.id,
-        }));
-
         // 링크 렌더링
         linkData.forEach((link) => {
             const sourceNode = nodeById[link.chain1];
@@ -132,7 +123,16 @@ const NetworkPie = () => {
                     .attr('stroke', '#dbe6f1')
                     .attr('stroke-width', Math.max(lineThickness, 1))
                     .attr('opacity', link.shared_validators >= 40 ? 0.6 : 0.3)
-                    .attr('class', `link-line link-${link.chain1} link-${link.chain2}`) // 클래스 추가
+                    .attr('class', `link-line link-${link.chain1} link-${link.chain2}`)
+                    // 선택된 체인이 없으면 모든 링크 표시, 있으면 해당 체인과 연결된 링크만 표시
+                    .style(
+                        'visibility',
+                        selectedChain
+                            ? link.chain1 === selectedChain || link.chain2 === selectedChain
+                                ? 'visible'
+                                : 'hidden'
+                            : 'visible'
+                    )
                     .append('title')
                     .text(`${link.chain1} ↔ ${link.chain2}: ${link.shared_validators} shared validators`);
             }
@@ -161,11 +161,7 @@ const NetworkPie = () => {
                 .attr('transform', `translate(${node.x}, ${node.y})`)
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
-                .style('opacity', () => {
-                    if (selectedChain === node.id) return 1;
-                    if (highlightedChains.length === 0) return 1;
-                    return highlightedChains.includes(node.id) ? 0.5 : 0.1;
-                })
+                .style('opacity', () => getChainOpacity(node.id))
                 .on('click', (event, d) => {
                     setSelectedChain(d.id);
 
@@ -269,7 +265,7 @@ const NetworkPie = () => {
                 .attr('font-size', '12px')
                 .attr('font-weight', 'bold');
         });
-    }, [setSelectedChain, selectedValidators, highlightedChains, selectedChain]);
+    }, [setSelectedChain, highlightedChains, selectedChain, getChainOpacity]);
 
     const clusters = Array.from({ length: 14 }, (_, i) => i);
 
