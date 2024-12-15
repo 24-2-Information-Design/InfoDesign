@@ -16,7 +16,12 @@ const Home = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!selectedChain) return;
+        if (!selectedChain) {
+            setScatterData(null);
+            setParallelData(null);
+            setSunburstData(null);
+            return;
+        }
 
         setLoading(true);
         setError(null);

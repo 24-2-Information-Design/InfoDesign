@@ -163,28 +163,45 @@ const NetworkPie = () => {
                 .style('cursor', 'pointer')
                 .style('opacity', () => getChainOpacity(node.id))
                 .on('click', (event, d) => {
-                    setSelectedChain(d.id);
+                    if (selectedChain === d.id) {
+                        setSelectedChain(null);
 
-                    // 링크 라인 visibility 업데이트
-                    zoomableGroup
-                        .selectAll('line')
-                        .style('visibility', function () {
-                            const line = d3.select(this);
-                            const isConnected = line.classed(`link-${d.id}`);
-                            return isConnected ? 'visible' : 'hidden';
-                        })
-                        .style('opacity', function () {
-                            const line = d3.select(this);
-                            if (line.classed(`link-${d.id}`)) {
+                        // 선택 해제 시 모든 링크 라인 표시
+                        zoomableGroup
+                            .selectAll('line')
+                            .style('visibility', 'visible')
+                            .style('opacity', function () {
+                                const line = d3.select(this);
                                 const linkInfo = linkData.find(
-                                    (link) =>
-                                        (link.chain1 === d.id && line.classed(`link-${link.chain2}`)) ||
-                                        (link.chain2 === d.id && line.classed(`link-${link.chain1}`))
+                                    (link) => line.classed(`link-${link.chain1}`) && line.classed(`link-${link.chain2}`)
                                 );
-                                return linkInfo.shared_validators >= 40 ? 0.5 : 0.2;
-                            }
-                            return 0;
-                        });
+                                return linkInfo.shared_validators >= 40 ? 0.6 : 0.3;
+                            });
+                    } else {
+                        // 새로운 체인 선택
+                        setSelectedChain(d.id);
+
+                        // 링크 라인 visibility 업데이트
+                        zoomableGroup
+                            .selectAll('line')
+                            .style('visibility', function () {
+                                const line = d3.select(this);
+                                const isConnected = line.classed(`link-${d.id}`);
+                                return isConnected ? 'visible' : 'hidden';
+                            })
+                            .style('opacity', function () {
+                                const line = d3.select(this);
+                                if (line.classed(`link-${d.id}`)) {
+                                    const linkInfo = linkData.find(
+                                        (link) =>
+                                            (link.chain1 === d.id && line.classed(`link-${link.chain2}`)) ||
+                                            (link.chain2 === d.id && line.classed(`link-${link.chain1}`))
+                                    );
+                                    return linkInfo.shared_validators >= 40 ? 0.5 : 0.2;
+                                }
+                                return 0;
+                            });
+                    }
                 });
 
             // 파이 슬라이스 렌더링

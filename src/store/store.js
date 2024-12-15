@@ -101,6 +101,17 @@ export const useChainStore = create((set, get) => ({
 
         // 새로운 체인에 현재 선택된 검증인들이 모두 포함되어 있는지 확인
         const containsAllValidators = chainContainsAllValidators(chain, currentValidators);
+        if (get().selectedChain === chain) {
+            set({
+                selectedChain: null,
+                chainData: null,
+                validatorChains: [],
+                selectedValidators: [], // scatter plot 초기화
+                baseValidator: null, // scatter plot 초기화
+                highlightedChains: [], // 선택 해제시 하이라이트된 체인들도 초기화
+            });
+            return;
+        }
 
         set({
             selectedChain: chain,
