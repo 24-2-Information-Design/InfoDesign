@@ -7,7 +7,7 @@ import useChainStore from '../../store/store';
 
 const NetworkPie = () => {
     const svgRef = useRef(null);
-    const { setSelectedChain, selectedValidators, highlightedChains } = useChainStore();
+    const { setSelectedChain, selectedValidators, highlightedChains, selectedChain } = useChainStore();
 
     useEffect(() => {
         if (!svgRef.current) return;
@@ -162,8 +162,9 @@ const NetworkPie = () => {
                 .attr('class', 'blockchain-group')
                 .style('cursor', 'pointer')
                 .style('opacity', () => {
-                    if (highlightedChains.length === 0) return 1; // 모든 체인 표시
-                    return highlightedChains.includes(node.id) ? 0.6 : 0.1; // 선택된 체인 강조
+                    if (selectedChain === node.id) return 1;
+                    if (highlightedChains.length === 0) return 1;
+                    return highlightedChains.includes(node.id) ? 0.5 : 0.1;
                 })
                 .on('click', (event, d) => {
                     setSelectedChain(d.id);
@@ -219,7 +220,7 @@ const NetworkPie = () => {
                                         (link.chain1 === d.id && line.classed(`link-${link.chain2}`)) ||
                                         (link.chain2 === d.id && line.classed(`link-${link.chain1}`))
                                 );
-                                return linkInfo.shared_validators >= 40 ? 0.6 : 0.3;
+                                return linkInfo.shared_validators >= 40 ? 0.5 : 0.2;
                             }
                             return 0;
                         });
@@ -268,7 +269,7 @@ const NetworkPie = () => {
                 .attr('font-size', '12px')
                 .attr('font-weight', 'bold');
         });
-    }, [setSelectedChain, selectedValidators]);
+    }, [setSelectedChain, selectedValidators, highlightedChains, selectedChain]);
 
     const clusters = Array.from({ length: 14 }, (_, i) => i);
 
