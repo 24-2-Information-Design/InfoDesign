@@ -103,7 +103,7 @@ const ValidatorTable = () => {
                             <th className="p-0 font-medium whitespace-nowrap">참여율</th>
                         </tr>
                     </thead>
-                    <tbody className="text-xs text-center">
+                    <tbody className="text-xs text-left">
                         {validatorData.map((data, index) => (
                             <tr
                                 key={data.validator}

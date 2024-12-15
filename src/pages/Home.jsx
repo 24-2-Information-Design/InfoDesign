@@ -47,7 +47,7 @@ const Home = () => {
     return (
         <div className="flex flex-col w-full h-full">
             {/* header */}
-            <h1 className="ml-4 mt-4">Find your friends</h1>
+            <h1 className="ml-4 mt-4">Find Your Friends</h1>
             {/* body */}
             <div className="w-full h-full flex flex-row">
                 {/* left section */}

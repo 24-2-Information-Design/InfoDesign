@@ -6,13 +6,20 @@ const SunburstChart = ({ data, parallelData }) => {
     const svgRef = useRef(null);
     const { selectedValidators, selectedChain } = useChainStore();
 
-    // 투표 유형별 색상 (강조 표시용)
     const voteColors = {
         YES: '#2ecc71',
         NO: '#e74c3c',
         NO_WITH_VETO: '#f1c40f',
         ABSTAIN: '#3498db',
         NO_VOTE: '#95a5a6',
+    };
+
+    const voteLabels = {
+        YES: 'YES',
+        NO: 'NO',
+        NO_WITH_VETO: 'VETO',
+        ABSTAIN: 'ABSTAIN',
+        NO_VOTE: 'NO VOTE'
     };
 
     const getVoteTypeColor = (voteName) => {
@@ -24,13 +31,11 @@ const SunburstChart = ({ data, parallelData }) => {
 
         const proposalKey = `${selectedChain}_${proposalId}`;
 
-        // 단일 검증인 선택 시
         if (selectedValidators.length === 1) {
             const validatorData = parallelData.find((d) => d.voter === selectedValidators[0]);
             return validatorData ? validatorData[proposalKey] || 'NO_VOTE' : 'NO_VOTE';
         }
 
-        // 복수 검증인 선택 시
         const validatorVotes = selectedValidators.map((validator) => {
             const validatorData = parallelData.find((d) => d.voter === validator);
             return validatorData ? validatorData[proposalKey] || 'NO_VOTE' : 'NO_VOTE';
@@ -40,13 +45,13 @@ const SunburstChart = ({ data, parallelData }) => {
         return allSameVote ? validatorVotes[0] : false;
     };
 
-    const calculateAgreementRate = (rawData) => {
+    const calculateMatchRate = (rawData) => {
         if (!selectedValidators || selectedValidators.length < 2) return 0;
 
         const totalProposals = rawData.length;
         const agreedProposals = rawData.filter((d) => {
             const voteResult = checkVoteResult(d.id, parallelData, selectedValidators);
-            return typeof voteResult === 'string'; // string인 경우는 투표가 일치한 경우
+            return typeof voteResult === 'string';
         }).length;
 
         return ((agreedProposals / totalProposals) * 100).toFixed(1);
@@ -89,12 +94,13 @@ const SunburstChart = ({ data, parallelData }) => {
         const width = 300;
         const height = 300;
         const radius = Math.min(width, height) / 2;
+        const legendWidth = 150;  // 범례 영역 너비
 
         d3.select(svgRef.current).selectAll('*').remove();
 
         const svg = d3
             .select(svgRef.current)
-            .attr('width', width)
+            .attr('width', width + legendWidth)  // 범례 공간 추가
             .attr('height', height)
             .append('g')
             .attr('transform', `translate(${width / 2},${height / 2})`);
@@ -132,7 +138,8 @@ const SunburstChart = ({ data, parallelData }) => {
             .style('border', '1px solid #ddd')
             .style('padding', '10px')
             .style('border-radius', '4px')
-            .style('font-size', '12px');
+            .style('font-size', '12px')
+            .style('z-index', '1000');
 
         const path = svg
             .selectAll('path')
@@ -156,29 +163,31 @@ const SunburstChart = ({ data, parallelData }) => {
             .style('stroke', 'white')
             .style('stroke-width', '0.5')
             .on('mouseover', function (event, d) {
-                if (d.depth === 2) {
-                    tooltip
-                        .style('visibility', 'visible')
-                        .html(
-                            `
-              <strong>Proposal: ${d.data.name}</strong><br/>
-              <strong>Type: ${d.parent.data.name}</strong>
-              ${
-                  selectedValidators.length === 1
-                      ? `<br/><span style="color: green;">Vote: ${d.data.voteResult}</span>`
-                      : d.data.voteResult
-                      ? '<br/><span style="color: green;">✓ Selected validators agreed: ' +
-                        d.data.voteResult +
-                        '</span>'
-                      : ''
-              }
-            `
-                        )
-                        .style('left', event.pageX + 10 + 'px')
-                        .style('top', event.pageY - 10 + 'px');
+                d3.select(this).style('opacity', 1).style('stroke-width', '2');
+                
+                const tooltipContent = d.depth === 1 
+                    ? `<strong>Type: ${d.data.name}</strong><br/>
+                       <span>Number of Proposals: ${d.children.length}</span>`
+                    : `<strong>Proposal: ${d.data.name}</strong><br/>
+                       <strong>Type: ${d.parent.data.name}</strong>
+                       ${selectedValidators.length === 1
+                           ? `<br/><span style="color: green;">Vote: ${d.data.voteResult}</span>`
+                           : d.data.voteResult
+                           ? '<br/><span style="color: green;">✓ Selected validators agreed: ' +
+                             d.data.voteResult +
+                             '</span>'
+                           : ''}`;
 
-                    d3.select(this).style('opacity', 1).style('stroke-width', '2');
-                }
+                tooltip
+                    .style('visibility', 'visible')
+                    .html(tooltipContent)
+                    .style('left', event.pageX + 10 + 'px')
+                    .style('top', event.pageY - 10 + 'px');
+            })
+            .on('mousemove', function(event) {
+                tooltip
+                    .style('left', event.pageX + 10 + 'px')
+                    .style('top', event.pageY - 10 + 'px');
             })
             .on('mouseout', function (event, d) {
                 tooltip.style('visibility', 'hidden');
@@ -190,23 +199,37 @@ const SunburstChart = ({ data, parallelData }) => {
                     .style('stroke-width', '0.5');
             });
 
-        const text = svg
-            .selectAll('text')
-            .data(root.descendants().filter((d) => d.depth === 1))
-            .enter()
-            .append('text')
-            .attr('transform', function (d) {
-                const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
-                const y = (d.y0 + d.y1) / 2;
-                return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
-            })
-            .attr('dy', '0.35em')
-            .style('text-anchor', 'middle')
-            .style('font-size', '12px')
-            .style('fill', 'white')
-            .text((d) => d.data.name);
+        // 범례 추가
+        const legend = svg
+            .append('g')
+            .attr('class', 'legend')
+            .attr('transform', `translate(${radius + 20}, ${-radius + 20})`);  // 차트 우측에 배치
 
-        // 중앙에 일치율 표시 (2명 이상 선택시에만)
+        const legendItems = Object.entries(voteLabels);
+        const legendSpacing = 25;  // 범례 항목 간 간격
+
+        legendItems.forEach(([voteType, label], index) => {
+            const legendItem = legend
+                .append('g')
+                .attr('transform', `translate(0, ${index * legendSpacing})`);
+
+            legendItem
+                .append('rect')
+                .attr('width', 15)
+                .attr('height', 15)
+                .attr('fill', voteColors[voteType])
+                .style('opacity', 0.8);
+
+            legendItem
+                .append('text')
+                .attr('x', 20)
+                .attr('y', 12)
+                .style('font-size', '12px')
+                .style('fill', '#666')
+                .text(label);
+        });
+
+        // 중앙에 Match Rate 표시 (2명 이상 선택시에만)
         const centerGroup = svg
             .append('g')
             .attr('class', 'center-stats')
@@ -214,28 +237,28 @@ const SunburstChart = ({ data, parallelData }) => {
 
         centerGroup
             .append('text')
-            .attr('class', 'agreement-rate')
+            .attr('class', 'match-rate')
             .attr('text-anchor', 'middle')
             .attr('dy', '-0.5em')
             .style('font-size', '24px')
             .style('fill', '#333')
-            .text(`${calculateAgreementRate(data)}%`);
+            .text(`${calculateMatchRate(data)}%`);
 
         centerGroup
             .append('text')
-            .attr('class', 'agreement-label')
+            .attr('class', 'match-label')
             .attr('text-anchor', 'middle')
             .attr('dy', '1.5em')
             .style('font-size', '14px')
             .style('fill', '#666')
-            .text('Agreement Rate');
+            .text('Match Rate');
 
         return () => {
             tooltip.remove();
         };
     }, [data, parallelData, selectedValidators, selectedChain]);
 
-    return <svg ref={svgRef} className=" mb-80 ml-24" />;
+    return <svg ref={svgRef} className="mb-80 ml-24" />;
 };
 
 export default SunburstChart;
