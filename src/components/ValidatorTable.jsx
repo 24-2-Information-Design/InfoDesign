@@ -90,17 +90,17 @@ const ValidatorTable = () => {
                     <thead className="sticky top-0 bg-white border-b text-xs text-center">
                         <tr>
                             <th className="p-1 font-medium border-r whitespace-nowrap">No.</th>
-                            <th className="p-0 font-medium border-r whitespace-nowrap">검증인</th>
+                            <th className="p-0 font-medium border-r whitespace-nowrap">Validator Name</th>
                             <th
                                 className="p-0 font-medium border-r whitespace-nowrap cursor-pointer"
                                 onClick={handleSortClick}
                             >
-                                일치율(%) {isDescending ? '▼' : '▲'}
+                                Match Rate(%) {isDescending ? '▼' : '▲'}
                             </th>
                             <th className="p-0 font-medium border-r whitespace-nowrap">Cluster</th>
-                            <th className="p-0 font-medium border-r whitespace-nowrap">전체 일치율</th>
-                            <th className="p-0 font-medium border-r whitespace-nowrap">클러스터 일치율</th>
-                            <th className="p-0 font-medium whitespace-nowrap">참여율</th>
+                            <th className="p-0 font-medium border-r whitespace-nowrap">Overall Match Rate</th>
+                            <th className="p-0 font-medium border-r whitespace-nowrap">Cluster Match Rate</th>
+                            <th className="p-0 font-medium whitespace-nowrap">Participation</th>
                         </tr>
                     </thead>
                     <tbody className="text-xs text-left">

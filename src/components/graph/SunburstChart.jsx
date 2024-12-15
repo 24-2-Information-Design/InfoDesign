@@ -15,11 +15,11 @@ const SunburstChart = ({ data, parallelData }) => {
     };
 
     const voteLabels = {
-        YES: 'YES',
-        NO: 'NO',
-        NO_WITH_VETO: 'VETO',
-        ABSTAIN: 'ABSTAIN',
-        NO_VOTE: 'NO VOTE'
+        YES: 'Yes',
+        NO: 'No',
+        NO_WITH_VETO: 'No With Veto',
+        ABSTAIN: 'Abstain',
+        NO_VOTE: 'No Vote'
     };
 
     const getVoteTypeColor = (voteName) => {
@@ -94,21 +94,56 @@ const SunburstChart = ({ data, parallelData }) => {
         const width = 300;
         const height = 300;
         const radius = Math.min(width, height) / 2;
-        const legendWidth = 150;  // 범례 영역 너비
+        const legendHeight = 40;
 
         d3.select(svgRef.current).selectAll('*').remove();
 
         const svg = d3
             .select(svgRef.current)
-            .attr('width', width + legendWidth)  // 범례 공간 추가
-            .attr('height', height)
+            .attr('width', width)
+            .attr('height', height + legendHeight);
+
+        // 범례 추가
+        const legend = svg
             .append('g')
-            .attr('transform', `translate(${width / 2},${height / 2})`);
+            .attr('class', 'legend')
+            .attr('transform', `translate(10, 20)`);
+
+        const legendItems = Object.entries(voteLabels);
+        
+        // 각 범례 아이템의 위치를 동적으로 계산
+        let currentX = 0;
+        legendItems.forEach(([voteType, label], index) => {
+            const legendItem = legend
+                .append('g')
+                .attr('transform', `translate(${currentX}, 0)`);
+
+            legendItem
+                .append('rect')
+                .attr('width', 10)
+                .attr('height', 10)
+                .attr('fill', voteColors[voteType])
+                .style('opacity', 0.8);
+
+            const legendText = legendItem
+                .append('text')
+                .attr('x', 14)
+                .attr('y', 9)
+                .style('font-size', '11px')
+                .style('fill', '#666')
+                .text(label);
+
+            const textWidth = legendText.node().getComputedTextLength();
+            const itemWidth = 14 + textWidth;
+            currentX += itemWidth + 15;
+        });
+
+        const chartGroup = svg
+            .append('g')
+            .attr('transform', `translate(${width / 2}, ${height / 2 + legendHeight})`);
 
         const hierarchyData = d3.hierarchy(transformData(data)).sum((d) => d.value);
-
         const partition = d3.partition().size([2 * Math.PI, radius]);
-
         const root = partition(hierarchyData);
 
         root.descendants().forEach((d) => {
@@ -141,7 +176,7 @@ const SunburstChart = ({ data, parallelData }) => {
             .style('font-size', '12px')
             .style('z-index', '1000');
 
-        const path = svg
+        const path = chartGroup
             .selectAll('path')
             .data(root.descendants().slice(1))
             .enter()
@@ -199,38 +234,7 @@ const SunburstChart = ({ data, parallelData }) => {
                     .style('stroke-width', '0.5');
             });
 
-        // 범례 추가
-        const legend = svg
-            .append('g')
-            .attr('class', 'legend')
-            .attr('transform', `translate(${radius + 20}, ${-radius + 20})`);  // 차트 우측에 배치
-
-        const legendItems = Object.entries(voteLabels);
-        const legendSpacing = 25;  // 범례 항목 간 간격
-
-        legendItems.forEach(([voteType, label], index) => {
-            const legendItem = legend
-                .append('g')
-                .attr('transform', `translate(0, ${index * legendSpacing})`);
-
-            legendItem
-                .append('rect')
-                .attr('width', 15)
-                .attr('height', 15)
-                .attr('fill', voteColors[voteType])
-                .style('opacity', 0.8);
-
-            legendItem
-                .append('text')
-                .attr('x', 20)
-                .attr('y', 12)
-                .style('font-size', '12px')
-                .style('fill', '#666')
-                .text(label);
-        });
-
-        // 중앙에 Match Rate 표시 (2명 이상 선택시에만)
-        const centerGroup = svg
+        const centerGroup = chartGroup
             .append('g')
             .attr('class', 'center-stats')
             .style('opacity', selectedValidators.length >= 2 ? 1 : 0);
@@ -258,7 +262,16 @@ const SunburstChart = ({ data, parallelData }) => {
         };
     }, [data, parallelData, selectedValidators, selectedChain]);
 
-    return <svg ref={svgRef} className="mb-80 ml-24" />;
+    return (
+        <div>
+            <div className="flex justify-between items-center">
+                <div className="flex items-center gap-4">
+                    <h3 className="text-lg pl-3">Proposal match</h3>
+                </div>
+            </div>
+            <svg ref={svgRef} className="mb-80 ml-24" />
+        </div>
+    );
 };
 
 export default SunburstChart;

@@ -179,9 +179,9 @@ const ScatterPlot = ({ data }) => {
 
     return (
         <div>
-            <div className="flex justify-between items-center">
+            <div className="flex items-center gap-4 pl-3">
+                <h3 className="text-lg">Validator Votes Similarity</h3>
                 <div className="flex items-center gap-4">
-                    <h3 className="text-lg pl-3">Validator Votes Similarity</h3>
                     <label className="flex items-center space-x-2 text-sm">
                         <input
                             type="checkbox"
@@ -195,12 +195,12 @@ const ScatterPlot = ({ data }) => {
                             }}
                             className="form-checkbox h-4 w-4"
                         />
-                        <span>단일 선택 모드</span>
+                        <span>Single Selection</span>
                     </label>
+                    <button onClick={handleReset} className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">
+                        Reset
+                    </button>
                 </div>
-                <button onClick={handleReset} className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">
-                    Reset
-                </button>
             </div>
             <svg ref={svgRef}></svg>
         </div>
