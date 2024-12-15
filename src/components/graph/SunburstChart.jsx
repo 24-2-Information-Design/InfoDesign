@@ -17,7 +17,7 @@ const SunburstChart = ({ data, parallelData }) => {
     const voteLabels = {
         YES: 'Yes',
         NO: 'No',
-        NO_WITH_VETO: 'No With Veto',
+        NO_WITH_VETO: 'Veto',
         ABSTAIN: 'Abstain',
         NO_VOTE: 'No Vote'
     };
