@@ -4,22 +4,22 @@ import useChainStore from '../store/store';
 const ValidatorTable = () => {
     const { selectedChain, selectedValidators, baseValidator, setBaseValidator } = useChainStore();
     const [validatorData, setValidatorData] = useState([]);
-    const [isDescending, setIsDescending] = useState(true);
+    const [sortConfig, setSortConfig] = useState({
+        key: 'matchRate',
+        direction: 'desc'
+    });
 
     useEffect(() => {
-        // 선택된 검증인이 없거나 1명만 있을 때는 데이터 초기화
         if (!selectedChain || !baseValidator || selectedValidators.length <= 1) {
             setValidatorData([]);
             return;
         }
 
-        // 이전 데이터 초기화 (새로운 데이터 로딩 전에 비우기)
         setValidatorData([]);
 
         fetch(`/data/validator_result/validator_result_${selectedChain}.json`)
             .then((response) => response.json())
             .then((data) => {
-                // baseValidator가 변경되었거나 selectedValidators가 변경된 경우를 확인
                 if (!selectedValidators.includes(baseValidator) || selectedValidators.length <= 1) {
                     setValidatorData([]);
                     return;
@@ -47,7 +47,7 @@ const ValidatorTable = () => {
                         };
                     });
 
-                setValidatorData([
+                const initialData = [
                     {
                         validator: baseValidator,
                         matchRate: 1,
@@ -57,7 +57,9 @@ const ValidatorTable = () => {
                         participationRate: baseValidatorData.participation_rate || 0,
                     },
                     ...validatorsInfo,
-                ]);
+                ];
+
+                setValidatorData(initialData);
             })
             .catch((error) => {
                 console.error('Error loading validator results:', error);
@@ -70,17 +72,68 @@ const ValidatorTable = () => {
         setBaseValidator(clickedValidator);
     };
 
-    const handleSortClick = () => {
-        setIsDescending(!isDescending);
-        setValidatorData((prevData) => {
-            if (prevData.length <= 1) return prevData;
-            const [first, ...rest] = prevData;
-            const sortedData = rest.sort((a, b) => {
-                return isDescending ? b.matchRate - a.matchRate : a.matchRate - b.matchRate;
-            });
-            return [first, ...sortedData];
-        });
+    // cluster 값에서 숫자를 추출하는 함수
+    const getClusterNumber = (clusterString) => {
+        const match = clusterString.match(/\d+/);
+        return match ? parseInt(match[0]) : -1;
     };
+
+    // 정렬 함수를 별도로 분리
+    const sortData = (data, key, direction) => {
+        if (data.length <= 1) return data;
+        const [first, ...rest] = data;
+        
+        const sortedData = [...rest].sort((a, b) => {
+            let comparison = 0;
+            
+            if (key === 'cluster') {
+                // cluster 정렬 로직 개선
+                const aNumber = getClusterNumber(String(a[key] || ''));
+                const bNumber = getClusterNumber(String(b[key] || ''));
+                comparison = aNumber - bNumber;
+            }
+            else if (key === 'validator') {
+                const aValue = String(a[key] || '').toLowerCase();
+                const bValue = String(b[key] || '').toLowerCase();
+                comparison = aValue.localeCompare(bValue);
+            }
+            else {
+                comparison = (a[key] || 0) - (b[key] || 0);
+            }
+            
+            return direction === 'asc' ? comparison : -comparison;
+        });
+
+        return [first, ...sortedData];
+    };
+
+    const handleSort = (key) => {
+        // 새로운 정렬 방향 계산
+        const newDirection = 
+            sortConfig.key === key
+            ? sortConfig.direction === 'asc' ? 'desc' : 'asc'
+            : 'desc';
+        
+        // 상태 업데이트와 데이터 정렬을 동시에 수행
+        setSortConfig({ key, direction: newDirection });
+        setValidatorData(prevData => sortData(prevData, key, newDirection));
+    };
+
+    const getSortIndicator = (columnKey) => {
+        if (sortConfig.key !== columnKey) {
+            return '↕';
+        }
+        return sortConfig.direction === 'asc' ? '▲' : '▼';
+    };
+
+    const columns = [
+        { key: 'validator', label: 'Validator Name' },
+        { key: 'matchRate', label: 'Match Rate(%)' },
+        { key: 'cluster', label: 'Cluster' },
+        { key: 'overallMatchRate', label: 'Overall Match Rate' },
+        { key: 'clusterMatchRate', label: 'Cluster Match Rate' },
+        { key: 'participationRate', label: 'Participation' }
+    ];
 
     return (
         <div className="border rounded-lg">
@@ -90,17 +143,17 @@ const ValidatorTable = () => {
                     <thead className="sticky top-0 bg-white border-b text-xs text-center">
                         <tr>
                             <th className="p-1 font-medium border-r whitespace-nowrap">No.</th>
-                            <th className="p-0 font-medium border-r whitespace-nowrap">Validator Name</th>
-                            <th
-                                className="p-0 font-medium border-r whitespace-nowrap cursor-pointer"
-                                onClick={handleSortClick}
-                            >
-                                Match Rate(%) {isDescending ? '▼' : '▲'}
-                            </th>
-                            <th className="p-0 font-medium border-r whitespace-nowrap">Cluster</th>
-                            <th className="p-0 font-medium border-r whitespace-nowrap">Overall Match Rate</th>
-                            <th className="p-0 font-medium border-r whitespace-nowrap">Cluster Match Rate</th>
-                            <th className="p-0 font-medium whitespace-nowrap">Participation</th>
+                            {columns.map(column => (
+                                <th
+                                    key={column.key}
+                                    className="p-2 font-medium border-r whitespace-nowrap cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort(column.key)}
+                                >
+                                    <div className="flex items-center justify-center gap-1">
+                                        {column.label} {getSortIndicator(column.key)}
+                                    </div>
+                                </th>
+                            ))}
                         </tr>
                     </thead>
                     <tbody className="text-xs text-left">
@@ -120,11 +173,17 @@ const ValidatorTable = () => {
                                         data.validator
                                     )}
                                 </td>
-                                <td className="p-2 border-r">{(data.matchRate * 100).toFixed(2)}</td>
-                                <td className="p-2 border-r">{data.cluster}</td>
-                                <td className="p-2 border-r">{(data.overallMatchRate * 100).toFixed(2)}</td>
-                                <td className="p-2 border-r">{(data.clusterMatchRate * 100).toFixed(2)}</td>
-                                <td className="p-2">{(data.participationRate * 100).toFixed(2)}</td>
+                                <td className="p-2 border-r text-center">{(data.matchRate * 100).toFixed(2)}</td>
+                                <td className="p-2 border-r text-center">{data.cluster}</td>
+                                <td className="p-2 border-r text-center">
+                                    {(data.overallMatchRate * 100).toFixed(2)}
+                                </td>
+                                <td className="p-2 border-r text-center">
+                                    {(data.clusterMatchRate * 100).toFixed(2)}
+                                </td>
+                                <td className="p-2 text-center">
+                                    {(data.participationRate * 100).toFixed(2)}
+                                </td>
                             </tr>
                         ))}
                     </tbody>
