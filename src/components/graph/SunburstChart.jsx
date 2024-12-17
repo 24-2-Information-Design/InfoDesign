@@ -30,9 +30,9 @@ const SunburstChart = ({ data, parallelData }) => {
         if (!selectedValidators || selectedValidators.length === 0) {
             return null;
         }
-    
+
         const proposalKey = `${selectedChain}_${proposalId}`;
-    
+
         // 단일 선택 모드
         if (singleSelectMode) {
             if (selectedValidators.length === 1) {
@@ -41,31 +41,31 @@ const SunburstChart = ({ data, parallelData }) => {
             }
             return null;
         }
-    
+
         // 다중 선택 모드
         // 단일 검증인이 선택된 경우 null 반환하여 회색으로 표시
         if (selectedValidators.length === 1) {
             return null;
         }
-    
+
         // 복수 검증인이 선택된 경우 투표 일치 여부 확인
         const validatorVotes = selectedValidators.map((validator) => {
             const validatorData = parallelData.find((d) => d.voter === validator);
             return validatorData ? validatorData[proposalKey] || 'NO_VOTE' : 'NO_VOTE';
         });
-    
+
         const allSameVote = validatorVotes.every((vote) => vote === validatorVotes[0]);
         return allSameVote ? validatorVotes[0] : false;
     };
 
     const calculateParticipationRate = (validator) => {
         if (!validator || !data || !parallelData) return 0;
-        
-        const validatorData = parallelData.find(d => d.voter === validator);
+
+        const validatorData = parallelData.find((d) => d.voter === validator);
         if (!validatorData) return 0;
 
         const totalProposals = data.length;
-        
+
         const participatedProposals = data.reduce((count, proposal) => {
             const proposalKey = `${selectedChain}_${proposal.id}`;
             const vote = validatorData[proposalKey];
@@ -77,13 +77,13 @@ const SunburstChart = ({ data, parallelData }) => {
 
     const getValidatorInfo = (validator) => {
         if (!validator || !parallelData) return null;
-        const validatorData = parallelData.find(d => d.voter === validator);
+        const validatorData = parallelData.find((d) => d.voter === validator);
         if (!validatorData) return null;
-        
+
         return {
             name: validator,
             cluster: validatorData.cluster_label,
-            participationRate: calculateParticipationRate(validator).toFixed(1)
+            participationRate: calculateParticipationRate(validator).toFixed(1),
         };
     };
 
@@ -238,10 +238,11 @@ const SunburstChart = ({ data, parallelData }) => {
             .on('mouseover', function (event, d) {
                 d3.select(this).style('opacity', 1).style('stroke-width', '2');
 
-                const tooltipContent = d.depth === 1
-    ? `<strong>Type: ${d.data.name}</strong><br/>
+                const tooltipContent =
+                    d.depth === 1
+                        ? `<strong>Type: ${d.data.name}</strong><br/>
        <span>Number of Proposals: ${d.children.length}</span>`
-    : `<strong>Proposal ID: ${d.data.proposalId}</strong><br/>
+                        : `<strong>Proposal ID: ${d.data.proposalId}</strong><br/>
        <strong>Proposal: ${d.data.name}</strong><br/>
        <strong>Type: ${d.parent.data.name}</strong>
        ${
@@ -279,65 +280,87 @@ const SunburstChart = ({ data, parallelData }) => {
 
         if (singleSelectMode && selectedValidators.length === 1) {
             const validatorInfo = getValidatorInfo(selectedValidators[0]);
-            
+
+            const calculateFontSize = (name) => {
+                return name.length >= 20 ? '10px' : name.length >= 10 ? '12px' : '14px';
+            };
+
             if (validatorInfo) {
+                const splitValidatorName = (name) => {
+                    if (name.length <= 15) return { line1: name, line2: null };
+
+                    // Try to split at a space if possible
+                    const spaceIndex = name.substring(0, 15).lastIndexOf(' ');
+
+                    if (spaceIndex > 0) {
+                        return {
+                            line1: name.substring(0, spaceIndex),
+                            line2: name.substring(spaceIndex + 1),
+                        };
+                    }
+
+                    // If no space, split evenly
+                    return {
+                        line1: name.substring(0, 15),
+                        line2: name.substring(15),
+                    };
+                };
+
+                const { line1, line2 } = splitValidatorName(validatorInfo.name);
+
+                // Dynamically adjust vertical positioning based on two-line or single-line name
+                const verticalOffsets = {
+                    nameFirstLine: line2 ? -1.2 : -1.2,
+                    nameSecondLine: line2 ? 0.2 : 0,
+                    cluster: line2 ? 1.2 : 0.2,
+                    participation: line2 ? 2.2 : 1.6,
+                };
+
+                const fontSize = '12px';
+
+                // First line of validator name
                 centerGroup
                     .append('text')
-                    .attr('class', 'validator-name')
+                    .attr('class', 'validator-name-line1')
                     .attr('text-anchor', 'middle')
-                    .attr('dy', '-1.2em')
-                    .style('font-size', '16px')
+                    .attr('dy', `${verticalOffsets.nameFirstLine}em`)
+                    .style('font-size', calculateFontSize(validatorInfo.name))
                     .style('fill', '#333')
-                    .text(validatorInfo.name);
+                    .text(line1);
 
+                // Second line of validator name (if exists)
+                if (line2) {
+                    centerGroup
+                        .append('text')
+                        .attr('class', 'validator-name-line2')
+                        .attr('text-anchor', 'middle')
+                        .attr('dy', `${verticalOffsets.nameSecondLine}em`)
+                        .style('font-size', calculateFontSize(validatorInfo.name))
+                        .style('fill', '#333')
+                        .text(line2);
+                }
+
+                // Cluster text
                 centerGroup
                     .append('text')
                     .attr('class', 'validator-cluster')
                     .attr('text-anchor', 'middle')
-                    .attr('dy', '0.2em')
+                    .attr('dy', `${verticalOffsets.cluster}em`)
                     .style('font-size', '14px')
                     .style('fill', '#666')
                     .text(`Cluster ${validatorInfo.cluster}`);
 
+                // Participation text
                 centerGroup
                     .append('text')
                     .attr('class', 'validator-participation')
                     .attr('text-anchor', 'middle')
-                    .attr('dy', '1.6em')
+                    .attr('dy', `${verticalOffsets.participation}em`)
                     .style('font-size', '14px')
                     .style('fill', '#666')
                     .text(`${validatorInfo.participationRate}%`);
             }
-        } else if (!singleSelectMode && selectedValidators.length >= 2) {
-            const matchStats = calculateMatchStatistics(data);
-
-            centerGroup
-                .append('text')
-                .attr('class', 'match-rate')
-                .attr('text-anchor', 'middle')
-                .attr('dy', '-0.2em')
-                .style('font-size', '24px')
-                .style('fill', '#333')
-                .text(`${matchStats.rate}%`);
-
-            centerGroup
-                .append('text')
-                .attr('class', 'match-count')
-                .attr('text-anchor', 'middle')
-                .attr('dy', '0.9em')
-                .style('font-size', '14px')
-                .style('fill', '#666')
-                .text(`${matchStats.matched} / ${matchStats.total}`);
-
-            centerGroup
-                .append('text')
-                .attr('class', 'match-label')
-                .attr('text-anchor', 'middle')
-                .attr('dy', '2.1em')
-                .style('font-size', '14px')
-                .style('fill', '#666');
         }
-
         return () => {
             tooltip.remove();
         };
@@ -347,9 +370,7 @@ const SunburstChart = ({ data, parallelData }) => {
         <div>
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
-                    <h3 className="text-lg pl-3">
-                        {singleSelectMode ? 'Personal Proposal' : 'Proposal Match'}
-                    </h3>
+                    <h3 className="text-lg pl-3">{singleSelectMode ? 'Personal Proposal' : 'Proposal Match'}</h3>
                 </div>
             </div>
             <svg ref={svgRef} className="mb-80 ml-24" />

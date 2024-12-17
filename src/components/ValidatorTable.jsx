@@ -84,7 +84,7 @@ const ValidatorTable = () => {
     const sortValidatorData = (data, key, direction) => {
         return [...data].sort((a, b) => {
             let comparison = 0;
-            
+
             if (key === 'cluster') {
                 const aMatch = String(a[key] || '').match(/\d+/);
                 const bMatch = String(b[key] || '').match(/\d+/);
@@ -104,15 +104,19 @@ const ValidatorTable = () => {
     };
 
     const handleSort = (key) => {
-        const newDirection = 
-            sortConfig.key === key ? (sortConfig.direction === 'asc' ? 'desc' : 'asc') : 'desc';
-        
-        setSortConfig({ key, direction: newDirection });
-        setValidatorData(prevData => {
-            const [first, ...rest] = prevData;
-            const sortedRest = sortValidatorData(rest, key, newDirection);
-            return [first, ...sortedRest];
-        });
+        if (!selectedChain || !selectedValidators.length) {
+            alert('검증인을 선택해주세요');
+            return;
+        } else {
+            const newDirection = sortConfig.key === key ? (sortConfig.direction === 'asc' ? 'desc' : 'asc') : 'desc';
+
+            setSortConfig({ key, direction: newDirection });
+            setValidatorData((prevData) => {
+                const [first, ...rest] = prevData;
+                const sortedRest = sortValidatorData(rest, key, newDirection);
+                return [first, ...sortedRest];
+            });
+        }
     };
 
     const columns = [
@@ -126,22 +130,29 @@ const ValidatorTable = () => {
 
     return (
         <div className="border">
-            <h3 className="pl-3">Validator Results</h3>
-            
+            <p className="pl-3">Validator Results</p>
+
             <div className="pl-3 relative">
                 <div style={{ maxHeight: 'calc(2.5rem * 4)' }} className="overflow-auto">
-                    <table className="w-full" style={{ minWidth: '800px', borderCollapse: 'separate', borderSpacing: 0 }}>
-                        <thead className="sticky top-0 bg-white z-10">
-                            <tr className="border-b text-xs">
-                                <th className="p-1 font-medium border-r whitespace-nowrap">No.</th>
+                    <table
+                        className="w-full"
+                        style={{ minWidth: '800px', borderCollapse: 'separate', borderSpacing: 0 }}
+                    >
+                        <thead className="sticky top-0  bg-white z-10">
+                            <tr className="border-b font-semibold text-xs ">
+                                <th className="p-1  border-r whitespace-nowrap">No.</th>
                                 {columns.map((column) => (
                                     <th
                                         key={column.key}
-                                        className="p-2 font-medium whitespace-nowrap cursor-pointer hover:bg-gray-100 text-center"
+                                        className="p-2 whitespace-nowrap cursor-pointer hover:bg-gray-100 text-center"
                                         onClick={() => handleSort(column.key)}
                                     >
-                                        {column.label} {sortConfig.key === column.key ? 
-                                            (sortConfig.direction === 'asc' ? '▲' : '▼') : '↕'}
+                                        {column.label}{' '}
+                                        {sortConfig.key === column.key
+                                            ? sortConfig.direction === 'asc'
+                                                ? '▲'
+                                                : '▼'
+                                            : '↕'}
                                     </th>
                                 ))}
                             </tr>
@@ -151,15 +162,23 @@ const ValidatorTable = () => {
                                 <tr className="sticky top-8 bg-gray-50 z-10">
                                     <td className="p-2 border-b">1</td>
                                     <td className="p-2 border-b font-medium">{validatorData[0].validator}</td>
-                                    <td className="p-2 border-b text-center">{(validatorData[0].matchRate * 100).toFixed(2)}</td>
+                                    <td className="p-2 border-b text-center">
+                                        {(validatorData[0].matchRate * 100).toFixed(2)}
+                                    </td>
                                     <td className="p-2 border-b text-center">{validatorData[0].cluster}</td>
-                                    <td className="p-2 border-b text-center">{(validatorData[0].overallMatchRate * 100).toFixed(2)}</td>
-                                    <td className="p-2 border-b text-center">{(validatorData[0].clusterMatchRate * 100).toFixed(2)}</td>
-                                    <td className="p-2 border-b text-center">{(validatorData[0].participationRate * 100).toFixed(2)}</td>
+                                    <td className="p-2 border-b text-center">
+                                        {(validatorData[0].overallMatchRate * 100).toFixed(2)}
+                                    </td>
+                                    <td className="p-2 border-b text-center">
+                                        {(validatorData[0].clusterMatchRate * 100).toFixed(2)}
+                                    </td>
+                                    <td className="p-2 border-b text-center">
+                                        {(validatorData[0].participationRate * 100).toFixed(2)}
+                                    </td>
                                 </tr>
                             )}
                             {validatorData.slice(1).map((data, index) => (
-                                <tr 
+                                <tr
                                     key={data.validator}
                                     className="border-b hover:bg-blue-200 cursor-pointer"
                                     onClick={() => setBaseValidator(data.validator)}
