@@ -40,30 +40,30 @@ const ClusterResult = () => {
 
     return (
         <div className="w-full h-full font-medium">
-            <h3 className="pl-3 ">Cluster Results</h3>
+            <h3 className="pl-3">Cluster Results</h3>
             <div className="ml-4">
                 {clusterInfo.cluster ? (
                     <>
                         <p className="mb-2">Cluster {clusterInfo.cluster}</p>
                         <div>
-                            <p className=" flex mb-1">
-                                우호적 클러스터:{' '}
+                            <p className="flex mb-1">
+                                Similar Match Clusters:{' '}
                                 <p className="ml-2 text-green-600">
-                                    {clusterInfo.friendly.length > 0 ? clusterInfo.friendly.join(', ') : '없음'}
+                                    {clusterInfo.friendly.length > 0 ? clusterInfo.friendly.join(', ') : 'None'}
                                 </p>
                             </p>
                         </div>
                         <div className="mt-2">
-                            <p className=" flex  mb-1">
-                                적대적 클러스터:{' '}
+                            <p className="flex mb-1">
+                                Dissimilar Match Clusters:{' '}
                                 <p className="ml-2 text-red-600">
-                                    {clusterInfo.opposition.length > 0 ? clusterInfo.opposition.join(', ') : '없음'}
+                                    {clusterInfo.opposition.length > 0 ? clusterInfo.opposition.join(', ') : 'None'}
                                 </p>
                             </p>
                         </div>
                     </>
                 ) : (
-                    <p className="text-sm text-gray-500">선택된 검증인이 없습니다.</p>
+                    <p className="text-sm text-gray-500">No validator selected</p>
                 )}
             </div>
         </div>
