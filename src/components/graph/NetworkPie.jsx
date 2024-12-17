@@ -249,12 +249,12 @@ const NetworkPie = () => {
         });
     }, [setSelectedChain, highlightedChains, selectedChain, getChainOpacity]);
 
-    const clusters = Array.from({ length: 14 }, (_, i) => i);
+    const clusters = Array.from({ length: 8 }, (_, i) => i);
 
     return (
         <div className="mt-2">
             <div className="ml-4 mb-2">
-                <div className="grid grid-cols-7 gap-x-1 gap-y-1 w-fit">
+                <div className="grid grid-cols-4 gap-x-1 gap-y-1 w-fit">
                     {clusters.map((cluster) => (
                         <div key={cluster} className="flex items-center gap-2">
                             <div
