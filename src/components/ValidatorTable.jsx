@@ -4,35 +4,54 @@ import useChainStore from '../store/store';
 const ValidatorTable = () => {
     const { selectedChain, selectedValidators, baseValidator, setBaseValidator } = useChainStore();
     const [validatorData, setValidatorData] = useState([]);
-    const [isDescending, setIsDescending] = useState(true);
+    const [sortConfig, setSortConfig] = useState({
+        key: 'matchRate',
+        direction: 'desc'
+    });
 
     useEffect(() => {
-        // 선택된 검증인이 없거나 1명만 있을 때는 데이터 초기화
-        if (!selectedChain || !baseValidator) {
+ 
+        // 체인이나 검증인이 선택되지 않은 경우만 체크
+        if (!selectedChain || !selectedValidators.length) {
+ 
             setValidatorData([]);
             return;
         }
 
-        // 이전 데이터 초기화 (새로운 데이터 로딩 전에 비우기)
         setValidatorData([]);
 
         fetch(`/data/validator_result/validator_result_${selectedChain}.json`)
             .then((response) => response.json())
             .then((data) => {
-                // baseValidator가 변경되었거나 selectedValidators가 변경된 경우를 확인
-                if (!selectedValidators.includes(baseValidator) || selectedValidators.length <= 1) {
-                    setValidatorData([]);
+                // 검증인이 한 명일 경우 해당 검증인의 정보만 표시
+                if (selectedValidators.length === 1) {
+                    const singleValidator = selectedValidators[0];
+                    const validatorInfo = data.find((item) => item.voter === singleValidator);
+                    
+                    if (validatorInfo) {
+                        setValidatorData([{
+                            validator: singleValidator,
+                            matchRate: 1,
+                            cluster: validatorInfo.cluster_label,
+                            overallMatchRate: validatorInfo.overall_match_rate || 0,
+                            clusterMatchRate: validatorInfo.cluster_match_rate || 0,
+                            participationRate: validatorInfo.participation_rate || 0,
+                        }]);
+                    }
                     return;
                 }
 
-                const baseValidatorData = data.find((item) => item.voter === baseValidator);
+                // baseValidator가 선택되지 않은 경우 첫 번째 검증인을 baseValidator로 사용
+                const currentBaseValidator = baseValidator || selectedValidators[0];
+                const baseValidatorData = data.find((item) => item.voter === currentBaseValidator);
+                
                 if (!baseValidatorData) {
                     setValidatorData([]);
                     return;
                 }
 
                 const validatorsInfo = selectedValidators
-                    .filter((validator) => validator !== baseValidator)
+                    .filter((validator) => validator !== currentBaseValidator)
                     .map((validator) => {
                         const validatorInfo = data.find((item) => item.voter === validator);
                         const clusterLabel = validatorInfo ? validatorInfo.cluster_label : 'N/A';
@@ -47,9 +66,9 @@ const ValidatorTable = () => {
                         };
                     });
 
-                setValidatorData([
+                const initialData = [
                     {
-                        validator: baseValidator,
+                        validator: currentBaseValidator,
                         matchRate: 1,
                         cluster: baseValidatorData.cluster_label,
                         overallMatchRate: baseValidatorData.overall_match_rate || 0,
@@ -57,7 +76,9 @@ const ValidatorTable = () => {
                         participationRate: baseValidatorData.participation_rate || 0,
                     },
                     ...validatorsInfo,
-                ]);
+                ];
+
+                setValidatorData(initialData);
             })
             .catch((error) => {
                 console.error('Error loading validator results:', error);
@@ -66,21 +87,67 @@ const ValidatorTable = () => {
     }, [selectedChain, selectedValidators, baseValidator]);
 
     const handleValidatorClick = (clickedValidator) => {
-        if (clickedValidator === baseValidator) return;
+        if (clickedValidator === baseValidator || selectedValidators.length <= 1) return;
         setBaseValidator(clickedValidator);
     };
 
-    const handleSortClick = () => {
-        setIsDescending(!isDescending);
-        setValidatorData((prevData) => {
-            if (prevData.length <= 1) return prevData;
-            const [first, ...rest] = prevData;
-            const sortedData = rest.sort((a, b) => {
-                return isDescending ? b.matchRate - a.matchRate : a.matchRate - b.matchRate;
-            });
-            return [first, ...sortedData];
-        });
+    const getClusterNumber = (clusterString) => {
+        const match = clusterString.match(/\d+/);
+        return match ? parseInt(match[0]) : -1;
     };
+
+    const sortData = (data, key, direction) => {
+        if (data.length <= 1) return data;
+        const [first, ...rest] = data;
+        
+        const sortedData = [...rest].sort((a, b) => {
+            let comparison = 0;
+            
+            if (key === 'cluster') {
+                const aNumber = getClusterNumber(String(a[key] || ''));
+                const bNumber = getClusterNumber(String(b[key] || ''));
+                comparison = aNumber - bNumber;
+            }
+            else if (key === 'validator') {
+                const aValue = String(a[key] || '').toLowerCase();
+                const bValue = String(b[key] || '').toLowerCase();
+                comparison = aValue.localeCompare(bValue);
+            }
+            else {
+                comparison = (a[key] || 0) - (b[key] || 0);
+            }
+            
+            return direction === 'asc' ? comparison : -comparison;
+        });
+
+        return [first, ...sortedData];
+    };
+
+    const handleSort = (key) => {
+        const newDirection = 
+            sortConfig.key === key
+            ? sortConfig.direction === 'asc' ? 'desc' : 'asc'
+            : 'desc';
+        
+        setSortConfig({ key, direction: newDirection });
+        setValidatorData(prevData => sortData(prevData, key, newDirection));
+    };
+
+    const getSortIndicator = (columnKey) => {
+        if (sortConfig.key !== columnKey) {
+            return '↕';
+        }
+        return sortConfig.direction === 'asc' ? '▲' : '▼';
+    };
+
+    const columns = [
+        { key: 'validator', label: 'Validator Name' },
+        { key: 'matchRate', label: 'Match Rate(%)' },
+        { key: 'cluster', label: 'Cluster' },
+        { key: 'overallMatchRate', label: 'Overall Match Rate' },
+        { key: 'clusterMatchRate', label: 'Cluster Match Rate' },
+        { key: 'participationRate', label: 'Participation' }
+    ];
 
     return (
         <div className="border rounded-lg">
@@ -90,17 +157,17 @@ const ValidatorTable = () => {
                     <thead className="sticky top-0 bg-white border-b text-xs text-center">
                         <tr>
                             <th className="p-1 font-medium border-r whitespace-nowrap">No.</th>
-                            <th className="p-0 font-medium border-r whitespace-nowrap">Validator Name</th>
-                            <th
-                                className="p-0 font-medium border-r whitespace-nowrap cursor-pointer"
-                                onClick={handleSortClick}
-                            >
-                                Match Rate(%) {isDescending ? '▼' : '▲'}
-                            </th>
-                            <th className="p-0 font-medium border-r whitespace-nowrap">Cluster</th>
-                            <th className="p-0 font-medium border-r whitespace-nowrap">Overall Match Rate</th>
-                            <th className="p-0 font-medium border-r whitespace-nowrap">Cluster Match Rate</th>
-                            <th className="p-0 font-medium whitespace-nowrap">Participation</th>
+                            {columns.map(column => (
+                                <th
+                                    key={column.key}
+                                    className="p-2 font-medium border-r whitespace-nowrap cursor-pointer hover:bg-gray-100"
+                                    onClick={() => handleSort(column.key)}
+                                >
+                                    <div className="flex items-center justify-center gap-1">
+                                        {column.label} {getSortIndicator(column.key)}
+                                    </div>
+                                </th>
+                            ))}
                         </tr>
                     </thead>
                     <tbody className="text-xs text-left">
@@ -120,11 +187,17 @@ const ValidatorTable = () => {
                                         data.validator
                                     )}
                                 </td>
-                                <td className="p-2 border-r">{(data.matchRate * 100).toFixed(2)}</td>
-                                <td className="p-2 border-r">{data.cluster}</td>
-                                <td className="p-2 border-r">{(data.overallMatchRate * 100).toFixed(2)}</td>
-                                <td className="p-2 border-r">{(data.clusterMatchRate * 100).toFixed(2)}</td>
-                                <td className="p-2">{(data.participationRate * 100).toFixed(2)}</td>
+                                <td className="p-2 border-r text-center">{(data.matchRate * 100).toFixed(2)}</td>
+                                <td className="p-2 border-r text-center">{data.cluster}</td>
+                                <td className="p-2 border-r text-center">
+                                    {(data.overallMatchRate * 100).toFixed(2)}
+                                </td>
+                                <td className="p-2 border-r text-center">
+                                    {(data.clusterMatchRate * 100).toFixed(2)}
+                                </td>
+                                <td className="p-2 text-center">
+                                    {(data.participationRate * 100).toFixed(2)}
+                                </td>
                             </tr>
                         ))}
                     </tbody>
