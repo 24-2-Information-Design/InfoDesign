@@ -9,8 +9,8 @@ const Parallel = ({ data }) => {
 
     // 투표 타입 매핑 객체 추가
     const voteTypeMapping = {
-        'NO_WITH_VETO': 'VETO',
-        'NO_VOTE': 'NO VOTE'
+        NO_WITH_VETO: 'VETO',
+        NO_VOTE: 'NO VOTE',
     };
 
     useEffect(() => {
@@ -51,13 +51,13 @@ const Parallel = ({ data }) => {
 
         const clusterScale = d3
             .scalePoint()
-            .domain([...Array.from({ length: 14 }, (_, i) => `Cluster ${i}`)])
+            .domain([...Array.from({ length: 8 }, (_, i) => `Cluster ${i}`)])
             .range([height, 0])
             .padding(0.5);
 
         const voteScale = d3
             .scalePoint()
-            .domain(['NO VOTE', 'NO', 'VETO', 'ABSTAIN', 'YES'])  // 변경된 순서와 레이블
+            .domain(['NO VOTE', 'NO', 'VETO', 'ABSTAIN', 'YES']) // 변경된 순서와 레이블
             .range([height, 0])
             .padding(0.5);
 
@@ -83,9 +83,8 @@ const Parallel = ({ data }) => {
                     return clusterScale(d.vote);
                 }
                 // 투표 타입 매핑 적용
-                const displayVote = d.vote === 'NO_WITH_VETO' ? 'VETO' :
-                                  d.vote === 'NO_VOTE' ? 'NO VOTE' :
-                                  d.vote || 'NO VOTE';
+                const displayVote =
+                    d.vote === 'NO_WITH_VETO' ? 'VETO' : d.vote === 'NO_VOTE' ? 'NO VOTE' : d.vote || 'NO VOTE';
                 return voteScale(displayVote);
             })
             .defined((d) => d.vote !== undefined);

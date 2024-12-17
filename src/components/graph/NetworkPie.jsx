@@ -43,7 +43,7 @@ const NetworkPie = () => {
         const maxRadius = Math.min(width, height) / 8; // 차트 크기 축소
         const chartRadius = maxRadius;
         const arcMinRadius = 8;
-        const arcPadding = 2;
+        const arcPadding = 1;
         const numArcs = Object.keys(jsonData[0].proposal).length;
         const arcWidth = (chartRadius - arcMinRadius - numArcs * arcPadding) / (numArcs * 5);
 
@@ -221,8 +221,8 @@ const NetworkPie = () => {
 
             const barArc = d3
                 .arc()
-                .innerRadius((d, i) => getInnerRadius(i) + radius - 8)
-                .outerRadius((d, i) => getOuterRadius(i) + radius - 8)
+                .innerRadius((d, i) => getInnerRadius(i) + radius - 6)
+                .outerRadius((d, i) => getOuterRadius(i) + radius - 6)
                 .startAngle(0)
                 .endAngle((d) => (d.value / 100) * 2 * Math.PI);
 
@@ -249,12 +249,12 @@ const NetworkPie = () => {
         });
     }, [setSelectedChain, highlightedChains, selectedChain, getChainOpacity]);
 
-    const clusters = Array.from({ length: 14 }, (_, i) => i);
+    const clusters = Array.from({ length: 8 }, (_, i) => i);
 
     return (
         <div className="mt-2">
             <div className="ml-4 mb-2">
-                <div className="grid grid-cols-7 gap-x-1 gap-y-1 w-fit">
+                <div className="grid grid-cols-4 gap-x-1 gap-y-1 w-fit">
                     {clusters.map((cluster) => (
                         <div key={cluster} className="flex items-center gap-2">
                             <div

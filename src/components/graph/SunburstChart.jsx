@@ -19,7 +19,7 @@ const SunburstChart = ({ data, parallelData }) => {
         NO: 'No',
         NO_WITH_VETO: 'Veto',
         ABSTAIN: 'Abstain',
-        NO_VOTE: 'No Vote'
+        NO_VOTE: 'No Vote',
     };
 
     const getVoteTypeColor = (voteName) => {
@@ -30,9 +30,9 @@ const SunburstChart = ({ data, parallelData }) => {
         const proposalKey = `${selectedChain}_${proposalId}`;
         const voteCount = {};
         let totalVotes = 0;
-        
+
         // 모든 투표 집계
-        parallelData.forEach(validator => {
+        parallelData.forEach((validator) => {
             const vote = validator[proposalKey] || 'NO_VOTE';
             voteCount[vote] = (voteCount[vote] || 0) + 1;
             totalVotes++;
@@ -49,7 +49,7 @@ const SunburstChart = ({ data, parallelData }) => {
         // NO_VOTE를 제외한 투표들 중 최다 투표 찾기
         let maxVote = 'NO_VOTE';
         let maxCount = 0;
-        
+
         Object.entries(voteCount).forEach(([vote, count]) => {
             if (vote !== 'NO_VOTE' && count > maxCount) {
                 maxCount = count;
@@ -98,7 +98,7 @@ const SunburstChart = ({ data, parallelData }) => {
         return {
             rate: ((agreedProposals / totalProposals) * 100).toFixed(1),
             matched: agreedProposals,
-            total: totalProposals
+            total: totalProposals,
         };
     };
 
@@ -148,18 +148,13 @@ const SunburstChart = ({ data, parallelData }) => {
             .attr('width', width)
             .attr('height', height + legendHeight);
 
-        const legend = svg
-            .append('g')
-            .attr('class', 'legend')
-            .attr('transform', `translate(10, 20)`);
+        const legend = svg.append('g').attr('class', 'legend').attr('transform', `translate(10, 20)`);
 
         const legendItems = Object.entries(voteLabels);
-        
+
         let currentX = 0;
         legendItems.forEach(([voteType, label], index) => {
-            const legendItem = legend
-                .append('g')
-                .attr('transform', `translate(${currentX}, 0)`);
+            const legendItem = legend.append('g').attr('transform', `translate(${currentX}, 0)`);
 
             legendItem
                 .append('rect')
@@ -181,9 +176,7 @@ const SunburstChart = ({ data, parallelData }) => {
             currentX += itemWidth + 15;
         });
 
-        const chartGroup = svg
-            .append('g')
-            .attr('transform', `translate(${width / 2}, ${height / 2 + legendHeight})`);
+        const chartGroup = svg.append('g').attr('transform', `translate(${width / 2}, ${height / 2 + legendHeight})`);
 
         const hierarchyData = d3.hierarchy(transformData(data)).sum((d) => d.value);
         const partition = d3.partition().size([2 * Math.PI, radius]);
@@ -237,28 +230,31 @@ const SunburstChart = ({ data, parallelData }) => {
                 }
                 return d.data.color;
             })
-            .style('opacity', (d) => d.depth === 2 ? 0.8 : 0.6)
+            .style('opacity', (d) => (d.depth === 2 ? 0.8 : 0.6))
             .style('stroke', 'white')
             .style('stroke-width', '0.5')
             .on('mouseover', function (event, d) {
                 d3.select(this).style('opacity', 1).style('stroke-width', '2');
-                
-                const tooltipContent = d.depth === 1 
-                    ? `<strong>Type: ${d.data.name}</strong><br/>
+
+                const tooltipContent =
+                    d.depth === 1
+                        ? `<strong>Type: ${d.data.name}</strong><br/>
                        <span>Number of Proposals: ${d.children.length}</span>`
-                    : `<strong>Proposal ID: ${d.data.proposalId}</strong><br/>
+                        : `<strong>Proposal ID: ${d.data.proposalId}</strong><br/>
                        <strong>Proposal: ${d.data.name}</strong><br/>
                        <strong>Type: ${d.parent.data.name}</strong>
-                       ${selectedValidators.length === 0
-                           ? `<br/><span style="color: green;">Most Common Vote: ${d.data.voteResult}</span>
+                       ${
+                           selectedValidators.length === 0
+                               ? `<br/><span style="color: green;">Most Common Vote: ${d.data.voteResult}</span>
                               ${d.data.voteResult === 'NO_VOTE' ? ' (>80% No Vote)' : ' (Excluding No Votes)'}`
-                           : selectedValidators.length === 1
-                           ? `<br/><span style="color: green;">Vote: ${d.data.voteResult}</span>`
-                           : d.data.voteResult
-                           ? '<br/><span style="color: green;">✓ Selected validators agreed: ' +
-                             d.data.voteResult +
-                             '</span>'
-                           : ''}`;
+                               : selectedValidators.length === 1
+                               ? `<br/><span style="color: green;">Vote: ${d.data.voteResult}</span>`
+                               : d.data.voteResult
+                               ? '<br/><span style="color: green;">✓ Selected validators agreed: ' +
+                                 d.data.voteResult +
+                                 '</span>'
+                               : ''
+                       }`;
 
                 tooltip
                     .style('visibility', 'visible')
@@ -266,10 +262,8 @@ const SunburstChart = ({ data, parallelData }) => {
                     .style('left', event.pageX + 10 + 'px')
                     .style('top', event.pageY - 10 + 'px');
             })
-            .on('mousemove', function(event) {
-                tooltip
-                    .style('left', event.pageX + 10 + 'px')
-                    .style('top', event.pageY - 10 + 'px');
+            .on('mousemove', function (event) {
+                tooltip.style('left', event.pageX + 10 + 'px').style('top', event.pageY - 10 + 'px');
             })
             .on('mouseout', function (event, d) {
                 tooltip.style('visibility', 'hidden');
@@ -323,7 +317,9 @@ const SunburstChart = ({ data, parallelData }) => {
         <div>
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
-                    <h3 className="text-lg pl-3">Proposal match</h3>
+                    <h3 className="text-lg pl-3">
+                        {selectedValidators.length === 1 ? 'Personal Proposal' : 'Proposal match'}
+                    </h3>
                 </div>
             </div>
             <svg ref={svgRef} className="mb-80 ml-24" />
