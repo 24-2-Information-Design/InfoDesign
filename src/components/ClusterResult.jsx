@@ -52,10 +52,12 @@ const ClusterResult = () => {
                           key={cluster}
                           style={{
                               backgroundColor: getClusterColor(clusterIndex),
+                              display: 'inline-block',
                               padding: '2px 8px',
                               borderRadius: '4px',
                               color: '#333',
                               marginBottom: '5px',
+                              fontSize: '0.8rem',
                           }}
                       >
                           {`${clusterIndex}. ${clusterNames[clusterIndex]}`}
@@ -71,7 +73,7 @@ const ClusterResult = () => {
             <div style={{ maxHeight: 'calc((2rem * 3) + 2.5rem)' }} className=" pl-3 overflow-auto">
                 {clusterInfo.cluster ? (
                     <>
-                        <p className="mb-2">Cluster: {renderClusterInfo([clusterInfo.cluster])}</p>
+                        <p className="text-base">Cluster: {renderClusterInfo([clusterInfo.cluster])}</p>
                         <div className="flex justify-between mb-2 ">
                             {/* Similar Match Clusters 컬럼 */}
                             <div className="w-1/2 pr-2">

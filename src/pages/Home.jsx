@@ -68,24 +68,24 @@ const Home = () => {
 
                     {/* chain result */}
                     <div className="w-full h-auto">
-                        <h3 className="pl-3 ml-4">Chain Results</h3>
+                        <p className="pl-3 ml-4">Chain Results</p>
                         {selectedChain && (
                             <div className=" ml-4 p-1">
                                 {/* 상단 3개 */}
-                                <div className="grid grid-cols-3 gap-4 text-center font-medium mb-1">
-                                    <div className="flex mx-auto">
+                                <div className="grid grid-cols-3 gap-4 text-center font-medium mb-3">
+                                    <div className="flex mt-3 mx-auto">
                                         <img
                                             src={`src/assets/chain/${selectedChain}.png`}
                                             alt="selected-chain"
                                             className="w-10 h-10"
                                         />
-                                        <strong className="text-xl ml-1 mt-2">{selectedChain}</strong>
+                                        <strong className="text-xl ml-1 mt-1">{selectedChain}</strong>
                                     </div>
                                     <div>
                                         <img
                                             src="src/assets/result/validator.png"
                                             alt="validators"
-                                            className="mx-auto  w-6 h-6 "
+                                            className="mx-auto  w-5 h-5 "
                                         />
                                         <strong className="text-sm">{chainData.validator_num}</strong>
                                         <p className="text-xs text-gray-500">Number of Validator</p>
@@ -94,7 +94,7 @@ const Home = () => {
                                         <img
                                             src="src/assets/result/proposal.png"
                                             alt="proposals"
-                                            className="mx-auto  w-6 h-6"
+                                            className="mx-auto  w-5 h-5"
                                         />
                                         <strong className="text-xs">{chainData.proposal_num}</strong>
                                         <p className="text-xs text-gray-500">Number of Proposal</p>
@@ -121,7 +121,7 @@ const Home = () => {
                                         <img
                                             src="src/assets/result/cluster.png"
                                             alt="clusters"
-                                            className="mx-auto w-6 h-6"
+                                            className="mx-auto w-5 h-5"
                                         />
                                         <strong className="text-sm">{chainData.cluster_num}</strong>
                                         <p className="text-xs text-gray-500">Number of Cluster</p>
@@ -130,7 +130,7 @@ const Home = () => {
                                         <img
                                             src="src/assets/result/tolerance.png"
                                             alt="tolerance"
-                                            className="mx-auto w-6 h-6"
+                                            className="mx-auto w-5 h-5"
                                         />
                                         <strong className="text-xs">{chainData.radius}</strong>
                                         <p className="text-xs text-gray-500">Tolerance of Opinions</p>
@@ -163,7 +163,7 @@ const Home = () => {
 
                     {/* parallel view */}
                     <div className="w-full h-[26%]">
-                        <h3 className="pl-3">Votes Tendency</h3>
+                        <p className="pl-3">Votes Tendency</p>
                         {parallelData ? <Parallel data={parallelData} /> : selectedChain && <p>Loading... </p>}
                     </div>
 
