@@ -11,6 +11,10 @@ const ScatterPlot = ({ data }) => {
     useEffect(() => {
         if (!data) return;
 
+        // Determine which metric to use based on data structure
+        const sizeMetric = data[0].hasOwnProperty('votingPower') ? 'votingPower' : 'participation_rate';
+        const metricLabel = sizeMetric === 'votingPower' ? 'Voting Power' : 'Participation Rate';
+
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
 
@@ -46,7 +50,7 @@ const ScatterPlot = ({ data }) => {
 
         const sizeScale = d3
             .scaleSqrt()
-            .domain(d3.extent(data, (d) => d.votingPower))
+            .domain(d3.extent(data, (d) => d[sizeMetric]))
             .range([3, maxNodeSize]);
 
         const colorScale = d3.scaleOrdinal(NormalColors);
@@ -57,7 +61,10 @@ const ScatterPlot = ({ data }) => {
             .call(d3.axisBottom(xScale).ticks(10))
             .attr('font-size', '12px');
 
-        chart.append('g').call(d3.axisLeft(yScale).ticks(10)).attr('font-size', '12px');
+        chart
+            .append('g')
+            .call(d3.axisLeft(yScale).ticks(10))
+            .attr('font-size', '12px');
 
         const tooltip = d3
             .select('body')
@@ -73,8 +80,6 @@ const ScatterPlot = ({ data }) => {
 
         function handleNodeClick(event, d) {
             event.stopPropagation();
-
-            // 기존 검증인 선택 로직 유지
             if (singleSelectMode) {
                 const isCurrentlySelected = selectedValidators.includes(d.voter);
                 const newSelected = isCurrentlySelected ? [] : [d.voter];
@@ -141,7 +146,7 @@ const ScatterPlot = ({ data }) => {
             .append('circle')
             .attr('cx', (d) => xScale(d.tsne_x))
             .attr('cy', (d) => yScale(d.tsne_y))
-            .attr('r', (d) => sizeScale(d.votingPower))
+            .attr('r', (d) => sizeScale(d[sizeMetric]))
             .attr('fill', (d) => colorScale(d.cluster_label))
             .attr('opacity', (d) => (selectedValidators.includes(d.voter) ? 1 : 0.6))
             .attr('stroke', (d) => {
@@ -156,14 +161,16 @@ const ScatterPlot = ({ data }) => {
                     .style('visibility', 'visible')
                     .html(
                         `<strong>${d.voter}</strong><br/>
-                        Voting Power: ${d.votingPower.toFixed(6)}<br/>
+                        ${metricLabel}: ${d[sizeMetric].toFixed(6)}<br/>
                         Cluster: ${d.cluster_label}`
                     )
                     .style('left', `${event.pageX + 10}px`)
                     .style('top', `${event.pageY}px`);
             })
             .on('mousemove', (event) => {
-                tooltip.style('left', `${event.pageX + 10}px`).style('top', `${event.pageY}px`);
+                tooltip
+                    .style('left', `${event.pageX + 10}px`)
+                    .style('top', `${event.pageY}px`);
             })
             .on('mouseout', () => {
                 tooltip.style('visibility', 'hidden');
@@ -199,7 +206,10 @@ const ScatterPlot = ({ data }) => {
                         />
                         <span>Single Selection</span>
                     </label>
-                    <button onClick={handleReset} className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">
+                    <button 
+                        onClick={handleReset} 
+                        className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                    >
                         Reset
                     </button>
                 </div>
