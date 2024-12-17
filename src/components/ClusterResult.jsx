@@ -78,7 +78,7 @@ const ClusterResult = () => {
                                 <p className="mb-1">Similar</p>
                                 <div className="text-green-600 text-xs overflow-y-auto">
                                     {/* 클러스터 항목을 한 줄씩 표시 */}
-                                    <div className="black" style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <div className="black w-auto" style={{ display: 'flex', flexDirection: 'column' }}>
                                         {renderClusterInfo(clusterInfo.friendly)} {/* 친화적인 클러스터 */}
                                     </div>
                                 </div>
