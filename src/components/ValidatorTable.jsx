@@ -104,14 +104,19 @@ const ValidatorTable = () => {
     };
 
     const handleSort = (key) => {
-        const newDirection = sortConfig.key === key ? (sortConfig.direction === 'asc' ? 'desc' : 'asc') : 'desc';
+        if (!selectedChain || !selectedValidators.length) {
+            alert('검증인을 선택해주세요');
+            return;
+        } else {
+            const newDirection = sortConfig.key === key ? (sortConfig.direction === 'asc' ? 'desc' : 'asc') : 'desc';
 
-        setSortConfig({ key, direction: newDirection });
-        setValidatorData((prevData) => {
-            const [first, ...rest] = prevData;
-            const sortedRest = sortValidatorData(rest, key, newDirection);
-            return [first, ...sortedRest];
-        });
+            setSortConfig({ key, direction: newDirection });
+            setValidatorData((prevData) => {
+                const [first, ...rest] = prevData;
+                const sortedRest = sortValidatorData(rest, key, newDirection);
+                return [first, ...sortedRest];
+            });
+        }
     };
 
     const columns = [
@@ -139,7 +144,7 @@ const ValidatorTable = () => {
                                 {columns.map((column) => (
                                     <th
                                         key={column.key}
-                                        className="p-2  whitespace-nowrap cursor-pointer hover:bg-gray-100 text-center"
+                                        className="p-2 whitespace-nowrap cursor-pointer hover:bg-gray-100 text-center"
                                         onClick={() => handleSort(column.key)}
                                     >
                                         {column.label}{' '}
