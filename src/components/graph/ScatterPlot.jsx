@@ -1,12 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { NormalColors } from '../color';
 import useChainStore from '../../store/store';
 
 const ScatterPlot = ({ data }) => {
     const svgRef = useRef(null);
-    const { selectedValidators, setSelectedValidators, baseValidator, setBaseValidator } = useChainStore();
-    const [singleSelectMode, setSingleSelectMode] = useState(false);
+    const {
+        selectedValidators,
+        setSelectedValidators,
+        baseValidator,
+        setBaseValidator,
+        singleSelectMode,
+        setSingleSelectMode,
+        resetValidatorSelection
+    } = useChainStore();
 
     useEffect(() => {
         if (!data || data.length === 0) return;
@@ -80,9 +87,13 @@ const ScatterPlot = ({ data }) => {
             event.stopPropagation();
             if (singleSelectMode) {
                 const isCurrentlySelected = selectedValidators.includes(d.voter);
-                const newSelected = isCurrentlySelected ? [] : [d.voter];
-                setSelectedValidators(newSelected);
-                setBaseValidator(isCurrentlySelected ? null : d.voter);
+                if (isCurrentlySelected) {
+                    setSelectedValidators([]);
+                    setBaseValidator(null);
+                } else {
+                    setSelectedValidators([d.voter]);
+                    setBaseValidator(d.voter);
+                }
             } else {
                 const isSelected = selectedValidators.includes(d.voter);
                 let newSelected;
@@ -137,7 +148,6 @@ const ScatterPlot = ({ data }) => {
             brushContainer.call(brush);
         }
 
-        // 최소 클릭 영역 설정 (최소 노드 크기를 보장)
         const minClickRadius = Math.max(minNodeSize, 5);
 
         const nodes = chart
@@ -184,18 +194,7 @@ const ScatterPlot = ({ data }) => {
     }, [data, selectedValidators, baseValidator, singleSelectMode]);
 
     const handleReset = () => {
-        setSelectedValidators([]);
-        setBaseValidator(null);
-    };
-
-    const handleSingleSelectModeChange = (isChecked) => {
-        setSingleSelectMode(isChecked);
-        if (isChecked && selectedValidators.length > 0) {
-            // Single selection 모드에서는 첫 번째 검증인만 유지
-            const firstValidator = selectedValidators[0];
-            setSelectedValidators([firstValidator]);
-            setBaseValidator(firstValidator);
-        }
+        resetValidatorSelection();
     };
 
     return (
@@ -207,7 +206,7 @@ const ScatterPlot = ({ data }) => {
                         <input
                             type="checkbox"
                             checked={singleSelectMode}
-                            onChange={(e) => handleSingleSelectModeChange(e.target.checked)}
+                            onChange={(e) => setSingleSelectMode(e.target.checked)}
                             className="form-checkbox h-4 w-4"
                         />
                         <span>Single Selection</span>

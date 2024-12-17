@@ -4,7 +4,7 @@ import useChainStore from '../../store/store';
 
 const SunburstChart = ({ data, parallelData }) => {
     const svgRef = useRef(null);
-    const { selectedValidators, selectedChain } = useChainStore();
+    const { selectedValidators, selectedChain, singleSelectMode } = useChainStore();
 
     const voteColors = {
         YES: '#2ecc71',
@@ -31,22 +31,15 @@ const SunburstChart = ({ data, parallelData }) => {
         const voteCount = {};
         let totalVotes = 0;
 
-        // 모든 투표 집계
         parallelData.forEach((validator) => {
             const vote = validator[proposalKey] || 'NO_VOTE';
             voteCount[vote] = (voteCount[vote] || 0) + 1;
             totalVotes++;
         });
 
-        // NO_VOTE 비율 계산
         const noVoteRatio = (voteCount['NO_VOTE'] || 0) / totalVotes;
+        if (noVoteRatio >= 0.8) return 'NO_VOTE';
 
-        // NO_VOTE가 80% 이상인 경우
-        if (noVoteRatio >= 0.8) {
-            return 'NO_VOTE';
-        }
-
-        // NO_VOTE를 제외한 투표들 중 최다 투표 찾기
         let maxVote = 'NO_VOTE';
         let maxCount = 0;
 
@@ -57,12 +50,41 @@ const SunburstChart = ({ data, parallelData }) => {
             }
         });
 
-        // NO_VOTE를 제외한 투표가 하나도 없는 경우
-        if (maxVote === 'NO_VOTE' && maxCount === 0) {
-            return 'NO_VOTE';
-        }
+        return maxVote === 'NO_VOTE' && maxCount === 0 ? 'NO_VOTE' : maxVote;
+    };
 
-        return maxVote;
+    // SunburstChart.jsx 내부의 getValidatorInfo 함수를 수정
+
+    const calculateParticipationRate = (validator) => {
+        if (!validator || !data || !parallelData) return 0;
+        
+        const validatorData = parallelData.find(d => d.voter === validator);
+        if (!validatorData) return 0;
+
+        // 전체 제안 수
+        const totalProposals = data.length;
+        
+        // 투표에 참여한 제안 수 계산 (NO_VOTE가 아닌 경우)
+        const participatedProposals = data.reduce((count, proposal) => {
+            const proposalKey = `${selectedChain}_${proposal.id}`;
+            const vote = validatorData[proposalKey];
+            return vote && vote !== 'NO_VOTE' ? count + 1 : count;
+        }, 0);
+
+        // 참여율 계산
+        return (participatedProposals / totalProposals) * 100;
+    };
+
+    const getValidatorInfo = (validator) => {
+        if (!validator || !parallelData) return null;
+        const validatorData = parallelData.find(d => d.voter === validator);
+        if (!validatorData) return null;
+        
+        return {
+            name: validator,
+            cluster: validatorData.cluster_label,
+            participationRate: calculateParticipationRate(validator).toFixed(1)
+        };
     };
 
     const checkVoteResult = (proposalId, parallelData, selectedValidators) => {
@@ -153,7 +175,7 @@ const SunburstChart = ({ data, parallelData }) => {
         const legendItems = Object.entries(voteLabels);
 
         let currentX = 0;
-        legendItems.forEach(([voteType, label], index) => {
+        legendItems.forEach(([voteType, label]) => {
             const legendItem = legend.append('g').attr('transform', `translate(${currentX}, 0)`);
 
             legendItem
@@ -172,8 +194,7 @@ const SunburstChart = ({ data, parallelData }) => {
                 .text(label);
 
             const textWidth = legendText.node().getComputedTextLength();
-            const itemWidth = 14 + textWidth;
-            currentX += itemWidth + 15;
+            currentX += 14 + textWidth + 15;
         });
 
         const chartGroup = svg.append('g').attr('transform', `translate(${width / 2}, ${height / 2 + legendHeight})`);
@@ -239,22 +260,22 @@ const SunburstChart = ({ data, parallelData }) => {
                 const tooltipContent =
                     d.depth === 1
                         ? `<strong>Type: ${d.data.name}</strong><br/>
-                       <span>Number of Proposals: ${d.children.length}</span>`
+                           <span>Number of Proposals: ${d.children.length}</span>`
                         : `<strong>Proposal ID: ${d.data.proposalId}</strong><br/>
-                       <strong>Proposal: ${d.data.name}</strong><br/>
-                       <strong>Type: ${d.parent.data.name}</strong>
-                       ${
-                           selectedValidators.length === 0
-                               ? `<br/><span style="color: green;">Most Common Vote: ${d.data.voteResult}</span>
-                              ${d.data.voteResult === 'NO_VOTE' ? ' (>80% No Vote)' : ' (Excluding No Votes)'}`
-                               : selectedValidators.length === 1
-                               ? `<br/><span style="color: green;">Vote: ${d.data.voteResult}</span>`
-                               : d.data.voteResult
-                               ? '<br/><span style="color: green;">✓ Selected validators agreed: ' +
-                                 d.data.voteResult +
-                                 '</span>'
-                               : ''
-                       }`;
+                           <strong>Proposal: ${d.data.name}</strong><br/>
+                           <strong>Type: ${d.parent.data.name}</strong>
+                           ${
+                               selectedValidators.length === 0
+                                   ? `<br/><span style="color: green;">Most Common Vote: ${d.data.voteResult}</span>
+                                   ${d.data.voteResult === 'NO_VOTE' ? ' (>80% No Vote)' : ' (Excluding No Votes)'}`
+                                   : selectedValidators.length === 1
+                                   ? `<br/><span style="color: green;">Vote: ${d.data.voteResult}</span>`
+                                   : d.data.voteResult
+                                   ? '<br/><span style="color: green;">✓ Selected validators agreed: ' +
+                                     d.data.voteResult +
+                                     '</span>'
+                                   : ''
+                           }`;
 
                 tooltip
                     .style('visibility', 'visible')
@@ -272,59 +293,98 @@ const SunburstChart = ({ data, parallelData }) => {
                     .style('stroke-width', '0.5');
             });
 
-        const matchStats = calculateMatchStatistics(data);
-
+        // 중앙 정보 표시
         const centerGroup = chartGroup
             .append('g')
             .attr('class', 'center-stats')
-            .style('opacity', selectedValidators.length >= 2 ? 1 : 0);
+            .style('opacity', () => {
+                if (singleSelectMode) {
+                    return selectedValidators.length === 1 ? 1 : 0;
+                } else {
+                    return selectedValidators.length >= 2 ? 1 : 0;
+                }
+            });
 
-        centerGroup
-            .append('text')
-            .attr('class', 'match-rate')
-            .attr('text-anchor', 'middle')
-            .attr('dy', '-0.2em')
-            .style('font-size', '24px')
-            .style('fill', '#333')
-            .text(`${matchStats.rate}%`);
+        if (singleSelectMode && selectedValidators.length === 1) {
+            // 단일 검증인 정보 표시
+            const validatorInfo = getValidatorInfo(selectedValidators[0]);
+            
+            if (validatorInfo) {
+                centerGroup
+                    .append('text')
+                    .attr('class', 'validator-name')
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', '-1.2em')
+                    .style('font-size', '16px')
+                    .style('fill', '#333')
+                    .text(validatorInfo.name);
 
-        centerGroup
-            .append('text')
-            .attr('class', 'match-count')
-            .attr('text-anchor', 'middle')
-            .attr('dy', '0.9em')
-            .style('font-size', '14px')
-            .style('fill', '#666')
-            .text(`${matchStats.matched} / ${matchStats.total}`);
+                centerGroup
+                    .append('text')
+                    .attr('class', 'validator-cluster')
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', '0.2em')
+                    .style('font-size', '14px')
+                    .style('fill', '#666')
+                    .text(`Cluster ${validatorInfo.cluster}`);
 
-        centerGroup
-            .append('text')
-            .attr('class', 'match-label')
-            .attr('text-anchor', 'middle')
-            .attr('dy', '2.1em')
-            .style('font-size', '14px')
-            .style('fill', '#666')
-            .text('Match Rate');
+                centerGroup
+                    .append('text')
+                    .attr('class', 'validator-participation')
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', '1.6em')
+                    .style('font-size', '14px')
+                    .style('fill', '#666')
+                    .text(`${validatorInfo.participationRate}%`);
+            }
+        } else if (!singleSelectMode && selectedValidators.length >= 2) {
+            // 매치율 정보 표시
+            const matchStats = calculateMatchStatistics(data);
 
-        centerGroup.attr('transform', 'translate(0, 0)');
+            centerGroup
+                .append('text')
+                .attr('class', 'match-rate')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '-0.2em')
+                .style('font-size', '24px')
+                .style('fill', '#333')
+                .text(`${matchStats.rate}%`);
+
+            centerGroup
+                .append('text')
+                .attr('class', 'match-count')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.9em')
+                .style('font-size', '14px')
+                .style('fill', '#666')
+                .text(`${matchStats.matched} / ${matchStats.total}`);
+
+            centerGroup
+                .append('text')
+                .attr('class', 'match-label')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '2.1em')
+                .style('font-size', '14px')
+                .style('fill', '#666')
+                .text('Match Rate');
+        }
 
         return () => {
             tooltip.remove();
         };
-    }, [data, parallelData, selectedValidators, selectedChain]);
+    }, [data, parallelData, selectedValidators, selectedChain, singleSelectMode]);
 
     return (
         <div>
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                     <h3 className="text-lg pl-3">
-                        {selectedValidators.length === 1 ? 'Personal Proposal' : 'Proposal match'}
+                        {singleSelectMode ? 'Personal Proposal' : 'Proposal Match'}
                     </h3>
                 </div>
             </div>
             <svg ref={svgRef} className="mb-80 ml-24" />
-        </div>
-    );
+        </div>);
 };
 
 export default SunburstChart;
