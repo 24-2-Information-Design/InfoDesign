@@ -86,7 +86,7 @@ const ClusterResult = () => {
 
                             {/* Dissimilar Match Clusters 컬럼 */}
                             <div className="w-1/2 pl-2">
-                                <p className="mb-1">Dissimilar:</p>
+                                <p className="mb-1">Unsimilar:</p>
                                 <div className="text-red-600 text-xs overflow-y-auto">
                                     {/* 클러스터 항목을 한 줄씩 표시 */}
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
