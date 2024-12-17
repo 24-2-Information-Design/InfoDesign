@@ -6,14 +6,12 @@ const ValidatorTable = () => {
     const [validatorData, setValidatorData] = useState([]);
     const [sortConfig, setSortConfig] = useState({
         key: 'matchRate',
-        direction: 'desc'
+        direction: 'desc',
     });
 
     useEffect(() => {
- 
         // 체인이나 검증인이 선택되지 않은 경우만 체크
         if (!selectedChain || !selectedValidators.length) {
- 
             setValidatorData([]);
             return;
         }
@@ -27,16 +25,18 @@ const ValidatorTable = () => {
                 if (selectedValidators.length === 1) {
                     const singleValidator = selectedValidators[0];
                     const validatorInfo = data.find((item) => item.voter === singleValidator);
-                    
+
                     if (validatorInfo) {
-                        setValidatorData([{
-                            validator: singleValidator,
-                            matchRate: 1,
-                            cluster: validatorInfo.cluster_label,
-                            overallMatchRate: validatorInfo.overall_match_rate || 0,
-                            clusterMatchRate: validatorInfo.cluster_match_rate || 0,
-                            participationRate: validatorInfo.participation_rate || 0,
-                        }]);
+                        setValidatorData([
+                            {
+                                validator: singleValidator,
+                                matchRate: 1,
+                                cluster: validatorInfo.cluster_label,
+                                overallMatchRate: validatorInfo.overall_match_rate || 0,
+                                clusterMatchRate: validatorInfo.cluster_match_rate || 0,
+                                participationRate: validatorInfo.participation_rate || 0,
+                            },
+                        ]);
                     }
                     return;
                 }
@@ -44,7 +44,7 @@ const ValidatorTable = () => {
                 // baseValidator가 선택되지 않은 경우 첫 번째 검증인을 baseValidator로 사용
                 const currentBaseValidator = baseValidator || selectedValidators[0];
                 const baseValidatorData = data.find((item) => item.voter === currentBaseValidator);
-                
+
                 if (!baseValidatorData) {
                     setValidatorData([]);
                     return;
@@ -99,24 +99,22 @@ const ValidatorTable = () => {
     const sortData = (data, key, direction) => {
         if (data.length <= 1) return data;
         const [first, ...rest] = data;
-        
+
         const sortedData = [...rest].sort((a, b) => {
             let comparison = 0;
-            
+
             if (key === 'cluster') {
                 const aNumber = getClusterNumber(String(a[key] || ''));
                 const bNumber = getClusterNumber(String(b[key] || ''));
                 comparison = aNumber - bNumber;
-            }
-            else if (key === 'validator') {
+            } else if (key === 'validator') {
                 const aValue = String(a[key] || '').toLowerCase();
                 const bValue = String(b[key] || '').toLowerCase();
                 comparison = aValue.localeCompare(bValue);
-            }
-            else {
+            } else {
                 comparison = (a[key] || 0) - (b[key] || 0);
             }
-            
+
             return direction === 'asc' ? comparison : -comparison;
         });
 
@@ -124,13 +122,10 @@ const ValidatorTable = () => {
     };
 
     const handleSort = (key) => {
-        const newDirection = 
-            sortConfig.key === key
-            ? sortConfig.direction === 'asc' ? 'desc' : 'asc'
-            : 'desc';
-        
+        const newDirection = sortConfig.key === key ? (sortConfig.direction === 'asc' ? 'desc' : 'asc') : 'desc';
+
         setSortConfig({ key, direction: newDirection });
-        setValidatorData(prevData => sortData(prevData, key, newDirection));
+        setValidatorData((prevData) => sortData(prevData, key, newDirection));
     };
 
     const getSortIndicator = (columnKey) => {
@@ -146,18 +141,22 @@ const ValidatorTable = () => {
         { key: 'cluster', label: 'Cluster' },
         { key: 'overallMatchRate', label: 'Overall Match Rate' },
         { key: 'clusterMatchRate', label: 'Cluster Match Rate' },
-        { key: 'participationRate', label: 'Participation' }
+        { key: 'participationRate', label: 'Participation' },
     ];
 
     return (
-        <div className="border-b">
-            <h3 className="pl-3 py-2 border-b">Validator Results</h3>
+ 
+        <div className="border">
+            <h3 className="pl-3">Validator Results</h3>
+ 
             <div style={{ maxHeight: 'calc((2.5rem * 3) + 2.5rem)' }} className="relative overflow-auto">
                 <table className="w-full" style={{ minWidth: '800px' }}>
                     <thead className="sticky top-0 bg-white border-b text-xs">
                         <tr>
-                            <th className="p-1 font-medium whitespace-nowrap text-center">No.</th>
-                            {columns.map((column, index) => (
+ 
+                            <th className="p-1 font-medium border-r whitespace-nowrap">No.</th>
+                            {columns.map((column) => (
+ 
                                 <th
                                     key={column.key}
                                     className={`p-2 font-medium whitespace-nowrap cursor-pointer hover:bg-gray-100 text-center`}
@@ -187,17 +186,13 @@ const ValidatorTable = () => {
                                         data.validator
                                     )}
                                 </td>
-                                <td className="p-2 text-left">{(data.matchRate * 100).toFixed(2)}</td>
-                                <td className="p-2 text-left">{data.cluster}</td>
-                                <td className="p-2 text-left">
-                                    {(data.overallMatchRate * 100).toFixed(2)}
-                                </td>
-                                <td className="p-2 text-left">
-                                    {(data.clusterMatchRate * 100).toFixed(2)}
-                                </td>
-                                <td className="p-2 text-left">
-                                    {(data.participationRate * 100).toFixed(2)}
-                                </td>
+ 
+                                <td className="p-2 border-r text-center">{(data.matchRate * 100).toFixed(2)}</td>
+                                <td className="p-2 border-r text-center">{data.cluster}</td>
+                                <td className="p-2 border-r text-center">{(data.overallMatchRate * 100).toFixed(2)}</td>
+                                <td className="p-2 border-r text-center">{(data.clusterMatchRate * 100).toFixed(2)}</td>
+                                <td className="p-2 text-center">{(data.participationRate * 100).toFixed(2)}</td>
+ 
                             </tr>
                         ))}
                     </tbody>

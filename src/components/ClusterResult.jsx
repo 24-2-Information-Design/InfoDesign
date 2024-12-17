@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import useChainStore from '../store/store';
+import { NormalColors, clusterNames } from './color';
 
 const ClusterResult = () => {
     const { selectedChain, selectedValidators, baseValidator } = useChainStore();
@@ -38,28 +39,60 @@ const ClusterResult = () => {
             });
     }, [selectedChain, baseValidator]);
 
+    const getClusterColor = (index) => {
+        return NormalColors[index]; // 색상 배열에 없는 인덱스는 기본값 #000000
+    };
+
+    const renderClusterInfo = (clusters) => {
+        return clusters.length > 0
+            ? clusters.map((cluster) => {
+                  const clusterIndex = parseInt(cluster); // 클러스터 번호
+                  return (
+                      <span
+                          key={cluster}
+                          style={{
+                              backgroundColor: getClusterColor(clusterIndex),
+                              padding: '2px 8px',
+                              borderRadius: '4px',
+                              color: '#fff',
+                              marginBottom: '5px',
+                          }}
+                      >
+                          {`${clusterIndex}.${clusterNames[clusterIndex]}`}
+                      </span>
+                  );
+              })
+            : 'None';
+    };
+
     return (
-        <div className="w-full h-full font-medium">
+        <div className="w-full h-full  font-medium">
             <h3 className="pl-3">Cluster Results</h3>
-            <div className="ml-4">
+            <div style={{ maxHeight: 'calc((2rem * 3) + 2.5rem)' }} className="  overflow-auto">
                 {clusterInfo.cluster ? (
                     <>
-                        <p className="mb-2">Cluster {clusterInfo.cluster}</p>
-                        <div>
-                            <p className="flex mb-1">
-                                Similar Match Clusters:{' '}
-                                <p className="ml-2 text-green-600">
-                                    {clusterInfo.friendly.length > 0 ? clusterInfo.friendly.join(', ') : 'None'}
-                                </p>
-                            </p>
-                        </div>
-                        <div className="mt-2">
-                            <p className="flex mb-1">
-                                Dissimilar Match Clusters:{' '}
-                                <p className="ml-2 text-red-600">
-                                    {clusterInfo.opposition.length > 0 ? clusterInfo.opposition.join(', ') : 'None'}
-                                </p>
-                            </p>
+                        <div className="flex justify-between mb-2">
+                            {/* Similar Match Clusters 컬럼 */}
+                            <div className="w-1/2 pr-2">
+                                <p className="mb-1">Similar Match Clusters:</p>
+                                <div className="text-green-600 text-xs overflow-y-auto">
+                                    {/* 클러스터 항목을 한 줄씩 표시 */}
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        {renderClusterInfo(clusterInfo.friendly)} {/* 친화적인 클러스터 */}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Dissimilar Match Clusters 컬럼 */}
+                            <div className="w-1/2 pl-2">
+                                <p className="mb-1">Dissimilar Match Clusters:</p>
+                                <div className="text-red-600 text-xs overflow-y-auto">
+                                    {/* 클러스터 항목을 한 줄씩 표시 */}
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        {renderClusterInfo(clusterInfo.opposition)} {/* 반대적인 클러스터 */}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </>
                 ) : (
