@@ -68,13 +68,13 @@ const ClusterResult = () => {
     return (
         <div className="w-full h-full  font-medium">
             <h3 className="pl-3">Cluster Results</h3>
-            <div style={{ maxHeight: 'calc((2rem * 3) + 2.5rem)' }} className="  overflow-auto">
+            <div style={{ maxHeight: 'calc((2rem * 3) + 2.5rem)' }} className=" pl-3 overflow-auto">
                 {clusterInfo.cluster ? (
                     <>
                         <div className="flex justify-between mb-2">
                             {/* Similar Match Clusters 컬럼 */}
                             <div className="w-1/2 pr-2">
-                                <p className="mb-1">Similar Match Clusters:</p>
+                                <p className="mb-1">Similar</p>
                                 <div className="text-green-600 text-xs overflow-y-auto">
                                     {/* 클러스터 항목을 한 줄씩 표시 */}
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -85,7 +85,7 @@ const ClusterResult = () => {
 
                             {/* Dissimilar Match Clusters 컬럼 */}
                             <div className="w-1/2 pl-2">
-                                <p className="mb-1">Dissimilar Match Clusters:</p>
+                                <p className="mb-1">Dissimilar:</p>
                                 <div className="text-red-600 text-xs overflow-y-auto">
                                     {/* 클러스터 항목을 한 줄씩 표시 */}
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>

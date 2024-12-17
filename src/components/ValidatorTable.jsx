@@ -141,22 +141,19 @@ const ValidatorTable = () => {
         { key: 'cluster', label: 'Cluster' },
         { key: 'overallMatchRate', label: 'Overall Match Rate' },
         { key: 'clusterMatchRate', label: 'Cluster Match Rate' },
-        { key: 'participationRate', label: 'Participation' },
+        { key: 'participationRate', label: 'Participation Rate' },
     ];
 
     return (
- 
         <div className="border">
             <h3 className="pl-3">Validator Results</h3>
- 
-            <div style={{ maxHeight: 'calc((2.5rem * 3) + 2.5rem)' }} className="relative overflow-auto">
+
+            <div style={{ maxHeight: 'calc((2.5rem * 3) + 2.5rem)' }} className=" pl-3 relative overflow-auto">
                 <table className="w-full" style={{ minWidth: '800px' }}>
                     <thead className="sticky top-0 bg-white border-b text-xs">
                         <tr>
- 
                             <th className="p-1 font-medium border-r whitespace-nowrap">No.</th>
                             {columns.map((column) => (
- 
                                 <th
                                     key={column.key}
                                     className={`p-2 font-medium whitespace-nowrap cursor-pointer hover:bg-gray-100 text-center`}
@@ -186,13 +183,12 @@ const ValidatorTable = () => {
                                         data.validator
                                     )}
                                 </td>
- 
+
                                 <td className="p-2 border-r text-center">{(data.matchRate * 100).toFixed(2)}</td>
                                 <td className="p-2 border-r text-center">{data.cluster}</td>
                                 <td className="p-2 border-r text-center">{(data.overallMatchRate * 100).toFixed(2)}</td>
                                 <td className="p-2 border-r text-center">{(data.clusterMatchRate * 100).toFixed(2)}</td>
                                 <td className="p-2 text-center">{(data.participationRate * 100).toFixed(2)}</td>
- 
                             </tr>
                         ))}
                     </tbody>

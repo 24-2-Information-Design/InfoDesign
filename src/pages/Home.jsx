@@ -61,7 +61,7 @@ const Home = () => {
                     <h1 className=" p-3 bg-blue-600 text-white">Find Your Friends</h1>
                     <h2 className="pl-3 pt-2">Overall Chain View</h2>
                     <p className="pl-3 ">Chain Networks</p>
-                    <div className="w-full h-[58%]">
+                    <div className="w-full h-[69%]">
                         <NetworkPie />
                     </div>
                     <div className="w-[94%] ml-4 mt-1 mb-1 flex border-t border-gray-200"></div>
