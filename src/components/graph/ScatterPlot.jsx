@@ -51,10 +51,11 @@ const ScatterPlot = ({ data }) => {
             .domain([0, d3.max(data, (d) => d.participation_rate)])
             .range([minNodeSize, maxNodeSize]);
 
-        const colorScale = d3.scaleOrdinal(NormalColors);
+        const uniqueClusters = Array.from(new Set(data.map((d) => d.cluster_label))).sort();
 
-        // 노드를 크기 순으로 정렬 (작은 노드가 앞에 오도록)
-        const sortedData = [...data].sort((a, b) => sizeScale(a.participation_rate) - sizeScale(b.participation_rate));
+        const colorScale = d3.scaleOrdinal().domain(uniqueClusters).range(NormalColors);
+
+        const sortedData = [...data].sort((a, b) => sizeScale(b.participation_rate) - sizeScale(a.participation_rate));
 
         chart
             .append('g')
@@ -67,6 +68,7 @@ const ScatterPlot = ({ data }) => {
         const tooltip = d3
             .select('body')
             .append('div')
+            .append('circle')
             .style('position', 'absolute')
             .style('visibility', 'hidden')
             .style('background', 'rgba(0, 0, 0, 0.7)')

@@ -16,7 +16,7 @@ const NetworkPie = () => {
         svg.selectAll('*').remove();
 
         const width = 550;
-        const height = 430;
+        const height = 390;
         const padding = 60; // 여백
 
         // Zoom 설정

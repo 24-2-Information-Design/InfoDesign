@@ -52,13 +52,15 @@ const Home = () => {
     return (
         <div className="flex flex-col w-full h-full">
             {/* header */}
-            <h1 className="ml-4 mt-4">Find Your Friends</h1>
+
             {/* body */}
+
             <div className="w-full h-full flex flex-row">
                 {/* left section */}
                 <div className="w-2/5 h-full m-1 ml-3 shadow-xl rounded-lg border-slate-100 border-[0.3px]">
+                    <h1 className=" p-3 bg-blue-600 text-white">Find Your Friends</h1>
                     <h2 className="pl-3 pt-2">Overall Chain View</h2>
-                    <div className="w-full h-[69%]">
+                    <div className="w-full h-[61%]">
                         <NetworkPie />
                     </div>
                     <div className="w-[94%] ml-4 mt-1 mb-1 flex border-t border-gray-200"></div>
@@ -69,15 +71,14 @@ const Home = () => {
                         {selectedChain && (
                             <div className=" ml-4 p-2">
                                 {/* 상단 3개 */}
-                                <div className="grid grid-cols-3 gap-4 text-center  ">
-                                    <div>
+                                <div className="grid grid-cols-3 gap-4 text-center  font-medium">
+                                    <div className="flex mx-auto">
                                         <img
                                             src={`src/assets/chain/${selectedChain}.png`}
                                             alt="selected-chain"
-                                            className="mx-auto  w-6 h-6 "
+                                            className="mr-2  w-12 h-12"
                                         />
-                                        <strong className="text-sm">{selectedChain}</strong>
-                                        <p className="text-sm text-gray-500">Selected Chain</p>
+                                        <strong className="text-xl mt-2">{selectedChain}</strong>
                                     </div>
                                     <div>
                                         <img
@@ -112,8 +113,8 @@ const Home = () => {
                                                 />
                                             ))}
                                         </div>
-                                        <strong className="text-sm">{chainData.similar_chains.join(', ')}</strong>
-                                        <p className="text-sm text-gray-500">Similar Chain</p>
+                                        <strong className="text-xs">{chainData.similar_chains.join(', ')}</strong>
+                                        <p className="text-xs text-gray-500">Similar Chain</p>
                                     </div>
                                     <div>
                                         <img
@@ -122,7 +123,7 @@ const Home = () => {
                                             className="mx-auto w-6 h-6"
                                         />
                                         <strong className="text-sm">{chainData.cluster_num}</strong>
-                                        <p className="text-sm text-gray-500">Number of Cluster</p>
+                                        <p className="text-xs text-gray-500">Number of Cluster</p>
                                     </div>
                                     <div>
                                         <img
