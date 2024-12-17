@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import jsonData from '../../data/chain_data.json';
 import linkData from '../../data/chain_link_data.json';
-import { NormalColors } from '../color';
+import { NormalColors, clusterNames, clusterArr } from '../color';
 import useChainStore from '../../store/store';
 
 const NetworkPie = () => {
@@ -16,7 +16,7 @@ const NetworkPie = () => {
         svg.selectAll('*').remove();
 
         const width = 550;
-        const height = 390;
+        const height = 360;
         const padding = 60; // 여백
 
         // Zoom 설정
@@ -249,22 +249,20 @@ const NetworkPie = () => {
         });
     }, [setSelectedChain, highlightedChains, selectedChain, getChainOpacity]);
 
-    const clusters = Array.from({ length: 8 }, (_, i) => i);
-
     return (
         <div className="mt-2">
             <div className="ml-4 mb-2">
-                <div className="grid grid-cols-4 gap-x-1 gap-y-1 w-fit">
-                    {clusters.map((cluster) => (
+                <div className="grid grid-cols-4 gap-x-2 gap-y-4 w-fit">
+                    {clusterArr.map((cluster) => (
                         <div key={cluster} className="flex items-center gap-2">
                             <div
-                                className="w-3 h-3 rounded-full"
+                                className="w-4 h-4 rounded"
                                 style={{
                                     backgroundColor: NormalColors[cluster],
                                     opacity: 0.6,
                                 }}
                             />
-                            <span className="text-xs text-gray-600">Cluster {cluster}</span>
+                            <span className="text-xs text-gray-600">{`${cluster}. ${clusterNames[cluster]}`}</span>
                         </div>
                     ))}
                 </div>

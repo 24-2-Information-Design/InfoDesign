@@ -60,7 +60,8 @@ const Home = () => {
                 <div className="w-2/5 h-full m-1 ml-3 shadow-xl rounded-lg border-slate-100 border-[0.3px]">
                     <h1 className=" p-3 bg-blue-600 text-white">Find Your Friends</h1>
                     <h2 className="pl-3 pt-2">Overall Chain View</h2>
-                    <div className="w-full h-[61%]">
+                    <p className="pl-3 ">Chain Networks</p>
+                    <div className="w-full h-[58%]">
                         <NetworkPie />
                     </div>
                     <div className="w-[94%] ml-4 mt-1 mb-1 flex border-t border-gray-200"></div>
@@ -69,9 +70,9 @@ const Home = () => {
                     <div className="w-full h-auto">
                         <h3 className="pl-3 ml-4">Chain Results</h3>
                         {selectedChain && (
-                            <div className=" ml-4 p-2">
+                            <div className=" ml-4 p-1">
                                 {/* 상단 3개 */}
-                                <div className="grid grid-cols-3 gap-4 text-center  font-medium">
+                                <div className="grid grid-cols-3 gap-4 text-center font-medium mb-1">
                                     <div className="flex mx-auto">
                                         <img
                                             src={`src/assets/chain/${selectedChain}.png`}
@@ -131,8 +132,8 @@ const Home = () => {
                                             alt="tolerance"
                                             className="mx-auto w-6 h-6"
                                         />
-                                        <strong className="text-sm">{chainData.radius}</strong>
-                                        <p className="text-sm text-gray-500">Tolerance of Opinions</p>
+                                        <strong className="text-xs">{chainData.radius}</strong>
+                                        <p className="text-xs text-gray-500">Tolerance of Opinions</p>
                                     </div>
                                 </div>
                             </div>
