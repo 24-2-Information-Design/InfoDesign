@@ -9,11 +9,7 @@ const ScatterPlot = ({ data }) => {
     const [singleSelectMode, setSingleSelectMode] = useState(false);
 
     useEffect(() => {
-        if (!data) return;
-
-        // Determine which metric to use based on data structure
-        const sizeMetric = data[0].hasOwnProperty('votingPower') ? 'votingPower' : 'participation_rate';
-        const metricLabel = sizeMetric === 'votingPower' ? 'Voting Power' : 'Participation Rate';
+        if (!data || data.length === 0) return;
 
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
@@ -30,6 +26,7 @@ const ScatterPlot = ({ data }) => {
         const chart = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
         const maxNodeSize = 12;
+        const minNodeSize = 3;
 
         const xExtent = d3.extent(data, (d) => d.tsne_x);
         const yExtent = d3.extent(data, (d) => d.tsne_y);
@@ -48,12 +45,16 @@ const ScatterPlot = ({ data }) => {
             .domain([yExtent[0] - yPadding, yExtent[1] + yPadding])
             .range([chartHeight - padding, padding]);
 
+        // participation_rate를 기준으로 노드 크기 조정
         const sizeScale = d3
             .scaleSqrt()
-            .domain(d3.extent(data, (d) => d[sizeMetric]))
-            .range([3, maxNodeSize]);
+            .domain([0, d3.max(data, (d) => d.participation_rate)])
+            .range([minNodeSize, maxNodeSize]);
 
         const colorScale = d3.scaleOrdinal(NormalColors);
+
+        // 노드를 크기 순으로 정렬 (작은 노드가 앞에 오도록)
+        const sortedData = [...data].sort((a, b) => sizeScale(a.participation_rate) - sizeScale(b.participation_rate));
 
         chart
             .append('g')
@@ -61,10 +62,7 @@ const ScatterPlot = ({ data }) => {
             .call(d3.axisBottom(xScale).ticks(10))
             .attr('font-size', '12px');
 
-        chart
-            .append('g')
-            .call(d3.axisLeft(yScale).ticks(10))
-            .attr('font-size', '12px');
+        chart.append('g').call(d3.axisLeft(yScale).ticks(10)).attr('font-size', '12px');
 
         const tooltip = d3
             .select('body')
@@ -139,14 +137,20 @@ const ScatterPlot = ({ data }) => {
             brushContainer.call(brush);
         }
 
+        // 최소 클릭 영역 설정 (최소 노드 크기를 보장)
+        const minClickRadius = Math.max(minNodeSize, 5);
+
         const nodes = chart
             .selectAll('circle')
-            .data(data)
+            .data(sortedData)
             .enter()
             .append('circle')
             .attr('cx', (d) => xScale(d.tsne_x))
             .attr('cy', (d) => yScale(d.tsne_y))
-            .attr('r', (d) => sizeScale(d[sizeMetric]))
+            .attr('r', (d) => {
+                const nodeRadius = sizeScale(d.participation_rate);
+                return Math.max(nodeRadius, minClickRadius);
+            })
             .attr('fill', (d) => colorScale(d.cluster_label))
             .attr('opacity', (d) => (selectedValidators.includes(d.voter) ? 1 : 0.6))
             .attr('stroke', (d) => {
@@ -161,16 +165,14 @@ const ScatterPlot = ({ data }) => {
                     .style('visibility', 'visible')
                     .html(
                         `<strong>${d.voter}</strong><br/>
-                        ${metricLabel}: ${d[sizeMetric].toFixed(6)}<br/>
+                        Participation Rate: ${(d.participation_rate * 100).toFixed(2)}%<br/>
                         Cluster: ${d.cluster_label}`
                     )
                     .style('left', `${event.pageX + 10}px`)
                     .style('top', `${event.pageY}px`);
             })
             .on('mousemove', (event) => {
-                tooltip
-                    .style('left', `${event.pageX + 10}px`)
-                    .style('top', `${event.pageY}px`);
+                tooltip.style('left', `${event.pageX + 10}px`).style('top', `${event.pageY}px`);
             })
             .on('mouseout', () => {
                 tooltip.style('visibility', 'hidden');
@@ -186,6 +188,16 @@ const ScatterPlot = ({ data }) => {
         setBaseValidator(null);
     };
 
+    const handleSingleSelectModeChange = (isChecked) => {
+        setSingleSelectMode(isChecked);
+        if (isChecked && selectedValidators.length > 0) {
+            // Single selection 모드에서는 첫 번째 검증인만 유지
+            const firstValidator = selectedValidators[0];
+            setSelectedValidators([firstValidator]);
+            setBaseValidator(firstValidator);
+        }
+    };
+
     return (
         <div>
             <div className="flex items-center gap-4 pl-3">
@@ -195,21 +207,12 @@ const ScatterPlot = ({ data }) => {
                         <input
                             type="checkbox"
                             checked={singleSelectMode}
-                            onChange={(e) => {
-                                setSingleSelectMode(e.target.checked);
-                                if (e.target.checked) {
-                                    setSelectedValidators([]);
-                                    setBaseValidator(null);
-                                }
-                            }}
+                            onChange={(e) => handleSingleSelectModeChange(e.target.checked)}
                             className="form-checkbox h-4 w-4"
                         />
                         <span>Single Selection</span>
                     </label>
-                    <button 
-                        onClick={handleReset} 
-                        className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
-                    >
+                    <button onClick={handleReset} className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm">
                         Reset
                     </button>
                 </div>

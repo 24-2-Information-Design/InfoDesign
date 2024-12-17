@@ -10,8 +10,10 @@ const ValidatorTable = () => {
     });
 
     useEffect(() => {
+ 
         // 체인이나 검증인이 선택되지 않은 경우만 체크
         if (!selectedChain || !selectedValidators.length) {
+ 
             setValidatorData([]);
             return;
         }
