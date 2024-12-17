@@ -10,7 +10,8 @@ const ValidatorTable = () => {
     });
 
     useEffect(() => {
-        if (!selectedChain || !baseValidator || selectedValidators.length <= 1) {
+        // 체인이나 검증인이 선택되지 않은 경우만 체크
+        if (!selectedChain || !selectedValidators.length) {
             setValidatorData([]);
             return;
         }
@@ -20,19 +21,35 @@ const ValidatorTable = () => {
         fetch(`/data/validator_result/validator_result_${selectedChain}.json`)
             .then((response) => response.json())
             .then((data) => {
-                if (!selectedValidators.includes(baseValidator) || selectedValidators.length <= 1) {
-                    setValidatorData([]);
+                // 검증인이 한 명일 경우 해당 검증인의 정보만 표시
+                if (selectedValidators.length === 1) {
+                    const singleValidator = selectedValidators[0];
+                    const validatorInfo = data.find((item) => item.voter === singleValidator);
+                    
+                    if (validatorInfo) {
+                        setValidatorData([{
+                            validator: singleValidator,
+                            matchRate: 1,
+                            cluster: validatorInfo.cluster_label,
+                            overallMatchRate: validatorInfo.overall_match_rate || 0,
+                            clusterMatchRate: validatorInfo.cluster_match_rate || 0,
+                            participationRate: validatorInfo.participation_rate || 0,
+                        }]);
+                    }
                     return;
                 }
 
-                const baseValidatorData = data.find((item) => item.voter === baseValidator);
+                // baseValidator가 선택되지 않은 경우 첫 번째 검증인을 baseValidator로 사용
+                const currentBaseValidator = baseValidator || selectedValidators[0];
+                const baseValidatorData = data.find((item) => item.voter === currentBaseValidator);
+                
                 if (!baseValidatorData) {
                     setValidatorData([]);
                     return;
                 }
 
                 const validatorsInfo = selectedValidators
-                    .filter((validator) => validator !== baseValidator)
+                    .filter((validator) => validator !== currentBaseValidator)
                     .map((validator) => {
                         const validatorInfo = data.find((item) => item.voter === validator);
                         const clusterLabel = validatorInfo ? validatorInfo.cluster_label : 'N/A';
@@ -49,7 +66,7 @@ const ValidatorTable = () => {
 
                 const initialData = [
                     {
-                        validator: baseValidator,
+                        validator: currentBaseValidator,
                         matchRate: 1,
                         cluster: baseValidatorData.cluster_label,
                         overallMatchRate: baseValidatorData.overall_match_rate || 0,
@@ -68,17 +85,15 @@ const ValidatorTable = () => {
     }, [selectedChain, selectedValidators, baseValidator]);
 
     const handleValidatorClick = (clickedValidator) => {
-        if (clickedValidator === baseValidator) return;
+        if (clickedValidator === baseValidator || selectedValidators.length <= 1) return;
         setBaseValidator(clickedValidator);
     };
 
-    // cluster 값에서 숫자를 추출하는 함수
     const getClusterNumber = (clusterString) => {
         const match = clusterString.match(/\d+/);
         return match ? parseInt(match[0]) : -1;
     };
 
-    // 정렬 함수를 별도로 분리
     const sortData = (data, key, direction) => {
         if (data.length <= 1) return data;
         const [first, ...rest] = data;
@@ -87,7 +102,6 @@ const ValidatorTable = () => {
             let comparison = 0;
             
             if (key === 'cluster') {
-                // cluster 정렬 로직 개선
                 const aNumber = getClusterNumber(String(a[key] || ''));
                 const bNumber = getClusterNumber(String(b[key] || ''));
                 comparison = aNumber - bNumber;
@@ -108,13 +122,11 @@ const ValidatorTable = () => {
     };
 
     const handleSort = (key) => {
-        // 새로운 정렬 방향 계산
         const newDirection = 
             sortConfig.key === key
             ? sortConfig.direction === 'asc' ? 'desc' : 'asc'
             : 'desc';
         
-        // 상태 업데이트와 데이터 정렬을 동시에 수행
         setSortConfig({ key, direction: newDirection });
         setValidatorData(prevData => sortData(prevData, key, newDirection));
     };
