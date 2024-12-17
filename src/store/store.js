@@ -44,7 +44,7 @@ export const useChainStore = create((set, get) => ({
     highlightedValidators: [],
     baseValidator: null,
     validatorChains: [],
-    singleSelectMode: false, // 추가된 상태
+    singleSelectMode: false,
 
     getChainOpacity: (chainId) => {
         const state = get();
@@ -98,7 +98,7 @@ export const useChainStore = create((set, get) => ({
                 selectedValidators: [],
                 baseValidator: null,
                 highlightedChains: [],
-                singleSelectMode: false, // 체인 선택 해제시 단일 선택 모드도 초기화
+                singleSelectMode: false,
             });
             return;
         }
@@ -114,7 +114,7 @@ export const useChainStore = create((set, get) => ({
                       highlightedValidators: [],
                       baseValidator: null,
                       highlightedChains: [],
-                      singleSelectMode: false, // 새로운 체인 선택시 단일 선택 모드 초기화
+                      singleSelectMode: false,
                   }),
         });
     },
@@ -138,15 +138,22 @@ export const useChainStore = create((set, get) => ({
 
     setSingleSelectMode: (mode) => {
         const currentValidators = get().selectedValidators;
+        const currentBaseValidator = get().baseValidator;
+
         set({ 
             singleSelectMode: mode,
-            // 단일 선택 모드로 전환시 첫 번째 검증인만 유지
-            ...(mode && currentValidators.length > 0 
+            // 단일 선택 모드로 전환시 현재 baseValidator만 유지
+            ...(mode && currentBaseValidator  // baseValidator가 있을 때만 처리
                 ? {
-                    selectedValidators: [currentValidators[0]],
-                    baseValidator: currentValidators[0]
+                    selectedValidators: [currentBaseValidator],  // baseValidator만 선택된 상태로
+                    baseValidator: currentBaseValidator  // baseValidator 유지
                   }
-                : {}
+                : mode && currentValidators.length > 0  // baseValidator가 없고 선택된 검증인이 있는 경우
+                ? {
+                    selectedValidators: [currentValidators[0]],  // 첫 번째 선택된 검증인만 유지
+                    baseValidator: currentValidators[0]  // 첫 번째 선택된 검증인을 baseValidator로
+                  }
+                : {}  // 그 외의 경우는 변경하지 않음
             )
         });
     },
@@ -158,7 +165,7 @@ export const useChainStore = create((set, get) => ({
             highlightedValidators: [],
             validatorChains: [],
             baseValidator: null,
-            singleSelectMode: false, // 선택 초기화시 단일 선택 모드도 초기화
+            singleSelectMode: false,
         }),
 }));
 
