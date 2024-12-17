@@ -43,7 +43,7 @@ const NetworkPie = () => {
         const maxRadius = Math.min(width, height) / 8; // 차트 크기 축소
         const chartRadius = maxRadius;
         const arcMinRadius = 8;
-        const arcPadding = 2;
+        const arcPadding = 1;
         const numArcs = Object.keys(jsonData[0].proposal).length;
         const arcWidth = (chartRadius - arcMinRadius - numArcs * arcPadding) / (numArcs * 5);
 
@@ -221,8 +221,8 @@ const NetworkPie = () => {
 
             const barArc = d3
                 .arc()
-                .innerRadius((d, i) => getInnerRadius(i) + radius - 8)
-                .outerRadius((d, i) => getOuterRadius(i) + radius - 8)
+                .innerRadius((d, i) => getInnerRadius(i) + radius - 6)
+                .outerRadius((d, i) => getOuterRadius(i) + radius - 6)
                 .startAngle(0)
                 .endAngle((d) => (d.value / 100) * 2 * Math.PI);
 

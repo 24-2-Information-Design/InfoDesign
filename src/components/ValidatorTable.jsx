@@ -8,7 +8,7 @@ const ValidatorTable = () => {
 
     useEffect(() => {
         // 선택된 검증인이 없거나 1명만 있을 때는 데이터 초기화
-        if (!selectedChain || !baseValidator || selectedValidators.length <= 1) {
+        if (!selectedChain || !baseValidator) {
             setValidatorData([]);
             return;
         }
