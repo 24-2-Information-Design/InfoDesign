@@ -252,7 +252,7 @@ const NetworkPie = () => {
     return (
         <div className="mt-2">
             <div className="ml-4 mb-2">
-                <div className="grid grid-cols-4 gap-x-2 gap-y-4 w-fit">
+                <div className="grid grid-cols-4 gap-x-1 gap-y-4 w-fit">
                     {clusterArr.map((cluster) => (
                         <div key={cluster} className="flex items-center gap-2">
                             <div

@@ -12,7 +12,7 @@ const ScatterPlot = ({ data }) => {
         setBaseValidator,
         singleSelectMode,
         setSingleSelectMode,
-        resetValidatorSelection
+        resetValidatorSelection,
     } = useChainStore();
 
     useEffect(() => {

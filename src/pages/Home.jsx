@@ -61,7 +61,7 @@ const Home = () => {
                     <h1 className=" p-3 bg-blue-600 text-white">Find Your Friends</h1>
                     <h2 className="pl-3 pt-2">Overall Chain View</h2>
                     <p className="pl-3 ">Chain Networks</p>
-                    <div className="w-full h-[69%]">
+                    <div className="w-full h-[58%]">
                         <NetworkPie />
                     </div>
                     <div className="w-[94%] ml-4 mt-1 mb-1 flex border-t border-gray-200"></div>
@@ -77,9 +77,9 @@ const Home = () => {
                                         <img
                                             src={`src/assets/chain/${selectedChain}.png`}
                                             alt="selected-chain"
-                                            className="mr-2  w-12 h-12"
+                                            className="w-10 h-10"
                                         />
-                                        <strong className="text-xl mt-2">{selectedChain}</strong>
+                                        <strong className="text-xl ml-1 mt-2">{selectedChain}</strong>
                                     </div>
                                     <div>
                                         <img
@@ -88,7 +88,7 @@ const Home = () => {
                                             className="mx-auto  w-6 h-6 "
                                         />
                                         <strong className="text-sm">{chainData.validator_num}</strong>
-                                        <p className="text-sm text-gray-500">Number of Validator</p>
+                                        <p className="text-xs text-gray-500">Number of Validator</p>
                                     </div>
                                     <div>
                                         <img
@@ -96,8 +96,8 @@ const Home = () => {
                                             alt="proposals"
                                             className="mx-auto  w-6 h-6"
                                         />
-                                        <strong className="text-sm">{chainData.proposal_num}</strong>
-                                        <p className="text-sm text-gray-500">Number of Proposal</p>
+                                        <strong className="text-xs">{chainData.proposal_num}</strong>
+                                        <p className="text-xs text-gray-500">Number of Proposal</p>
                                     </div>
                                 </div>
 

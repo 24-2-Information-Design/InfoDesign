@@ -54,11 +54,11 @@ const ClusterResult = () => {
                               backgroundColor: getClusterColor(clusterIndex),
                               padding: '2px 8px',
                               borderRadius: '4px',
-                              color: '#fff',
+                              color: '#333',
                               marginBottom: '5px',
                           }}
                       >
-                          {`${clusterIndex}.${clusterNames[clusterIndex]}`}
+                          {`${clusterIndex}. ${clusterNames[clusterIndex]}`}
                       </span>
                   );
               })
@@ -71,13 +71,14 @@ const ClusterResult = () => {
             <div style={{ maxHeight: 'calc((2rem * 3) + 2.5rem)' }} className=" pl-3 overflow-auto">
                 {clusterInfo.cluster ? (
                     <>
-                        <div className="flex justify-between mb-2">
+                        <p className="mb-2">Cluster: {renderClusterInfo([clusterInfo.cluster])}</p>
+                        <div className="flex justify-between mb-2 ">
                             {/* Similar Match Clusters 컬럼 */}
                             <div className="w-1/2 pr-2">
                                 <p className="mb-1">Similar</p>
                                 <div className="text-green-600 text-xs overflow-y-auto">
                                     {/* 클러스터 항목을 한 줄씩 표시 */}
-                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <div className="black" style={{ display: 'flex', flexDirection: 'column' }}>
                                         {renderClusterInfo(clusterInfo.friendly)} {/* 친화적인 클러스터 */}
                                     </div>
                                 </div>

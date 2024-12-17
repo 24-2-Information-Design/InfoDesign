@@ -140,7 +140,7 @@ const Parallel = ({ data }) => {
     const voteTypes = ['YES', 'ABSTAIN', 'VETO', 'NO', 'NO VOTE'];
 
     return (
-        <div className="mt-1 flex">
+        <div className="p-3 flex">
             <div className="flex flex-col justify-between py-2 mr-2 text-xs text-right">
                 {voteTypes.map((type) => (
                     <div key={type} className="text-gray-600">
