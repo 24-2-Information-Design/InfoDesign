@@ -148,17 +148,17 @@ const ValidatorTable = () => {
     ];
 
     return (
-        <div className="border rounded-lg">
-            <h3 className="pl-3">Validator Results</h3>
+        <div className="border-b">
+            <h3 className="pl-3 py-2 border-b">Validator Results</h3>
             <div style={{ maxHeight: 'calc((2.5rem * 3) + 2.5rem)' }} className="relative overflow-auto">
                 <table className="w-full" style={{ minWidth: '800px' }}>
-                    <thead className="sticky top-0 bg-white border-b text-xs text-center">
+                    <thead className="sticky top-0 bg-white border-b text-xs">
                         <tr>
-                            <th className="p-1 font-medium border-r whitespace-nowrap">No.</th>
-                            {columns.map(column => (
+                            <th className="p-1 font-medium whitespace-nowrap text-center">No.</th>
+                            {columns.map((column, index) => (
                                 <th
                                     key={column.key}
-                                    className="p-2 font-medium border-r whitespace-nowrap cursor-pointer hover:bg-gray-100"
+                                    className={`p-2 font-medium whitespace-nowrap cursor-pointer hover:bg-gray-100 text-center`}
                                     onClick={() => handleSort(column.key)}
                                 >
                                     <div className="flex items-center justify-center gap-1">
@@ -168,7 +168,7 @@ const ValidatorTable = () => {
                             ))}
                         </tr>
                     </thead>
-                    <tbody className="text-xs text-left">
+                    <tbody className="text-xs">
                         {validatorData.map((data, index) => (
                             <tr
                                 key={data.validator}
@@ -177,23 +177,23 @@ const ValidatorTable = () => {
                                 }`}
                                 onClick={() => index !== 0 && handleValidatorClick(data.validator)}
                             >
-                                <td className="p-2 border-r">{index + 1}</td>
-                                <td className="p-2 border-r">
+                                <td className="p-2 text-left">{index + 1}</td>
+                                <td className="p-2 text-left">
                                     {index === 0 ? (
                                         <span className="font-medium">{data.validator}</span>
                                     ) : (
                                         data.validator
                                     )}
                                 </td>
-                                <td className="p-2 border-r text-center">{(data.matchRate * 100).toFixed(2)}</td>
-                                <td className="p-2 border-r text-center">{data.cluster}</td>
-                                <td className="p-2 border-r text-center">
+                                <td className="p-2 text-left">{(data.matchRate * 100).toFixed(2)}</td>
+                                <td className="p-2 text-left">{data.cluster}</td>
+                                <td className="p-2 text-left">
                                     {(data.overallMatchRate * 100).toFixed(2)}
                                 </td>
-                                <td className="p-2 border-r text-center">
+                                <td className="p-2 text-left">
                                     {(data.clusterMatchRate * 100).toFixed(2)}
                                 </td>
-                                <td className="p-2 text-center">
+                                <td className="p-2 text-left">
                                     {(data.participationRate * 100).toFixed(2)}
                                 </td>
                             </tr>
