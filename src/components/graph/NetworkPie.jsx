@@ -15,8 +15,8 @@ const NetworkPie = () => {
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
 
-        const width = 590;
-        const height = 330;
+        const width = 620;
+        const height = 370;
         const padding = 60; // 여백
 
         // Zoom 설정
@@ -35,8 +35,8 @@ const NetworkPie = () => {
 
         svg.attr('width', width).attr('height', height).attr('viewBox', `0 0 ${width} ${height}`).call(zoom);
 
-        const initialScale = 0.8;
-        const initialTranslate = [width * 0.1, height * 0.1];
+        const initialScale = 0.95;
+        const initialTranslate = [0, height * 0.03];
         svg.call(zoom.transform, d3.zoomIdentity.translate(...initialTranslate).scale(initialScale));
 
         // 차트 크기 설정

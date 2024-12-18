@@ -22,7 +22,7 @@ const ScatterPlot = ({ data }) => {
         svg.selectAll('*').remove();
 
         const width = 500;
-        const height = 330;
+        const height = 350;
         const margin = { top: 0, right: 50, bottom: 60, left: 50 };
 
         const chartWidth = width - margin.left - margin.right;

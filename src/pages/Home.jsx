@@ -57,7 +57,7 @@ const Home = () => {
 
             <div className="w-full h-full flex ">
                 {/* left section */}
-                <div className="w-2/5 h-full border-r-4 border-gray-200">
+                <div className="w-2/5 h-full border-r-2 border-gray-200">
                     <h1 className=" p-3 bg-blue-600 text-white">Find Your Friends</h1>
                     <h2 className="pl-3 pt-2">Overall Chain View</h2>
                     <p className="pl-3 font-semibold">Chain Networks</p>
@@ -67,13 +67,13 @@ const Home = () => {
                     <div className="w-[94%] ml-4 mt-1 mb-1 flex border-t-2 border-gray-200 "></div>
 
                     {/* chain result */}
-                    <div className="w-full h-auto">
+                    <div className="w-full h-auto mt-3">
                         <p className="pl-2 ml-2 font-semibold">Chain Results</p>
                         {selectedChain && (
                             <div className=" ml-4 p-1">
                                 {/* 상단 3개 */}
                                 <div className="grid grid-cols-3 gap-4 text-center font-medium mb-3">
-                                    <div className="flex mt-3 mx-auto">
+                                    <div className="flex mt-5 mx-auto">
                                         <img
                                             src={`src/assets/chain/${selectedChain}.png`}
                                             alt="selected-chain"
@@ -81,7 +81,7 @@ const Home = () => {
                                         />
                                         <strong className="text-xl ml-1 mt-1">{selectedChain}</strong>
                                     </div>
-                                    <div>
+                                    <div className="mt-2">
                                         <img
                                             src="src/assets/result/validator.png"
                                             alt="validators"
@@ -90,7 +90,7 @@ const Home = () => {
                                         <strong className="text-sm">{chainData.validator_num}</strong>
                                         <p className="text-xs text-gray-500">Number of Validator</p>
                                     </div>
-                                    <div>
+                                    <div className="mt-2">
                                         <img
                                             src="src/assets/result/proposal.png"
                                             alt="proposals"
@@ -104,7 +104,7 @@ const Home = () => {
                                 {/* 하단 3개 */}
                                 <div className="grid grid-cols-3 gap-4 text-center">
                                     <div>
-                                        <div className="flex mt-2 justify-center ">
+                                        <div className="flex mt-6 justify-center ">
                                             {chainData.similar_chains.map((chain, index) => (
                                                 <img
                                                     key={index}
@@ -117,7 +117,7 @@ const Home = () => {
                                         <strong className="text-xs">{chainData.similar_chains.join(', ')}</strong>
                                         <p className="text-xs text-gray-500">Similar Chain</p>
                                     </div>
-                                    <div className="mt-3">
+                                    <div className="mt-7">
                                         <img
                                             src="src/assets/result/cluster.png"
                                             alt="clusters"
@@ -126,7 +126,7 @@ const Home = () => {
                                         <strong className="text-sm">{chainData.cluster_num}</strong>
                                         <p className="text-xs text-gray-500">Number of Cluster</p>
                                     </div>
-                                    <div className="mt-3">
+                                    <div className="mt-7">
                                         <img
                                             src="src/assets/result/tolerance.png"
                                             alt="tolerance"
@@ -146,7 +146,7 @@ const Home = () => {
                     <h2 className="pl-3 pt-2">Specific Validator View</h2>
 
                     {/* validator & proposal view */}
-                    <div className="w-full h-[43%] flex flex-row">
+                    <div className="w-full h-[45%] flex flex-row">
                         <div className="w-1/2 h-full">
                             {scatterData ? (
                                 <ScatterPlot data={scatterData} />
