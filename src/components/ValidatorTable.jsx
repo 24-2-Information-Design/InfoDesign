@@ -157,8 +157,8 @@ const ValidatorTable = () => {
     ];
 
     return (
-        <div className="border">
-            <div className="flex justify-between items-center p-3">
+        <div className="">
+            <div className="flex justify-between items-center p-3 pt-1">
                 <p className="font-semibold">Validator Results</p>
                 {selectedRows.length > 0 && (
                     <button
@@ -171,7 +171,7 @@ const ValidatorTable = () => {
             </div>
 
             <div className="pl-3 relative">
-                <div style={{ maxHeight: 'calc(2rem * 4)' }} className="overflow-auto">
+                <div style={{ maxHeight: 'calc(2rem * 5.2)' }} className="overflow-auto">
                     <table
                         className="w-full"
                         style={{ minWidth: '800px', borderCollapse: 'separate', borderSpacing: 0 }}

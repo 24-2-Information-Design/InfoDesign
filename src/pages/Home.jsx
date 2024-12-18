@@ -104,7 +104,7 @@ const Home = () => {
                                 {/* 하단 3개 */}
                                 <div className="grid grid-cols-3 gap-4 text-center">
                                     <div>
-                                        <div className="flex justify-center ">
+                                        <div className="flex mt-2 justify-center ">
                                             {chainData.similar_chains.map((chain, index) => (
                                                 <img
                                                     key={index}
@@ -117,7 +117,7 @@ const Home = () => {
                                         <strong className="text-xs">{chainData.similar_chains.join(', ')}</strong>
                                         <p className="text-xs text-gray-500">Similar Chain</p>
                                     </div>
-                                    <div>
+                                    <div className="mt-3">
                                         <img
                                             src="src/assets/result/cluster.png"
                                             alt="clusters"
@@ -126,7 +126,7 @@ const Home = () => {
                                         <strong className="text-sm">{chainData.cluster_num}</strong>
                                         <p className="text-xs text-gray-500">Number of Cluster</p>
                                     </div>
-                                    <div>
+                                    <div className="mt-3">
                                         <img
                                             src="src/assets/result/tolerance.png"
                                             alt="tolerance"
@@ -146,7 +146,7 @@ const Home = () => {
                     <h2 className="pl-3 pt-2">Specific Validator View</h2>
 
                     {/* validator & proposal view */}
-                    <div className="w-full h-[42%] flex flex-row">
+                    <div className="w-full h-[43%] flex flex-row">
                         <div className="w-1/2 h-full">
                             {scatterData ? (
                                 <ScatterPlot data={scatterData} />
@@ -162,7 +162,7 @@ const Home = () => {
                     <div className="w-[95%] ml-5 mt-1 mb-1 flex border-t border-gray-200"></div>
 
                     {/* parallel view */}
-                    <div className="w-full h-[26%]">
+                    <div className="w-full h-[22%]">
                         <p className="pl-3 font-semibold">Votes Tendency</p>
                         {parallelData ? <Parallel data={parallelData} /> : selectedChain && <p>Loading... </p>}
                     </div>
@@ -170,12 +170,14 @@ const Home = () => {
                     <div className="w-[95%] ml-5 mb-1 flex border-t border-gray-200"></div>
 
                     {/* result view */}
-                    <div className="w-full h-[28%] flex flex-row">
+                    <div className="w-full h-[32%] flex flex-row justify-between">
                         <div className="w-[70%] h-full">
                             <ValidatorTable />
                         </div>
 
-                        <div className="w-[30%] h-full ">
+                        <div className="h-[80%] ml-2 mt-3 mb-1 flex border-l border-gray-200"></div>
+
+                        <div className="w-[28%] h-full ">
                             <ClusterResult />
                         </div>
                     </div>

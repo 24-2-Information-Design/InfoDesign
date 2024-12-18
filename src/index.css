@@ -8,6 +8,7 @@ body {
     padding: 0;
     height: 98%;
     width: 100%;
+    user-select: none;
 }
 
 #root {

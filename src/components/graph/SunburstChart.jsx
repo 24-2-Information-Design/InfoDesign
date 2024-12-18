@@ -138,7 +138,7 @@ const SunburstChart = ({ data, parallelData }) => {
         if (!data || !parallelData) return;
 
         const width = 300;
-        const height = 220;
+        const height = 270;
         const radius = Math.min(width, height) / 2;
         const legendHeight = 30;
 

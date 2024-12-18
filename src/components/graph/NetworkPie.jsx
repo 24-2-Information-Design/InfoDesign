@@ -15,8 +15,8 @@ const NetworkPie = () => {
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
 
-        const width = 550;
-        const height = 360;
+        const width = 590;
+        const height = 390;
         const padding = 60; // 여백
 
         // Zoom 설정
@@ -250,9 +250,9 @@ const NetworkPie = () => {
     }, [setSelectedChain, highlightedChains, selectedChain, getChainOpacity]);
 
     return (
-        <div className="mt-2">
+        <div className="mt-1">
             <div className="ml-4 mb-2">
-                <div className="grid grid-cols-4 gap-x-1 gap-y-4 w-fit">
+                <div className="grid grid-cols-4 gap-x-1 gap-y-2 w-fit">
                     {clusterArr.map((cluster) => (
                         <div key={cluster} className="flex items-center gap-2">
                             <div

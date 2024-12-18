@@ -68,9 +68,9 @@ const ClusterResult = () => {
     };
 
     return (
-        <div className="w-full h-full  font-medium">
-            <p className="p-3 font-semibold">Cluster Results</p>
-            <div style={{ maxHeight: 'calc((2rem * 3) + 1.8rem)' }} className=" pl-3 overflow-auto">
+        <div className="w-[95%] h-full  font-medium">
+            <p className="p-2 font-semibold">Cluster Results</p>
+            <div style={{ maxHeight: 'calc((2rem * 3) + 4.3rem)' }} className=" pl-3 overflow-auto">
                 {clusterInfo.cluster ? (
                     <>
                         <p className="text-base">Cluster: {renderClusterInfo([clusterInfo.cluster])}</p>
