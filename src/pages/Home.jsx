@@ -60,7 +60,7 @@ const Home = () => {
                 <div className="w-2/5 h-full m-1 ml-3 shadow-xl rounded-lg border-slate-100 border-[0.3px]">
                     <h1 className=" p-3 bg-blue-600 text-white">Find Your Friends</h1>
                     <h2 className="pl-3 pt-2">Overall Chain View</h2>
-                    <p className="pl-3 ">Chain Networks</p>
+                    <p className="pl-3 font-semibold">Chain Networks</p>
                     <div className="w-full h-[58%]">
                         <NetworkPie />
                     </div>
@@ -68,7 +68,7 @@ const Home = () => {
 
                     {/* chain result */}
                     <div className="w-full h-auto">
-                        <p className="pl-3 ml-4">Chain Results</p>
+                        <p className="pl-3 ml-4 font-semibold">Chain Results</p>
                         {selectedChain && (
                             <div className=" ml-4 p-1">
                                 {/* 상단 3개 */}
@@ -163,7 +163,7 @@ const Home = () => {
 
                     {/* parallel view */}
                     <div className="w-full h-[26%]">
-                        <p className="pl-3">Votes Tendency</p>
+                        <p className="pl-3 font-semibold">Votes Tendency</p>
                         {parallelData ? <Parallel data={parallelData} /> : selectedChain && <p>Loading... </p>}
                     </div>
 

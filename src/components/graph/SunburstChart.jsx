@@ -140,7 +140,7 @@ const SunburstChart = ({ data, parallelData }) => {
         const width = 300;
         const height = 220;
         const radius = Math.min(width, height) / 2;
-        const legendHeight = 40;
+        const legendHeight = 30;
 
         d3.select(svgRef.current).selectAll('*').remove();
 
@@ -149,7 +149,7 @@ const SunburstChart = ({ data, parallelData }) => {
             .attr('width', width)
             .attr('height', height + legendHeight);
 
-        const legend = svg.append('g').attr('class', 'legend').attr('transform', `translate(10, 20)`);
+        const legend = svg.append('g').attr('class', 'legend').attr('transform', `translate(10, 15)`);
 
         const legendItems = Object.entries(voteLabels);
 
@@ -158,16 +158,17 @@ const SunburstChart = ({ data, parallelData }) => {
             const legendItem = legend.append('g').attr('transform', `translate(${currentX}, 0)`);
 
             legendItem
-                .append('rect')
+                .append('circle')
                 .attr('width', 10)
                 .attr('height', 10)
+                .attr('r', 7)
                 .attr('fill', voteColors[voteType])
                 .style('opacity', 0.8);
 
             const legendText = legendItem
                 .append('text')
                 .attr('x', 14)
-                .attr('y', 9)
+                .attr('y', 4)
                 .style('font-size', '11px')
                 .style('fill', '#666')
                 .text(label);
@@ -396,12 +397,12 @@ const SunburstChart = ({ data, parallelData }) => {
 
     return (
         <div>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center ">
                 <div className="flex items-center gap-4">
-                    <h3 className="text-lg pl-3">{singleSelectMode ? 'Personal Proposal' : 'Proposal Match'}</h3>
+                    <p className="p-3 font-semibold">{singleSelectMode ? 'Personal Votes' : 'Votes Match'}</p>
                 </div>
             </div>
-            <svg ref={svgRef} className="mb-80 ml-24" />
+            <svg ref={svgRef} className="ml-24" />
         </div>
     );
 };

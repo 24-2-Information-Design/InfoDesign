@@ -172,7 +172,7 @@ const ValidatorTable = () => {
     return (
         <div className="border">
             <div className="flex justify-between items-center p-3">
-                <p>Validator Results</p>
+                <p className="font-semibold">Validator Results</p>
                 {selectedRows.length > 0 && (
                     <button
                         onClick={handleRemoveSelected}

@@ -23,7 +23,7 @@ const ScatterPlot = ({ data }) => {
 
         const width = 500;
         const height = 300;
-        const margin = { top: 10, right: 10, bottom: 60, left: 50 };
+        const margin = { top: 10, right: 50, bottom: 60, left: 50 };
 
         const chartWidth = width - margin.left - margin.right;
         const chartHeight = height - margin.top - margin.bottom;
@@ -202,7 +202,7 @@ const ScatterPlot = ({ data }) => {
     return (
         <div>
             <div className="flex items-center gap-4 pl-3">
-                <p>Validator Votes Similarity</p>
+                <p className="font-semibold">Validator Votes Similarity</p>
                 <div className="flex items-center gap-4">
                     <label className="flex items-center space-x-2 text-sm">
                         <input
