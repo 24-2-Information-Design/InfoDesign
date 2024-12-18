@@ -2,16 +2,21 @@ import { useEffect, useState } from 'react';
 import useChainStore from '../store/store';
 
 const ValidatorTable = () => {
-    const { selectedChain, selectedValidators, baseValidator, setBaseValidator } = useChainStore();
+    const { selectedChain, selectedValidators, baseValidator, setBaseValidator, setSelectedValidators } =
+        useChainStore();
+
     const [validatorData, setValidatorData] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
     const [sortConfig, setSortConfig] = useState({
         key: 'matchRate',
         direction: 'desc',
     });
 
+    // Previous useEffect remains the same...
     useEffect(() => {
         if (!selectedChain || !selectedValidators.length) {
             setValidatorData([]);
+            setSelectedRows([]);
             return;
         }
 
@@ -81,6 +86,7 @@ const ValidatorTable = () => {
             });
     }, [selectedChain, selectedValidators, baseValidator]);
 
+    // Previous sortValidatorData and handleSort remain the same...
     const sortValidatorData = (data, key, direction) => {
         return [...data].sort((a, b) => {
             let comparison = 0;
@@ -119,6 +125,41 @@ const ValidatorTable = () => {
         }
     };
 
+    // New function to handle row selection
+    const handleRowSelect = (validator) => {
+        setSelectedRows((prev) =>
+            prev.includes(validator) ? prev.filter((v) => v !== validator) : [...prev, validator]
+        );
+    };
+
+    // New function to handle removing selected validators
+    const handleRemoveSelected = () => {
+        // Remove selected validators from the global selected validators
+        const remainingValidators = selectedValidators.filter((validator) => !selectedRows.includes(validator));
+
+        // Update the global selected validators
+        setSelectedValidators(remainingValidators);
+
+        // Reset selected rows
+        setSelectedRows([]);
+
+        // If the base validator is removed, set a new base validator or reset
+        if (selectedRows.includes(baseValidator)) {
+            setBaseValidator(remainingValidators.length > 0 ? remainingValidators[0] : null);
+        }
+    };
+
+    // New function to handle select all checkbox
+    const handleSelectAll = () => {
+        if (selectedRows.length === validatorData.slice(1).length) {
+            // If all are selected, deselect all
+            setSelectedRows([]);
+        } else {
+            // Select all validators except the first one (base validator)
+            setSelectedRows(validatorData.slice(1).map((data) => data.validator));
+        }
+    };
+
     const columns = [
         { key: 'validator', label: 'Validator Name' },
         { key: 'matchRate', label: 'Match Rate(%)' },
@@ -130,7 +171,17 @@ const ValidatorTable = () => {
 
     return (
         <div className="border">
-            <p className="pl-3">Validator Results</p>
+            <div className="flex justify-between items-center p-3">
+                <p>Validator Results</p>
+                {selectedRows.length > 0 && (
+                    <button
+                        onClick={handleRemoveSelected}
+                        className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                    >
+                        Remove ({selectedRows.length})
+                    </button>
+                )}
+            </div>
 
             <div className="pl-3 relative">
                 <div style={{ maxHeight: 'calc(2.5rem * 4)' }} className="overflow-auto">
@@ -138,9 +189,20 @@ const ValidatorTable = () => {
                         className="w-full"
                         style={{ minWidth: '800px', borderCollapse: 'separate', borderSpacing: 0 }}
                     >
-                        <thead className="sticky top-0  bg-white z-10">
-                            <tr className="border-b font-semibold text-xs ">
-                                <th className="p-1  border-r whitespace-nowrap">No.</th>
+                        <thead className="sticky top-0 bg-white z-10">
+                            <tr className="border-b font-semibold text-xs">
+                                <th className="p-1 border-r whitespace-nowrap">
+                                    <input
+                                        type="checkbox"
+                                        checked={
+                                            validatorData.slice(1).length > 0 &&
+                                            selectedRows.length === validatorData.slice(1).length
+                                        }
+                                        onChange={handleSelectAll}
+                                        className="form-checkbox"
+                                    />
+                                </th>
+                                <th className="p-1 border-r whitespace-nowrap">No.</th>
                                 {columns.map((column) => (
                                     <th
                                         key={column.key}
@@ -160,6 +222,7 @@ const ValidatorTable = () => {
                         <tbody className="text-xs">
                             {validatorData.length > 0 && (
                                 <tr className="sticky top-8 bg-gray-50 z-10">
+                                    <td className="p-2 border-b"></td>
                                     <td className="p-2 border-b">1</td>
                                     <td className="p-2 border-b font-medium">{validatorData[0].validator}</td>
                                     <td className="p-2 border-b text-center">
@@ -180,9 +243,20 @@ const ValidatorTable = () => {
                             {validatorData.slice(1).map((data, index) => (
                                 <tr
                                     key={data.validator}
-                                    className="border-b hover:bg-blue-200 cursor-pointer"
+                                    className={`border-b hover:bg-blue-200 cursor-pointer ${
+                                        selectedRows.includes(data.validator) ? 'bg-blue-100' : ''
+                                    }`}
                                     onClick={() => setBaseValidator(data.validator)}
                                 >
+                                    <td className="p-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedRows.includes(data.validator)}
+                                            onChange={() => handleRowSelect(data.validator)}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="form-checkbox"
+                                        />
+                                    </td>
                                     <td className="p-2">{index + 2}</td>
                                     <td className="p-2">{data.validator}</td>
                                     <td className="p-2 text-center">{(data.matchRate * 100).toFixed(2)}</td>
