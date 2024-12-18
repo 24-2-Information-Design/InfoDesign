@@ -399,7 +399,7 @@ const SunburstChart = ({ data, parallelData }) => {
         <div>
             <div className="flex justify-between items-center ">
                 <div className="flex items-center gap-4">
-                    <p className="p-3 font-semibold">{singleSelectMode ? 'Personal Votes' : 'Votes Match'}</p>
+                    <p className="pl-3 font-semibold">{singleSelectMode ? 'Personal Votes' : 'Votes Match'}</p>
                 </div>
             </div>
             <svg ref={svgRef} className="ml-24" />
