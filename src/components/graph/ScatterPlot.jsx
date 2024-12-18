@@ -58,9 +58,14 @@ const ScatterPlot = ({ data }) => {
             .domain([0, d3.max(data, (d) => d.participation_rate)])
             .range([minNodeSize, maxNodeSize]);
 
-        const uniqueClusters = Array.from(new Set(data.map((d) => d.cluster_label))).sort();
+        // 클러스터 라벨의 고유한 값을 정렬된 숫자로 변환
+        const uniqueClusters = Array.from(new Set(data.map((d) => Number(d.cluster_label)))).sort((a, b) => a - b);
 
-        const colorScale = d3.scaleOrdinal().domain(uniqueClusters).range(NormalColors);
+        // 색상 스케일을 정확한 인덱스로 매핑
+        const colorScale = d3
+            .scaleOrdinal()
+            .domain(uniqueClusters)
+            .range(uniqueClusters.map((cluster) => NormalColors[cluster]));
 
         const sortedData = [...data].sort((a, b) => sizeScale(b.participation_rate) - sizeScale(a.participation_rate));
 
