@@ -68,7 +68,7 @@ const Home = () => {
 
                     {/* chain result */}
                     <div className="w-full h-auto">
-                        <p className="pl-3 ml-4 font-semibold">Chain Results</p>
+                        <p className="pl-2 ml-2 font-semibold">Chain Results</p>
                         {selectedChain && (
                             <div className=" ml-4 p-1">
                                 {/* 상단 3개 */}

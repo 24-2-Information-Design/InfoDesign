@@ -12,7 +12,6 @@ const ValidatorTable = () => {
         direction: 'desc',
     });
 
-    // Previous useEffect remains the same...
     useEffect(() => {
         if (!selectedChain || !selectedValidators.length) {
             setValidatorData([]);
@@ -86,7 +85,6 @@ const ValidatorTable = () => {
             });
     }, [selectedChain, selectedValidators, baseValidator]);
 
-    // Previous sortValidatorData and handleSort remain the same...
     const sortValidatorData = (data, key, direction) => {
         return [...data].sort((a, b) => {
             let comparison = 0;
@@ -125,48 +123,37 @@ const ValidatorTable = () => {
         }
     };
 
-    // New function to handle row selection
     const handleRowSelect = (validator) => {
         setSelectedRows((prev) =>
             prev.includes(validator) ? prev.filter((v) => v !== validator) : [...prev, validator]
         );
     };
 
-    // New function to handle removing selected validators
     const handleRemoveSelected = () => {
-        // Remove selected validators from the global selected validators
         const remainingValidators = selectedValidators.filter((validator) => !selectedRows.includes(validator));
-
-        // Update the global selected validators
         setSelectedValidators(remainingValidators);
-
-        // Reset selected rows
         setSelectedRows([]);
 
-        // If the base validator is removed, set a new base validator or reset
         if (selectedRows.includes(baseValidator)) {
             setBaseValidator(remainingValidators.length > 0 ? remainingValidators[0] : null);
         }
     };
 
-    // New function to handle select all checkbox
     const handleSelectAll = () => {
         if (selectedRows.length === validatorData.slice(1).length) {
-            // If all are selected, deselect all
             setSelectedRows([]);
         } else {
-            // Select all validators except the first one (base validator)
             setSelectedRows(validatorData.slice(1).map((data) => data.validator));
         }
     };
 
     const columns = [
-        { key: 'validator', label: 'Validator Name' },
-        { key: 'matchRate', label: 'Match Rate(%)' },
-        { key: 'cluster', label: 'Cluster' },
-        { key: 'overallMatchRate', label: 'Overall Match Rate' },
-        { key: 'clusterMatchRate', label: 'Cluster Match Rate' },
-        { key: 'participationRate', label: 'Participation Rate' },
+        { key: 'validator', label: 'Validator Name', width: '25%' },
+        { key: 'matchRate', label: 'Match Rate(%)', width: '10%' },
+        { key: 'cluster', label: 'Cluster', width: '10%' },
+        { key: 'overallMatchRate', label: 'Overall Match Rate', width: '15%' },
+        { key: 'clusterMatchRate', label: 'Cluster Match Rate', width: '15%' },
+        { key: 'participationRate', label: 'Participation Rate', width: '15%' },
     ];
 
     return (
@@ -184,7 +171,7 @@ const ValidatorTable = () => {
             </div>
 
             <div className="pl-3 relative">
-                <div style={{ maxHeight: 'calc(2.5rem * 4)' }} className="overflow-auto">
+                <div style={{ maxHeight: 'calc(2rem * 4)' }} className="overflow-auto">
                     <table
                         className="w-full"
                         style={{ minWidth: '800px', borderCollapse: 'separate', borderSpacing: 0 }}

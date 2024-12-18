@@ -20,7 +20,7 @@ const Parallel = ({ data }) => {
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
 
-        const width = 820;
+        const width = 870;
         const height = 120;
         const spacing = 100;
 

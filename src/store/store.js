@@ -167,15 +167,18 @@ export const useChainStore = create((set, get) => ({
         });
     },
 
-    resetValidatorSelection: () =>
+    resetValidatorSelection: () => {
+        const currentSingleSelectMode = get().singleSelectMode;
+
         set({
             selectedValidators: [],
             highlightedChains: [],
             highlightedValidators: [],
             validatorChains: [],
             baseValidator: null,
-            singleSelectMode: true,
-        }),
+            singleSelectMode: currentSingleSelectMode,
+        });
+    },
 }));
 
 export default useChainStore;

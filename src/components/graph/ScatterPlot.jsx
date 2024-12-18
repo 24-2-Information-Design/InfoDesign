@@ -22,8 +22,8 @@ const ScatterPlot = ({ data }) => {
         svg.selectAll('*').remove();
 
         const width = 500;
-        const height = 300;
-        const margin = { top: 10, right: 50, bottom: 60, left: 50 };
+        const height = 320;
+        const margin = { top: 0, right: 50, bottom: 60, left: 50 };
 
         const chartWidth = width - margin.left - margin.right;
         const chartHeight = height - margin.top - margin.bottom;
@@ -32,8 +32,8 @@ const ScatterPlot = ({ data }) => {
 
         const chart = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-        const maxNodeSize = 12;
-        const minNodeSize = 3;
+        const maxNodeSize = 10;
+        const minNodeSize = 1;
 
         const xExtent = d3.extent(data, (d) => d.tsne_x);
         const yExtent = d3.extent(data, (d) => d.tsne_y);
