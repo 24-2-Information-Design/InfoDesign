@@ -55,16 +55,16 @@ const Home = () => {
 
             {/* body */}
 
-            <div className="w-full h-full flex flex-row">
+            <div className="w-full h-full flex ">
                 {/* left section */}
-                <div className="w-2/5 h-full m-1 ml-3 shadow-xl rounded-lg border-slate-100 border-[0.3px]">
+                <div className="w-2/5 h-full border-r-4 border-gray-200">
                     <h1 className=" p-3 bg-blue-600 text-white">Find Your Friends</h1>
                     <h2 className="pl-3 pt-2">Overall Chain View</h2>
                     <p className="pl-3 font-semibold">Chain Networks</p>
-                    <div className="w-full h-[58%]">
+                    <div className="w-full h-[54.6%]">
                         <NetworkPie />
                     </div>
-                    <div className="w-[94%] ml-4 mt-1 mb-1 flex border-t border-gray-200"></div>
+                    <div className="w-[94%] ml-4 mt-1 mb-1 flex border-t-2 border-gray-200 "></div>
 
                     {/* chain result */}
                     <div className="w-full h-auto">
@@ -142,7 +142,7 @@ const Home = () => {
                 </div>
 
                 {/* right section */}
-                <div className="w-3/5 h-full m-1 mr-3 shadow-xl rounded-md border-slate-100 border-[0.3px]">
+                <div className="w-3/5 h-full  mr-3">
                     <h2 className="pl-3 pt-2">Specific Validator View</h2>
 
                     {/* validator & proposal view */}
@@ -159,7 +159,7 @@ const Home = () => {
                         </div>
                     </div>
 
-                    <div className="w-[95%] ml-5 mt-1 mb-1 flex border-t border-gray-200"></div>
+                    <div className="w-[95%] ml-5 mt-1 mb-1 flex border-t-2 border-gray-200"></div>
 
                     {/* parallel view */}
                     <div className="w-full h-[22%]">
@@ -167,7 +167,7 @@ const Home = () => {
                         {parallelData ? <Parallel data={parallelData} /> : selectedChain && <p>Loading... </p>}
                     </div>
 
-                    <div className="w-[95%] ml-5 mb-1 flex border-t border-gray-200"></div>
+                    <div className="w-[95%] ml-5 mb-1 flex border-t-2 border-gray-200"></div>
 
                     {/* result view */}
                     <div className="w-full h-[32%] flex flex-row justify-between">
