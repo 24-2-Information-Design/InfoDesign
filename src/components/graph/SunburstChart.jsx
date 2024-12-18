@@ -360,6 +360,34 @@ const SunburstChart = ({ data, parallelData }) => {
                     .style('fill', '#666')
                     .text(`${validatorInfo.participationRate}%`);
             }
+        } else if (!singleSelectMode && selectedValidators.length >= 2) {
+            const matchStats = calculateMatchStatistics(data);
+
+            centerGroup
+                .append('text')
+                .attr('class', 'match-rate')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '-0.2em')
+                .style('font-size', '24px')
+                .style('fill', '#333')
+                .text(`${matchStats.rate}%`);
+
+            centerGroup
+                .append('text')
+                .attr('class', 'match-count')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.9em')
+                .style('font-size', '14px')
+                .style('fill', '#666')
+                .text(`${matchStats.matched} / ${matchStats.total}`);
+
+            centerGroup
+                .append('text')
+                .attr('class', 'match-label')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '2.1em')
+                .style('font-size', '14px')
+                .style('fill', '#666');
         }
         return () => {
             tooltip.remove();
