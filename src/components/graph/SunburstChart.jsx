@@ -105,6 +105,7 @@ const SunburstChart = ({ data, parallelData }) => {
 
     const transformData = (rawData) => {
         if (!rawData) return null;
+        rawData = rawData.sort((a, b) => a.id - b.id);
 
         const types = new Set(rawData.map((d) => d.type || 'Unknown'));
         const uniqueTypes = Array.from(types);
